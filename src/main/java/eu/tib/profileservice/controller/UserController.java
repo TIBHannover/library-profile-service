@@ -45,11 +45,6 @@ public class UserController {
 
 	@GetMapping(PATH_ADD)
 	public String add(final User user, Model model) {
-//    	User user = new User();
-//    	user.setName("testname");
-//    	user.setInitials("TI");
-//    	user.setEmail("testmail@abc.de");
-//    	userService.save(user);
 		return BASE_URL_TEMPLATE + "/create";
 	}
 

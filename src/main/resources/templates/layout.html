@@ -3,7 +3,7 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-<title>Profildienst</title>
+<title th:text="#{profileservice}">Profildienst</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" media="all"
 	href="../css/bootstrap-theme.css" th:href="@{/css/bootstrap-theme.css}" />
@@ -17,7 +17,7 @@
 		<div class="container">
 			<div class="page-header" id="page-header">
 				<h1>
-					<small>Profildienst</small>
+					<small th:text="#{profileservice}">Profildienst</small>
 				</h1>
 			</div>
 		</div>
@@ -30,19 +30,15 @@
 					<li>Navigation</li>
 				</ul>
 			</div>
-			<div class="col-lg-10 main" layout:fragment="page_content"></div>
+			<div class="col-lg-10 main">
+				<div th:if="${infoMessage}" th:switch="${infoMessageType}">
+					<div th:case="'success'" class="alert alert-success" th:text="#{${infoMessage}}">Some message</div> 
+					<div th:case="'error'" class="alert alert-danger" th:text="#{${infoMessage}}">Some message</div>
+					<div th:case="*" class="alert alert-info" th:text="#{${infoMessage}}">Some message</div> 
+				</div>
+				<div layout:fragment="page_content"></div>
+			</div>
 		</div>
-
-		<!-- 		        <div class="row">
-            <div class="col-lg-2  sidebar">
-                <ul th:replace="nav :: menu">
-                    <li>Navigation</li>
-                </ul>
-            </div>
-            <div class="col-lg-10 main" layout:fragment="page_content">Content</div>
-        </div>
- -->
-
 	</div>
 </body>
 </html>

@@ -15,5 +15,7 @@ public interface DocumentService {
 	
 	public List<DocumentAssignment> retrieveDocumentAssignmentsByUser(final User user);
 	public DocumentAssignment assignToUser(final Document document, final User user);
+	public Document acceptDocument(final Long id);
+	public Document rejectDocument(final Long id);
 
 }

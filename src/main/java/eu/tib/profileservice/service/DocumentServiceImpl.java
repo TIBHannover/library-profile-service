@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.tib.profileservice.domain.Document;
+import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.DocumentAssignment;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.repository.DocumentAssignmentRepository;
@@ -88,6 +89,28 @@ public class DocumentServiceImpl implements DocumentService {
 		}
 		assignment.setAssignee(persistedUser);
 		return documentAssignmentRepository.save(assignment);
+	}
+
+	@Transactional
+	@Override
+	public Document acceptDocument(Long id) {
+		if (id == null) {
+			return null;
+		} 
+		final Document document = documentRepository.getOne(id);
+		document.setStatus(Status.ACCEPTED);
+		return documentRepository.save(document);
+	}
+
+	@Transactional
+	@Override
+	public Document rejectDocument(Long id) {
+		if (id == null) {
+			return null;
+		} 
+		final Document document = documentRepository.getOne(id);
+		document.setStatus(Status.REJECTED);
+		return documentRepository.save(document);
 	}
 
 }

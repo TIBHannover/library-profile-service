@@ -49,5 +49,14 @@ public class Category {
 	public void setInstitution(String institution) {
 		this.institution = institution;
 	}
+	
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append(category);
+		sb.append("(");
+		sb.append(institution);
+		sb.append(")");
+		return sb.toString();
+	}
 
 }

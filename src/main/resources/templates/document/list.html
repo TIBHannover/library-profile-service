@@ -1,10 +1,67 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
- 	layout:decorate="~{layout}">
+	layout:decorate="~{layout}">
 <body>
 	<div layout:fragment="page_content">
 		<table class="table table-striped">
+			<tbody>
+				<tr th:each="document,docStat : ${documents}">
+					<td>
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title" th:text="${document.metadata.title}">title</h5>
+								<h6 class="card-subtitle mb-2 text-muted" th:text="${document.metadata.author}">author</h6>
+								<p>
+									<span class="text-muted" th:text="#{description} + ':'" ></span>
+									<span th:text="${document.metadata.description}" ></span>
+								</p>
+								<p>
+									<span class="text-muted" th:text="#{categories} + ':'" ></span>
+									<span th:text="${#strings.listJoin(document.categories, ', ')}" ></span>
+								</p>
+								<p>
+									<span class="text-muted" th:text="#{status} + ':'" ></span>
+									<span th:text="${document.status}" ></span>
+								</p>
+								<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocument}" method="post">
+									<input class="form-control" type="hidden" name="id" th:value="${document.id}" />
+									<button class="btn btn-sm btn-success" type="submit" th:name="${methodAccept}">
+											<span class="glyphicon glyphicon-ok"></span>
+											<span th:text="#{accept}">accept</span>
+									</button>
+									<button class="btn btn-sm btn-danger" type="submit" th:name="${methodReject}">
+											<span class="glyphicon glyphicon-remove"></span>
+											<span th:text="#{reject}">reject</span>
+									</button>
+									<button class="btn btn-sm btn-primary" type="submit" th:name="${methodAssign}">
+											<span class="glyphicon glyphicon-user"></span>
+											<span th:text="#{assign}">assign</span>
+									</button>
+								</form>
+								
+								<!-- 									<div>
+										<a class="btn btn-sm btn-success" href="#" th:href="@{${actionAccept}}">
+											<span class="glyphicon glyphicon-ok"></span>
+											<span th:text="#{accept}">accept</span>
+										</a>
+										<a class="btn btn-sm btn-danger" href="#" th:href="@{${actionReject}}">
+											<span class="glyphicon glyphicon-remove"></span>
+											<span th:text="#{reject}">reject</span>
+										</a>
+										<a class="btn btn-sm btn-primary" href="#" th:href="@{${actionAssign}}">
+											<span class="glyphicon glyphicon-user"></span>
+											<span th:text="#{assign}">assign</span>
+										</a>
+									</div>
+								 -->
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- 		<table class="table table-striped">
 			<thead>
 				<tr>
 					<th th:text="#{title}">Title</th>
@@ -28,6 +85,7 @@
 				</tr>
 			</tbody>
 		</table>
+ -->
 	</div>
 </body>
 </html>
