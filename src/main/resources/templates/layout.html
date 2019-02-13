@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>Profildienst</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" media="all"
+	href="../css/bootstrap-theme.css" th:href="@{/css/bootstrap-theme.css}" />
+<link href="../css/bootstrap.min.css"
+	th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
+
+
+</head>
+<body>
+	<header>
+		<div class="container">
+			<div class="page-header" id="page-header">
+				<h1>
+					<small>Profildienst</small>
+				</h1>
+			</div>
+		</div>
+	</header>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-2  sidebar">
+				<ul th:replace="nav :: menu">
+					<li>Navigation</li>
+				</ul>
+			</div>
+			<div class="col-lg-10 main" layout:fragment="page_content"></div>
+		</div>
+
+		<!-- 		        <div class="row">
+            <div class="col-lg-2  sidebar">
+                <ul th:replace="nav :: menu">
+                    <li>Navigation</li>
+                </ul>
+            </div>
+            <div class="col-lg-10 main" layout:fragment="page_content">Content</div>
+        </div>
+ -->
+
+	</div>
+</body>
+</html>

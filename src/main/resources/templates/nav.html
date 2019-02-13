@@ -1,0 +1,9 @@
+<div th:fragment="menu" id="menu">
+	<ul class="nav nav-stacked nav nav-pills">
+		<li><a href="#" th:href="@{/user}" th:text="#{users}">Users</a></li>
+		<li><a href="#" th:href="@{/document}" th:text="#{publications}">publications</a></li>
+	</ul>
+	<ul class="nav nav-stacked nav nav-pills" sec:authorize="isAuthenticated()">
+		<li><a href="#" th:href="@{/logout}"><div sec:authentication="name"></div><span th:text="#{logout}">Logout</span></a></li>
+	</ul>
+</div>

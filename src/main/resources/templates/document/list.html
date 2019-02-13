@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ 	layout:decorate="~{layout}">
+<body>
+	<div layout:fragment="page_content">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th th:text="#{title}">Title</th>
+					<th th:text="#{author}">Author</th>
+					<th th:text="#{description}">Description</th>
+					<th th:text="#{categories}">Categories</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="document : ${documents}">
+					<td>
+						<a th:href="@{/document/show(id=${document.id})}" th:text="${document.metadata.title}"></a>
+					</td>
+					<td th:text="${document.metadata.author}"></td>
+					<td th:text="${document.metadata.description}"></td>
+					<td>
+						<ul>
+							<li th:each="category : ${document.categories}" th:text="${category.category} + ' - ' + ${category.institution}"/>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>
