@@ -1,10 +1,16 @@
 package eu.tib.profileservice.controller;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eu.tib.profileservice.domain.Document;
-import eu.tib.profileservice.domain.DocumentAssignment;
 import eu.tib.profileservice.domain.User;
+import eu.tib.profileservice.service.DocumentImportService;
 import eu.tib.profileservice.service.DocumentService;
 import eu.tib.profileservice.service.UserService;
 
@@ -37,6 +43,7 @@ public class DocumentController {
 	
 	public static final String BASE_PATH = "/document";
 	public static final String PATH_LIST = "/list";
+	public static final String PATH_MY = "/my";
 	public static final String PATH_SHOW = "/show";
 	public static final String PATH_UPDATE = "/update";
 	
@@ -48,6 +55,8 @@ public class DocumentController {
 	
 	@Autowired
 	private DocumentService documentService;
+	@Autowired
+	private DocumentImportService documentImportService;
 	@Autowired
 	private UserService userService;
 
@@ -80,7 +89,7 @@ public class DocumentController {
 	
 	@GetMapping("**")
 	public String index() {
-		return "redirect:" + BASE_PATH + PATH_LIST;
+		return "redirect:" + BASE_PATH + PATH_MY;
 	}
 	
 	@GetMapping(PATH_LIST)
@@ -90,26 +99,71 @@ public class DocumentController {
 		return BASE_URL_TEMPLATE + "/list";
 	}
 	
+	@GetMapping(PATH_MY)
+	public String myDocuments(Model model) {
+		final User user = getCurrentUser();
+		final List<Document> documents;
+		if (user != null) {
+			documents = documentService.retrieveDocumentsByUser(user);
+		} else {
+			documents = new ArrayList<>();
+		}
+		model.addAttribute("documents", documents);
+		return BASE_URL_TEMPLATE + "/list";
+	}
+	
+	private User getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null) {
+			return userService.findByName(authentication.getName());
+		}
+		return null;
+	}
+	
 	@GetMapping(PATH_SHOW)
 	public String show(Model model, @RequestParam final Long id) {
-		DocumentAssignment assignment = documentService.retrieveAssignmentByDocumentId(id);
 		final Document document = documentService.findById(id);
-		if (assignment == null) {
-			assignment = new DocumentAssignment();
-			assignment.setDocument(document);
-		}
-		model.addAttribute("assignment", assignment);
 		model.addAttribute("document", document);
 		return BASE_URL_TEMPLATE + "/show";
 	}
 	
+	// TODO
+	@GetMapping("/import")
+	public String importTest() {
+		return BASE_URL_TEMPLATE + "/import";
+	}
+	@RequestMapping(value = "/import", params = { "import" }, method=RequestMethod.POST)
+	public String importDocuments() {
+		OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+		LocalDate now = utc.toLocalDate();
+		documentImportService.importDocuments(now, now);
+		return "redirect:" + BASE_PATH + "/list";
+	}
+	
 	@RequestMapping(value = PATH_UPDATE, params = { METHOD_ASSIGN }, method=RequestMethod.POST)
-	public String assignDocument(final DocumentAssignment assignment, final Model model, final BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return BASE_URL_TEMPLATE + "/show";
+	public String assignDocument(final Document document, final Model model, final BindingResult bindingResult, final RedirectAttributes redirectAttrs) {
+		if (document.getAssignee() == null || document.getAssignee().getId() == null) {
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, "assignee is null");
+			return "redirect:" + BASE_PATH + PATH_LIST;
 		}
-		LOG.debug("Assign document '" + assignment.getDocument().getId() + "' to user '" + assignment.getAssignee().getName() + "'");
-		//documentService.assignToUser(assignment.getDocument(), assignment.getAssignee());
+		if (document == null || document.getId() == null) {
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, "document is null");
+			return "redirect:" + BASE_PATH + PATH_LIST;
+		}
+		if (bindingResult.hasErrors()) {
+			return BASE_URL_TEMPLATE + PATH_LIST;
+		}
+		LOG.debug("Assign document '" + document.getId() + "' to user '" + document.getAssignee().getName() + "'");
+		final Document result = documentService.assignToUser(document, document.getAssignee());
+		if (result == null) {
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, "could not assign");
+		} else {
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_SUCCESS);
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, "assigned to " + result.getAssignee().getName());
+		}
 		return "redirect:" + BASE_PATH + PATH_LIST;
 	}
 

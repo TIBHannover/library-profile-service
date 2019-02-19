@@ -9,21 +9,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import eu.tib.profileservice.domain.Category;
 import eu.tib.profileservice.repository.CategoryRepository;
 import eu.tib.profileservice.service.CategoryService;
 import eu.tib.profileservice.service.CategoryServiceImpl;
 
-@Transactional()
 @RunWith(SpringRunner.class)
-@DataJpaTest
 public class CategoryServiceTest {
 	
     @TestConfiguration
@@ -58,6 +54,19 @@ public class CategoryServiceTest {
 		List<Category> categories = categoryService.findByInstitution("TEST1");
 		assertThat(categories).isNotNull();
 		assertThat(categories.size()).isEqualTo(2);
+	}
+
+	@Test
+	public void testFindAll() {
+		final List<Category> repositoryCategories = new ArrayList<Category>();
+		repositoryCategories.add(newCategory("TEST1", "CAT1", 1L));
+		repositoryCategories.add(newCategory("TEST1", "CAT2", 2L));
+		repositoryCategories.add(newCategory("TEST2", "CAT1", 3L));
+		Mockito.when(categoryRepository.findAll()).thenReturn(repositoryCategories);
+
+		List<Category> categories = categoryService.findAll();
+		assertThat(categories).isNotNull();
+		assertThat(categories.size()).isEqualTo(3);
 	}
 
 	@Test

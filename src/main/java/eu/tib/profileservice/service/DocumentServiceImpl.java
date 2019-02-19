@@ -12,9 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
-import eu.tib.profileservice.domain.DocumentAssignment;
 import eu.tib.profileservice.domain.User;
-import eu.tib.profileservice.repository.DocumentAssignmentRepository;
 import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.repository.UserRepository;
 
@@ -27,8 +25,6 @@ public class DocumentServiceImpl implements DocumentService {
 	private UserRepository userRepository;
 	@Autowired
 	private DocumentRepository documentRepository;
-	@Autowired
-	private DocumentAssignmentRepository documentAssignmentRepository;
 
 	@Transactional(readOnly=true)
 	@Override
@@ -51,27 +47,13 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Transactional(readOnly=true)
 	@Override
-	public DocumentAssignment retrieveAssignmentByDocumentId(final Long documentId) {
-		if (documentId == null) {
-			return null;
-		}
-		try {
-			return documentAssignmentRepository.findByDocument_Id(documentId);
-		} catch (EntityNotFoundException e) {
-			return null;
-		}
-	}
-
-
-	@Transactional(readOnly=true)
-	@Override
-	public List<DocumentAssignment> retrieveDocumentAssignmentsByUser(final User user) {
-		return documentAssignmentRepository.findAllByAssignee(user);
+	public List<Document> retrieveDocumentsByUser(final User user) {
+		return documentRepository.findAllByAssignee(user);
 	}
 
 	@Transactional
 	@Override
-	public DocumentAssignment assignToUser(final Document document, final User user) {
+	public Document assignToUser(final Document document, final User user) {
 		if (document == null || user == null || user.getId() == null) {
 			LOG.debug("document/user cannot be null");
 			return null;
@@ -82,13 +64,8 @@ public class DocumentServiceImpl implements DocumentService {
 			LOG.debug("cannot find document/user");
 			return null;
 		}
-		DocumentAssignment assignment = documentAssignmentRepository.findByDocument(document);
-		if (assignment == null) {
-			assignment = new DocumentAssignment();
-			assignment.setDocument(persistedDocument);
-		}
-		assignment.setAssignee(persistedUser);
-		return documentAssignmentRepository.save(assignment);
+		persistedDocument.setAssignee(persistedUser);
+		return documentRepository.save(persistedDocument);
 	}
 
 	@Transactional

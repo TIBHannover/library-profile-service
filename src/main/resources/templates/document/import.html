@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	layout:decorate="~{layout}">
+<head>
+<title th:text="#{title.document.import}">Import</title>
+</head>
+<body>
+	<div layout:fragment="page_content">
+		<form action="#" th:action="@{/document/import}" method="post">
+			<button class="btn btn-sm btn-primary" type="submit" name="import">
+				<span>Import</span>
+			</button>
+		</form>
+	</div>
+</body>
+</html>

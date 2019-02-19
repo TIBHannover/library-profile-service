@@ -21,13 +21,13 @@
 					<b>DESCRIPTION:</b><span th:text="*{metadata.description}"></span>					
 				</p>
 				<p>
-					<b>ASSIGNEE:</b><span th:text="${assignment?.assignee?.name} ?: #{noassignee}"></span>					
+					<b>ASSIGNEE:</b><span th:text="${document.assignee?.name} ?: #{noassignee}"></span>
 				</p>
 			</div>
 		</div>
-		<form action="#" th:action="@{${actionAssign}}" th:object="${assignment}" method="post">
+		<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocument}" method="post">
 		<fieldset>
-			<input class="form-control" type="hidden" th:field="*{document}" th:value="${document.id}" />
+			<input class="form-control" type="hidden" th:name="id" th:value="${document.id}" />
 			<select class="form-control" required="required" th:field="*{assignee}" th:errorclass="fieldError">
 	            <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.name}" />
 	        </select>

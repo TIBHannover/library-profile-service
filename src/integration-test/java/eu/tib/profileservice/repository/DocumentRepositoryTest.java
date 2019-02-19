@@ -41,8 +41,8 @@ public class DocumentRepositoryTest {
 		documentMeta.setTitle(title);
 		documentMeta.setAuthor(author);
 		documentMeta.setDescription(description);
+		documentMeta.setCategories(categories);
 		document.setMetadata(documentMeta);
-		document.setCategories(categories);
 		return document;
 	}
 
@@ -58,7 +58,7 @@ public class DocumentRepositoryTest {
 		List<Document> documents = repository.findAll();
 		assertThat(documents).isNotNull();
 		assertThat(documents.size()).isEqualTo(1);
-		final List<Category> categories = documents.get(0).getCategories();
+		final List<Category> categories = documents.get(0).getMetadata().getCategories();
 		assertThat(categories).isNotNull();
 		assertThat(categories.size()).isEqualTo(2);
 	}
