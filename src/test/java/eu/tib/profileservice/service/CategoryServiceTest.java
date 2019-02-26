@@ -36,10 +36,10 @@ public class CategoryServiceTest {
 	@MockBean
 	private CategoryRepository categoryRepository;
 
-	private Category newCategory(final String institution, final String cat, final Long id) {
+	private Category newCategory(final Category.Type type, final String cat, final Long id) {
 		Category category = new Category();
 		category.setId(id);
-		category.setInstitution(institution);
+		category.setType(type);
 		category.setCategory(cat);
 		return category;
 	}
@@ -47,21 +47,29 @@ public class CategoryServiceTest {
 	@Test
 	public void testFindByInstitution() {
 		final List<Category> repositoryCategories = new ArrayList<Category>();
-		repositoryCategories.add(newCategory("TEST1", "CAT1", 1L));
-		repositoryCategories.add(newCategory("TEST1", "CAT2", 2L));
-		Mockito.when(categoryRepository.findByInstitution("TEST1")).thenReturn(repositoryCategories);
+		repositoryCategories.add(newCategory(Category.Type.DDC, "CAT1", 1L));
+		repositoryCategories.add(newCategory(Category.Type.DDC, "CAT2", 2L));
+		Mockito.when(categoryRepository.findByType(Category.Type.DDC)).thenReturn(repositoryCategories);
 
-		List<Category> categories = categoryService.findByInstitution("TEST1");
+		List<Category> categories = categoryService.findByType(Category.Type.DDC);
 		assertThat(categories).isNotNull();
 		assertThat(categories.size()).isEqualTo(2);
 	}
 
 	@Test
+	public void testFindByInstitutionAndCategory() {
+		Mockito.when(categoryRepository.findByTypeAndCategory(Category.Type.DDC, "CAT1")).thenReturn(newCategory(Category.Type.DDC, "CAT1", 1L));
+
+		Category category = categoryService.findByTypeAndCategory(Category.Type.DDC, "CAT1");
+		assertThat(category).isNotNull();
+	}
+
+	@Test
 	public void testFindAll() {
 		final List<Category> repositoryCategories = new ArrayList<Category>();
-		repositoryCategories.add(newCategory("TEST1", "CAT1", 1L));
-		repositoryCategories.add(newCategory("TEST1", "CAT2", 2L));
-		repositoryCategories.add(newCategory("TEST2", "CAT1", 3L));
+		repositoryCategories.add(newCategory(Category.Type.DDC, "CAT1", 1L));
+		repositoryCategories.add(newCategory(Category.Type.DDC, "CAT2", 2L));
+		repositoryCategories.add(newCategory(Category.Type.DDC, "CAT3", 3L));
 		Mockito.when(categoryRepository.findAll()).thenReturn(repositoryCategories);
 
 		List<Category> categories = categoryService.findAll();
@@ -71,10 +79,10 @@ public class CategoryServiceTest {
 
 	@Test
 	public void testSave() {
-		final Category repositoryCategory = newCategory("TEST1", "CAT1", 1L);
+		final Category repositoryCategory = newCategory(Category.Type.DDC, "CAT1", 1L);
 		Mockito.when(categoryRepository.save(Mockito.any(Category.class))).thenReturn(repositoryCategory);
 
-		final Category category = newCategory("TEST1", "CAT1", null);
+		final Category category = newCategory(Category.Type.DDC, "CAT1", null);
 		final Category result = categoryService.save(category);
 		assertThat(result).isNotNull();
 	}

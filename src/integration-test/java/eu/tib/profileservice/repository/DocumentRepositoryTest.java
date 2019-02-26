@@ -3,7 +3,9 @@ package eu.tib.profileservice.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,39 +29,39 @@ public class DocumentRepositoryTest {
 	@Autowired
 	private DocumentRepository repository;
 
-	private Category newCategory(final String institution, final String title) {
+	private Category newCategory(final Category.Type type, final String title) {
 		Category category = new Category();
-		category.setInstitution(institution);
+		category.setType(type);
 		category.setCategory(title);
 		return category;
 	}
 
 	private Document newDocument(final String author, final String title, final String description,
-			final List<Category> categories) {
+			final Set<String> ddcCategories) {
 		final Document document = new Document();
 		final DocumentMetadata documentMeta = new DocumentMetadata();
 		documentMeta.setTitle(title);
 		documentMeta.setAuthor(author);
 		documentMeta.setDescription(description);
-		documentMeta.setCategories(categories);
+		documentMeta.setDeweyDecimalClassifications(ddcCategories);
 		document.setMetadata(documentMeta);
 		return document;
 	}
 
 	@Test
 	public void testDocumentRepository() {
-		final Category category1 = newCategory("TEST1", "CAT1");
-		final Category category2 = newCategory("TEST2", "CAT1");
+		final Category category1 = newCategory(Category.Type.DDC, "CAT1");
+		final Category category2 = newCategory(Category.Type.DDC, "CAT2");
 		entityManager.persist(category1);
 		entityManager.persist(category2);
 		entityManager.persist(
-				newDocument("testauthor", "testtitle", "testdesc", Arrays.asList(new Category[] { category1, category2 })));
+				newDocument("testauthor", "testtitle", "testdesc", new HashSet<String>(Arrays.asList(new String[] { "104", "345.678" }))));
 
 		List<Document> documents = repository.findAll();
 		assertThat(documents).isNotNull();
 		assertThat(documents.size()).isEqualTo(1);
-		final List<Category> categories = documents.get(0).getMetadata().getCategories();
-		assertThat(categories).isNotNull();
-		assertThat(categories.size()).isEqualTo(2);
+		final Set<String> deweyDecimalClassifications = documents.get(0).getMetadata().getDeweyDecimalClassifications();
+		assertThat(deweyDecimalClassifications).isNotNull();
+		assertThat(deweyDecimalClassifications.size()).isEqualTo(2);
 	}
 }

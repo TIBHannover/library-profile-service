@@ -15,6 +15,7 @@ import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.DocumentMetadata;
 import eu.tib.profileservice.repository.DocumentRepository;
+import eu.tib.profileservice.util.DocumentAssignmentFinder;
 
 @Service
 public class DocumentImportServiceImpl implements DocumentImportService {
@@ -26,16 +27,21 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 	private InstitutionConnector dnbConn;
 	
 	@Autowired
+	private UserService userService;
+	
+	@Autowired
 	private DocumentRepository documentRepository;
 
 
 	@Override
 	public void importDocuments(LocalDate from, LocalDate to) {
+		DocumentAssignmentFinder documentAssignmentFinder = new DocumentAssignmentFinder(userService.findAll());
+		
 		List<DocumentMetadata> documents = dnbConn.retrieveDocuments(from, to);
 		if (documents == null) {
 			LOG.error("Cannot retrieve documents from DNB");
 		} else {
-			documents.forEach(this::createNewDocument);
+			documents.forEach(doc->createNewDocument(doc, documentAssignmentFinder));
 			// TODO assign
 		}
 	}
@@ -44,7 +50,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 	 * Persist a new {@link Document} for the given {@link DocumentMetadata}, if not already existing.
 	 * @param documentMetadata
 	 */
-	private void createNewDocument(final DocumentMetadata documentMetadata) {
+	private void createNewDocument(final DocumentMetadata documentMetadata, final DocumentAssignmentFinder documentAssignmentFinder) {
 		if (!isValid(documentMetadata)) {
 			LOG.error("invalid document: " + buildDocumentMetadataString(documentMetadata));
 			return;
@@ -55,7 +61,12 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 		} else {
 			Document document = new Document();
 			document.setMetadata(documentMetadata);
-			document.setStatus(Status.IN_PROGRESS);
+			if (shouldIgnore(documentMetadata)) {
+				document.setStatus(Status.IGNORED);
+			} else {
+				document.setStatus(Status.IN_PROGRESS);
+				document.setAssignee(documentAssignmentFinder.determineAssignee(documentMetadata));
+			}
 			document = save(document);
 			LOG.debug("document imported: " + buildDocumentMetadataString(documentMetadata));
 		}
@@ -64,6 +75,16 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 	@Transactional
 	private Document save(final Document document) {
 		return documentRepository.save(document);
+	}
+	
+	/**
+	 * Check if the given document should be ignored
+	 * @param documentMetadata
+	 * @return true, if the document should be ignored; false otherwise
+	 */
+	private boolean shouldIgnore(final DocumentMetadata documentMetadata) {
+		// TODO rules (ignore new documents)
+		return false;
 	}
 	
 	/**

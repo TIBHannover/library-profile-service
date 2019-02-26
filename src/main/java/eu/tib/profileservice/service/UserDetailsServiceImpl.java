@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.tib.profileservice.domain.Role;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.repository.UserRepository;
 
@@ -32,8 +31,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 		
 		final List<GrantedAuthority> authorities = new ArrayList<>();
-		for (final Role role : user.getRoles()) {
-			authorities.add(new SimpleGrantedAuthority(role.getRole()));
+		for (final User.Role role : user.getRoles()) {
+			authorities.add(new SimpleGrantedAuthority(role.toString()));
 		}
 		
 		return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), authorities);

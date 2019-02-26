@@ -5,7 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -149,8 +151,23 @@ public class MarcXml2DocumentConverter {
 		document.setRemainderOfTitle(getDataIfExists(record, "245", 'b'));
 		document.setIsbns(getAllData(record, "020", 'a'));
 		
-		List<String> deweyDecimalClassificationNumbers = getAllData(record, "082", 'a');
-		//document.se
+		final Set<String> deweyDecimalClassifications = new HashSet<>();
+		for (VariableField field : record.getVariableFields("082")) {
+			if (field instanceof DataField) {
+				List<String> classificationNumbers = ((DataField) field).getSubfields('a').stream()
+						.map(s -> s.getData()).collect(Collectors.toList());
+				deweyDecimalClassifications.addAll(classificationNumbers);
+
+//				String edition = null;
+//				Subfield editionSubfield = ((DataField) field).getSubfield('2');
+//				if (editionSubfield != null) {
+//					edition = editionSubfield.getData();
+//				} else {
+//					edition = EDITION_NOT_AVAILABLE;
+//				}
+			}
+		}
+		document.setDeweyDecimalClassifications(deweyDecimalClassifications);
 		
 //		document.setAuthor(record.);
 //		document.setCategories(categories);

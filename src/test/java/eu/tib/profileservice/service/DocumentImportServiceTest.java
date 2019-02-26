@@ -31,7 +31,7 @@ public class DocumentImportServiceTest {
     static class TestContextConfiguration {
   
         @Bean
-        public DocumentImportService categoryService() {
+        public DocumentImportService service() {
             return new DocumentImportServiceImpl();
         }
     }
@@ -42,6 +42,8 @@ public class DocumentImportServiceTest {
 	private DocumentRepository documentRepository;
 	@MockBean(name="DNBConnector")
 	private InstitutionConnector dnbConn;
+	@MockBean
+	private UserService userService;
 
 	private DocumentMetadata newDocumentMetadataDummy() {
 		final DocumentMetadata document = new DocumentMetadata();		
@@ -52,7 +54,7 @@ public class DocumentImportServiceTest {
 	}
 
 	@Test
-	public void testImportDocumentsWithInvlidResult() {
+	public void testImportDocumentsWithInvalidResult() {
 		DocumentMetadata invalidMetadata = newDocumentMetadataDummy();
 		invalidMetadata.setIsbns(null);
 		List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {invalidMetadata});

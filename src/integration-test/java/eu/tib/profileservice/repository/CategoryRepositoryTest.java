@@ -23,27 +23,21 @@ public class CategoryRepositoryTest {
 	@Autowired
 	private CategoryRepository categoryRepository;
 
-	private Category newCategory(final String institution, final String title) {
+	private Category newCategory(final Category.Type type, final String title) {
 		Category category = new Category();
-		category.setInstitution(institution);
+		category.setType(type);
 		category.setCategory(title);
 		return category;
 	}
 
 	@Test
 	public void testCategoryRepository() {
-		entityManager.persist(newCategory("TEST1", "CAT1"));
-		entityManager.persist(newCategory("TEST1", "CAT2"));
-		entityManager.persist(newCategory("TEST2", "CAT1"));
+		entityManager.persist(newCategory(Category.Type.DDC, "CAT1"));
+		entityManager.persist(newCategory(Category.Type.DDC, "CAT2"));
 
-		List<Category> categories = categoryRepository.findByInstitution("TEST1");
+		List<Category> categories = categoryRepository.findByType(Category.Type.DDC);
 		assertThat(categories).isNotNull();
 		assertThat(categories.size()).isEqualTo(2);
-		assertThat(categories).allMatch(c -> "TEST1".equals(c.getInstitution()));
-		
-		categories = categoryRepository.findByInstitution("TEST2");
-		assertThat(categories).isNotNull();
-		assertThat(categories.size()).isEqualTo(1);
-		assertThat(categories).allMatch(c -> "TEST2".equals(c.getInstitution()));
+		assertThat(categories).allMatch(c -> Category.Type.DDC.equals(c.getType()));
 	}
 }

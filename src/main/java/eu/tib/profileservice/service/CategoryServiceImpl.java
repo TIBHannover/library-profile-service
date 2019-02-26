@@ -22,8 +22,8 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Transactional
 	@Override
-	public List<Category> findByInstitution(String institution) {
-		return categoryRepository.findByInstitution(institution);
+	public List<Category> findByType(final Category.Type type) {
+		return categoryRepository.findByType(type);
 	}
 
 	@Transactional
@@ -32,4 +32,10 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryRepository.save(category);
 	}
 
+	@Override
+	public Category findByTypeAndCategory(final Category.Type type, String category) {
+		return categoryRepository.findByTypeAndCategory(type, category);
+	}
+	
+	
 }

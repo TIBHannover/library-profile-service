@@ -2,6 +2,8 @@ package eu.tib.profileservice.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,20 +12,27 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(uniqueConstraints = {
-		@UniqueConstraint(columnNames = { Category.COLUMN_NAME_TITLE, Category.COLUMN_NAME_INSTITUTION }) })
+		@UniqueConstraint(columnNames = { Category.COLUMN_NAME_CATEGORY, Category.COLUMN_NAME_TYPE }) })
 public class Category {
+	
+	public enum Type {
+		DDC
+	}
 
-	public static final String COLUMN_NAME_TITLE = "category";
-	public static final String COLUMN_NAME_INSTITUTION = "institution";
+	public static final String COLUMN_NAME_CATEGORY = "category";
+	public static final String COLUMN_NAME_TYPE = "type";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(name = COLUMN_NAME_TITLE, nullable = false)
+	@Column(name = COLUMN_NAME_CATEGORY, nullable = false)
 	private String category;
-	@Column(name = COLUMN_NAME_INSTITUTION, nullable = false)
-	private String institution;
+	@Enumerated(EnumType.STRING)
+	@Column(name = COLUMN_NAME_TYPE, nullable = false)
+	private Type type;
+	
+	private String description;
 
 	/**
 	 * @return the id
@@ -54,26 +63,43 @@ public class Category {
 	}
 
 	/**
-	 * @return the institution
+	 * @return the type
 	 */
-	public String getInstitution() {
-		return institution;
+	public Type getType() {
+		return type;
 	}
 
 	/**
-	 * @param institution the institution to set
+	 * @param type the type to set
 	 */
-	public void setInstitution(String institution) {
-		this.institution = institution;
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(category);
-		sb.append("(");
-		sb.append(institution);
+		if (description != null) {
+			sb.append(" - ").append(description);
+		}
+		sb.append(" (");
+		sb.append(type);
 		sb.append(")");
 		return sb.toString();
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

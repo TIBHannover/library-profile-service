@@ -1,5 +1,10 @@
 package eu.tib.profileservice.controller;
 
+import static eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MESSAGE;
+import static eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE;
+import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_ERROR;
+import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_SUCCESS;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -33,10 +38,6 @@ public class DocumentController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(DocumentController.class);
 	
-	public static final String ATTRIBUTE_INFO_MESSAGE = "infoMessage";
-	public static final String ATTRIBUTE_INFO_MESSAGE_TYPE = "infoMessageType";
-	public static final String INFO_MESSAGE_TYPE_SUCCESS = "success";
-	public static final String INFO_MESSAGE_TYPE_ERROR = "error";
 	public static final String CODE_MESSAGE_DOCUMENT_ACCEPTED = "message.document.accepted";
 	public static final String CODE_MESSAGE_DOCUMENT_REJECTED = "message.document.rejected";
 	public static final String CODE_MESSAGE_ERROR_UPDATE_DOCUMENT = "message.error.update.document";

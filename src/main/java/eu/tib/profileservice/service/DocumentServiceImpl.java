@@ -1,8 +1,7 @@
 package eu.tib.profileservice.service;
 
 import java.util.List;
-
-import javax.persistence.EntityNotFoundException;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +38,8 @@ public class DocumentServiceImpl implements DocumentService {
 			return null;
 		} 
 		try {
-			return documentRepository.getOne(id);
-		} catch (EntityNotFoundException e) {
+			return documentRepository.findById(id).get();
+		} catch (NoSuchElementException e) {
 			return null;
 		}
 	}

@@ -2,6 +2,8 @@ package eu.tib.profileservice.domain;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,10 +24,13 @@ public class Document {
 	@OneToOne(cascade = CascadeType.ALL)
 	private DocumentMetadata metadata;
 
+	@Enumerated(EnumType.STRING)
 	private Status status;
 
 	@ManyToOne
 	private User assignee;
+	
+	
 
 	/**
 	 * @return the assignee

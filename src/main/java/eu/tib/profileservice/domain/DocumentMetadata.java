@@ -1,6 +1,7 @@
 package eu.tib.profileservice.domain;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -8,12 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 
 @Entity
 public class DocumentMetadata {
 
 	private static final String TABLE_NAME_ISBNS = "document_metadata_isbns";
+	private static final String TABLE_NAME_DDC_CLASSES = "document_metadata_ddcs";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,8 +28,9 @@ public class DocumentMetadata {
 	private List<String> isbns;
 	private String description;
 
-	@ManyToMany
-	private List<Category> categories;
+	@ElementCollection
+	@CollectionTable(name = TABLE_NAME_DDC_CLASSES)
+	private Set<String> deweyDecimalClassifications;
 
 	/**
 	 * @return the remainderOfTitle
@@ -115,17 +117,17 @@ public class DocumentMetadata {
 	}
 
 	/**
-	 * @return the categories
+	 * @return the deweyDecimalClassifications
 	 */
-	public List<Category> getCategories() {
-		return categories;
+	public Set<String> getDeweyDecimalClassifications() {
+		return deweyDecimalClassifications;
 	}
 
 	/**
-	 * @param categories the categories to set
+	 * @param deweyDecimalClassifications the deweyDecimalClassifications to set
 	 */
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
+	public void setDeweyDecimalClassifications(Set<String> deweyDecimalClassifications) {
+		this.deweyDecimalClassifications = deweyDecimalClassifications;
 	}
 
 }

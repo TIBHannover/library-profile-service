@@ -25,7 +25,7 @@
 								</p>
 								<p>
 									<span class="text-muted" th:text="#{categories} + ':'" ></span>
-									<span th:text="${#strings.listJoin(document.metadata.categories, ', ')}" ></span>
+									<span th:text="${#strings.listJoin(document.metadata.deweyDecimalClassifications, ', ')}" ></span>
 								</p>
 								<p>
 									<span class="text-muted" th:text="#{status} + ':'" ></span>

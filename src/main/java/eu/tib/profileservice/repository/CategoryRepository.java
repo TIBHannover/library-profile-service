@@ -8,5 +8,6 @@ import eu.tib.profileservice.domain.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-	public List<Category> findByInstitution(final String institution);
+	public List<Category> findByType(final Category.Type type);
+	public Category findByTypeAndCategory(final Category.Type type, final String category);
 }
