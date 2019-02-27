@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-@Entity
+@Entity(name=Category.ENTITY_NAME)
 @Table(uniqueConstraints = {
 		@UniqueConstraint(columnNames = { Category.COLUMN_NAME_CATEGORY, Category.COLUMN_NAME_TYPE }) })
 public class Category {
@@ -19,6 +19,7 @@ public class Category {
 		DDC
 	}
 
+	public static final String ENTITY_NAME = "Category";
 	public static final String COLUMN_NAME_CATEGORY = "category";
 	public static final String COLUMN_NAME_TYPE = "type";
 

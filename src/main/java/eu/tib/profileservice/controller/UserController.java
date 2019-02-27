@@ -25,10 +25,10 @@ import eu.tib.profileservice.service.UserService;
 @RequestMapping(value = UserController.BASE_PATH)
 public class UserController {
 	
-	private static final String CODE_MESSAGE_USER_NOTFOUND = "message.user.notfound";
-	private static final String CODE_MESSAGE_USER_DELETED = "message.user.delete.success";
-	private static final String CODE_MESSAGE_USER_CREATED = "message.user.create.success";
-	private static final String CODE_MESSAGE_USER_UPDATED = "message.user.update.success";
+	protected static final String CODE_MESSAGE_USER_NOTFOUND = "message.user.notfound";
+	protected static final String CODE_MESSAGE_USER_DELETED = "message.user.delete.success";
+	protected static final String CODE_MESSAGE_USER_CREATED = "message.user.create.success";
+	protected static final String CODE_MESSAGE_USER_UPDATED = "message.user.update.success";
 
 	public static final String BASE_PATH = "/user";
 	public static final String PATH_ADD = "/add";

@@ -8,12 +8,14 @@ import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -23,10 +25,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eu.tib.profileservice.domain.Document;
+import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.service.DocumentImportService;
 import eu.tib.profileservice.service.DocumentService;
@@ -45,7 +47,6 @@ public class DocumentController {
 	public static final String BASE_PATH = "/document";
 	public static final String PATH_LIST = "/list";
 	public static final String PATH_MY = "/my";
-	public static final String PATH_SHOW = "/show";
 	public static final String PATH_UPDATE = "/update";
 	
 	public static final String METHOD_ACCEPT = "accept";
@@ -53,6 +54,7 @@ public class DocumentController {
 	public static final String METHOD_ASSIGN = "assign";
 	
 	public static final String BASE_URL_TEMPLATE = "document";
+	public static final String TEMPLATE_LIST = "/list";
 	
 	@Autowired
 	private DocumentService documentService;
@@ -93,24 +95,48 @@ public class DocumentController {
 		return "redirect:" + BASE_PATH + PATH_MY;
 	}
 	
+	private String buildSearchQuery(final Document search) {
+		final StringBuilder sb = new StringBuilder();
+		if (search.getAssignee() != null && search.getAssignee().getId() != null) {
+			sb.append("assignee=").append(search.getAssignee().getId());
+		}
+		if (search.getId() != null) {
+			if (sb.length() > 0) {
+				sb.append("&");
+			}
+			sb.append("id=").append(search.getId());
+		}
+		if (search.getStatus() != null) {
+			if (sb.length() > 0) {
+				sb.append("&");
+			}
+			sb.append("status=").append(search.getStatus().toString());
+		}
+		return sb.toString();
+	}
+	
 	@GetMapping(PATH_LIST)
-	public String list(Model model) {
-		final List<Document> documents = documentService.findAll();
-		model.addAttribute("documents", documents);
-		return BASE_URL_TEMPLATE + "/list";
+	public String list(final Model model, final Pageable pageable, final Document search) {
+		LOG.debug("pageable: {}", pageable);
+		LOG.debug("search: {}", search);
+		final Page<Document> documents = documentService.findAllByExample(search, pageable);
+		model.addAttribute("documents", documents.getContent());
+		model.addAttribute("page", documents);
+		model.addAttribute("searchQuery", buildSearchQuery(search));
+		return BASE_URL_TEMPLATE + TEMPLATE_LIST;
 	}
 	
 	@GetMapping(PATH_MY)
-	public String myDocuments(Model model) {
+	public String myDocuments(final Model model, final Pageable pageable) {
 		final User user = getCurrentUser();
-		final List<Document> documents;
+		String searchQuery = "";
 		if (user != null) {
-			documents = documentService.retrieveDocumentsByUser(user);
-		} else {
-			documents = new ArrayList<>();
+			Document exampleSearch = new Document();
+			exampleSearch.setAssignee(user);
+			exampleSearch.setStatus(Status.IN_PROGRESS);
+			searchQuery = buildSearchQuery(exampleSearch);
 		}
-		model.addAttribute("documents", documents);
-		return BASE_URL_TEMPLATE + "/list";
+		return "redirect:" + BASE_PATH + PATH_LIST + (searchQuery.length() > 0 ? ("?" + searchQuery) : "");
 	}
 	
 	private User getCurrentUser() {
@@ -121,24 +147,22 @@ public class DocumentController {
 		return null;
 	}
 	
-	@GetMapping(PATH_SHOW)
-	public String show(Model model, @RequestParam final Long id) {
-		final Document document = documentService.findById(id);
-		model.addAttribute("document", document);
-		return BASE_URL_TEMPLATE + "/show";
-	}
-	
 	// TODO
 	@GetMapping("/import")
-	public String importTest() {
+	public String importTest(final Model model) {
+		OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+		LocalDate now = utc.toLocalDate();
+		model.addAttribute("now", now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 		return BASE_URL_TEMPLATE + "/import";
 	}
 	@RequestMapping(value = "/import", params = { "import" }, method=RequestMethod.POST)
-	public String importDocuments() {
-		OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
-		LocalDate now = utc.toLocalDate();
-		documentImportService.importDocuments(now, now);
-		return "redirect:" + BASE_PATH + "/list";
+	public String importDocuments(final String fromDate, final String toDate) {
+		//OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+		//LocalDate now = utc.toLocalDate();
+		LocalDate from = LocalDate.parse(fromDate);
+		LocalDate to = LocalDate.parse(toDate);
+		documentImportService.importDocuments(from, to);
+		return "redirect:" + BASE_PATH + PATH_LIST;
 	}
 	
 	@RequestMapping(value = PATH_UPDATE, params = { METHOD_ASSIGN }, method=RequestMethod.POST)
@@ -156,7 +180,7 @@ public class DocumentController {
 		if (bindingResult.hasErrors()) {
 			return BASE_URL_TEMPLATE + PATH_LIST;
 		}
-		LOG.debug("Assign document '" + document.getId() + "' to user '" + document.getAssignee().getName() + "'");
+		LOG.debug("Assign document '{}' to user '{}'", document.getId(), document.getAssignee().getName());
 		final Document result = documentService.assignToUser(document, document.getAssignee());
 		if (result == null) {
 			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);

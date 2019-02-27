@@ -52,12 +52,12 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 	 */
 	private void createNewDocument(final DocumentMetadata documentMetadata, final DocumentAssignmentFinder documentAssignmentFinder) {
 		if (!isValid(documentMetadata)) {
-			LOG.error("invalid document: " + buildDocumentMetadataString(documentMetadata));
+			LOG.error("invalid document: {}", buildDocumentMetadataString(documentMetadata));
 			return;
 		}
 		Document existingDocument = findExistingDocument(documentMetadata);
 		if (existingDocument != null) {
-			LOG.debug("document already exists: " + buildDocumentMetadataString(documentMetadata));
+			LOG.debug("document already exists: {}", buildDocumentMetadataString(documentMetadata));
 		} else {
 			Document document = new Document();
 			document.setMetadata(documentMetadata);
@@ -68,7 +68,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 				document.setAssignee(documentAssignmentFinder.determineAssignee(documentMetadata));
 			}
 			document = save(document);
-			LOG.debug("document imported: " + buildDocumentMetadataString(documentMetadata));
+			LOG.debug("document imported: {}", buildDocumentMetadataString(documentMetadata));
 		}
 	}
 	

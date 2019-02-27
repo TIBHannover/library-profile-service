@@ -34,7 +34,7 @@
 				<label for="roles" th:text="#{roles}">roles</label>
 				<div id=roles>
 					<div th:each="role : ${availableRoles}" class="checkbox">
-						<label th:with="checked=${user.roles.contains(role)}">
+						<label th:with="checked=${user.roles?.contains(role)}">
 							<input disabled="disabled" type="checkbox" th:attr="checked=${checked}"><span th:text="${role}"></span>
 						</label>
 					</div>

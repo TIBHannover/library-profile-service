@@ -190,7 +190,7 @@ public class MarcXml2DocumentConverter {
 		if (field != null) {
 			final Subfield subfield = field.getSubfield(code);
 			if (subfield != null) {
-				return subfield.getData();
+				return subfield.getData() == null ? null : subfield.getData().trim();
 			}
 		}
 		return null;

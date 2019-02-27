@@ -87,4 +87,13 @@ public class Document {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
+	
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("id=").append(id);
+		sb.append(",metadata=").append(metadata == null? "null" : metadata.getId());
+		sb.append(",status=").append(status);
+		sb.append(",assignee=").append(assignee == null? "null" : assignee.getId());
+		return sb.toString();
+	}
 }

@@ -10,6 +10,15 @@
 </head>
 <body>
 	<div layout:fragment="page_content">
+		<div th:if="${documents.empty}" class="container col-lg-12">
+			<i th:text="#{documents.noentries}">Keine Eintr&auml;ge</i>
+		</div>
+		<div th:unless="${documents.empty}" class="container col-lg-12">
+			<p th:text="#{documents.nroftotalelements(${page.totalElements},${page.totalPages})}">0 Eintr&auml;ge</p>
+			<!-- <a th:href="@{/document/list(page=0,id=${search.id})}">Test</a> -->
+			<!-- <span th:text="${searchQuery}"></span> -->
+			<span th:text="${searchQuery}"></span>
+		</div>
 		<table class="table">
 			<tbody>
 				<tr th:each="document,docStat : ${documents}">
@@ -108,6 +117,34 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		<div class="text-center" id="pagination" th:with="url=${#request.requestURI},
+			maxpages=7,
+			minpagenr=${T(Math).max(0, T(Math).min(page.number - T(Math).floor(maxpages / 2).intValue(), (page.totalPages - maxpages).intValue()) )},
+			maxpagenr=${T(Math).max(0, T(Math).min((minpagenr + maxpages - 1).intValue(),page.totalPages-1))}">
+			<ul class="pagination pagination-centered justify-content-center">
+				<li th:class="${page.isFirst()}? 'disabled' : ''">
+					<span th:if="${page.isFirst()}">&laquo;</span>
+					<a th:unless="${page.isFirst()}" th:href="@{${url}(page=0)}">&laquo;</a>
+				</li>
+				<li th:class="${page.hasPrevious()}? '' : 'disabled'">
+					<span th:unless="${page.hasPrevious()}">&lsaquo;</span>
+					<a th:if="${page.hasPrevious()}" th:href="@{${url}(page=${page.number-1})}">&lsaquo;</a>
+				</li>
+				<li th:each="pagenr : ${#numbers.sequence(minpagenr, maxpagenr)}" th:with="isCurrent=${pagenr == page.number}" th:class="${isCurrent}? 'active' : ''">
+					<span th:if="${isCurrent}" th:text="${pagenr+1}"></span>
+					<a th:unless="${isCurrent}" th:href="@{${url}(page=${pagenr})}" th:text="${pagenr+1}"></a>
+				</li>
+				<li th:class="${page.hasNext()}? '' : 'disabled'">
+					<span th:unless="${page.hasNext()}">&rsaquo;</span>
+					<a th:if="${page.hasNext()}" th:href="@{${url}(page=${page.number+1})}">&rsaquo;</a>
+				</li>
+				<li th:class="${page.isLast()}? 'disabled' : ''">
+					<span th:if="${page.isLast()}">&raquo;</span>
+					<a th:unless="${page.isLast()}" th:href="@{${url}(page=${page.totalPages-1})}">&raquo;</a>
+				</li>
+			</ul>
+		</div>
 	</div>
 </body>
 </html>

@@ -6,6 +6,9 @@ import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +30,16 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Transactional(readOnly=true)
 	@Override
-	public List<Document> findAll() {
-		return documentRepository.findAll();
+	public Page<Document> findAll(final Pageable pageable) {
+		return documentRepository.findAll(pageable);
 	}
+
+	@Transactional(readOnly=true)
+	@Override
+	public Page<Document> findAllByExample(Document example, Pageable pageable) {
+		return documentRepository.findAll(Example.of(example), pageable);
+	}
+
 
 	@Transactional(readOnly=true)
 	@Override
@@ -46,8 +56,8 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Transactional(readOnly=true)
 	@Override
-	public List<Document> retrieveDocumentsByUser(final User user) {
-		return documentRepository.findAllByAssignee(user);
+	public Page<Document> retrieveDocumentsByUser(final User user, final Pageable pageable) {
+		return documentRepository.findAllByAssignee(user, pageable);
 	}
 
 	@Transactional

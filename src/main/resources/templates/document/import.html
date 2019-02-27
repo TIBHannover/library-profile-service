@@ -9,6 +9,8 @@
 <body>
 	<div layout:fragment="page_content">
 		<form action="#" th:action="@{/document/import}" method="post">
+			<input type="text" class="form-control" required="required" th:name="fromDate" th:value="${now}"/>
+			<input type="text" class="form-control" required="required" th:name="toDate" th:value="${now}"/>
 			<button class="btn btn-sm btn-primary" type="submit" name="import">
 				<span>Import</span>
 			</button>

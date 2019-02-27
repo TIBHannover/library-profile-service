@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,14 @@ public class CategoryRepositoryTest {
 		category.setType(type);
 		category.setCategory(title);
 		return category;
+	}
+	
+	@Before
+	public void before() {
+		entityManager.flush();
+        entityManager.getEntityManager().createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+		entityManager.getEntityManager().createNativeQuery("TRUNCATE TABLE " + Category.ENTITY_NAME).executeUpdate();
+        entityManager.getEntityManager().createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
 	}
 
 	@Test

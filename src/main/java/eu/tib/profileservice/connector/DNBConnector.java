@@ -56,9 +56,9 @@ public class DNBConnector implements InstitutionConnector {
 	public List<DocumentMetadata> retrieveDocuments(final LocalDate from, final LocalDate to) {
 		LOG.debug("retrieveDocuments from DNB");
 		final String request = buildRequestRetrieveRecords(from, to);
-		LOG.debug("retrieveDocuments with request: " + request);
+		LOG.debug("retrieveDocuments with request: {}", request);
 		final ResponseEntity<String> response = restTemplate.getForEntity(request, String.class);
-		LOG.debug("response: " + response.getStatusCode().toString());
+		LOG.debug("response: {}", response.getStatusCode().toString());
 		List<DocumentMetadata> documents = null;
 		if (HttpStatus.OK.equals(response.getStatusCode()) && response.hasBody()) {
 			//LOG.debug(response.getBody());
@@ -69,7 +69,7 @@ public class DNBConnector implements InstitutionConnector {
 				converter.getErrors().forEach(e->LOG.warn(e.toString()));
 			}
 		} else {
-			LOG.warn("Cannot retrieve data from DNB (" + request + ") - status: " + response.getStatusCode());
+			LOG.warn("Cannot retrieve data from DNB ({}) - status: {}", request, response.getStatusCode());
 		}
 		return documents;
 	}

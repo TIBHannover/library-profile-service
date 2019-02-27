@@ -6,6 +6,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import eu.tib.profileservice.connector.DNBConnectorTest;
 import eu.tib.profileservice.connector.MarcXml2DocumentConverterTest;
+import eu.tib.profileservice.controller.HomeControllerTest;
+import eu.tib.profileservice.controller.UserControllerTest;
 import eu.tib.profileservice.repository.CategoryRepositoryTest;
 import eu.tib.profileservice.repository.DocumentRepositoryTest;
 import eu.tib.profileservice.repository.UserRepositoryTest;
@@ -17,6 +19,7 @@ import eu.tib.profileservice.util.DocumentAssignmentFinderTest;
 @SuiteClasses(value = {
 		// Unit Tests
 		DNBConnectorTest.class, MarcXml2DocumentConverterTest.class,
+		HomeControllerTest.class, UserControllerTest.class,
 		CategoryServiceTest.class, DocumentImportServiceTest.class,
 		DocumentAssignmentFinderTest.class,
 		

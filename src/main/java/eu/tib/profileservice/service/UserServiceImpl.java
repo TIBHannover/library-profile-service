@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 		}
 		if (!currentUser.getPassword().equals(user.getPassword())) {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
-			LOG.debug("Change password of user " + user.getName());
+			LOG.debug("Change password of user {}", user.getName());
 		}
 		return userRepository.save(user);
 	}
