@@ -24,9 +24,9 @@
 		<div class="row">
 			<div class="col-lg-12 main">
 				<div th:if="${infoMessage}" th:switch="${infoMessageType}">
-					<div th:case="'success'" class="alert alert-success" th:text="#{${infoMessage}}">Some message</div> 
-					<div th:case="'error'" class="alert alert-danger" th:text="#{${infoMessage}}">Some message</div>
-					<div th:case="*" class="alert alert-info" th:text="#{${infoMessage}}">Some message</div> 
+					<div th:case="'success'" class="alert alert-success" th:text="#{${infoMessage}(${infoMessageParameter})}">Some message</div> 
+					<div th:case="'error'" class="alert alert-danger" th:text="#{${infoMessage}(${infoMessageParameter})}">Some message</div>
+					<div th:case="*" class="alert alert-info" th:text="#{${infoMessage}(${infoMessageParameter})}">Some message</div> 
 				</div>
 				<div layout:fragment="page_content"></div>
 			</div>

@@ -1,6 +1,7 @@
 package eu.tib.profileservice.controller;
 
 import static eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MESSAGE;
+import static eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MESSAGE_PARAMETER;
 import static eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE;
 import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_ERROR;
 import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_SUCCESS;
@@ -20,7 +21,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eu.tib.profileservice.domain.Document;
-import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.service.DocumentImportService;
 import eu.tib.profileservice.service.DocumentService;
@@ -42,6 +41,7 @@ public class DocumentController {
 	
 	public static final String CODE_MESSAGE_DOCUMENT_ACCEPTED = "message.document.accepted";
 	public static final String CODE_MESSAGE_DOCUMENT_REJECTED = "message.document.rejected";
+	public static final String CODE_MESSAGE_DOCUMENT_ASSIGNED = "message.document.assigned";	
 	public static final String CODE_MESSAGE_ERROR_UPDATE_DOCUMENT = "message.error.update.document";
 	
 	public static final String BASE_PATH = "/document";
@@ -95,22 +95,24 @@ public class DocumentController {
 		return "redirect:" + BASE_PATH + PATH_MY;
 	}
 	
-	private String buildSearchQuery(final Document search) {
+	public static String buildSearchQuery(final Document search) {
 		final StringBuilder sb = new StringBuilder();
-		if (search.getAssignee() != null && search.getAssignee().getId() != null) {
-			sb.append("assignee=").append(search.getAssignee().getId());
-		}
-		if (search.getId() != null) {
-			if (sb.length() > 0) {
-				sb.append("&");
+		if (search != null) {
+			if (search.getAssignee() != null && search.getAssignee().getId() != null) {
+				sb.append("assignee=").append(search.getAssignee().getId());
 			}
-			sb.append("id=").append(search.getId());
-		}
-		if (search.getStatus() != null) {
-			if (sb.length() > 0) {
-				sb.append("&");
+			if (search.getId() != null) {
+				if (sb.length() > 0) {
+					sb.append("&");
+				}
+				sb.append("id=").append(search.getId());
 			}
-			sb.append("status=").append(search.getStatus().toString());
+			if (search.getStatus() != null) {
+				if (sb.length() > 0) {
+					sb.append("&");
+				}
+				sb.append("status=").append(search.getStatus().toString());
+			}
 		}
 		return sb.toString();
 	}
@@ -119,10 +121,11 @@ public class DocumentController {
 	public String list(final Model model, final Pageable pageable, final Document search) {
 		LOG.debug("pageable: {}", pageable);
 		LOG.debug("search: {}", search);
+		LOG.debug("sort: {}", pageable.getSort());
 		final Page<Document> documents = documentService.findAllByExample(search, pageable);
 		model.addAttribute("documents", documents.getContent());
 		model.addAttribute("page", documents);
-		model.addAttribute("searchQuery", buildSearchQuery(search));
+		model.addAttribute("search", search);
 		return BASE_URL_TEMPLATE + TEMPLATE_LIST;
 	}
 	
@@ -133,7 +136,7 @@ public class DocumentController {
 		if (user != null) {
 			Document exampleSearch = new Document();
 			exampleSearch.setAssignee(user);
-			exampleSearch.setStatus(Status.IN_PROGRESS);
+			exampleSearch.setStatus(Document.Status.IN_PROGRESS);
 			searchQuery = buildSearchQuery(exampleSearch);
 		}
 		return "redirect:" + BASE_PATH + PATH_LIST + (searchQuery.length() > 0 ? ("?" + searchQuery) : "");
@@ -165,35 +168,49 @@ public class DocumentController {
 		return "redirect:" + BASE_PATH + PATH_LIST;
 	}
 	
+	private String getRedirectURI(final String sourceURI, final String sourceQuery) {
+		final StringBuilder sb = new StringBuilder();		
+		if (sourceURI != null && sourceURI.length() > 0) {
+			sb.append(sourceURI);
+		} else {
+			sb.append("/");
+		}
+		if (sourceQuery != null && sourceQuery.length() > 0) {
+			sb.append("?").append(sourceQuery);			
+		}
+		return sb.toString();
+	}
+	
 	@RequestMapping(value = PATH_UPDATE, params = { METHOD_ASSIGN }, method=RequestMethod.POST)
-	public String assignDocument(final Document document, final Model model, final BindingResult bindingResult, final RedirectAttributes redirectAttrs) {
+	public String assignDocument(final Document document, final Model model, final RedirectAttributes redirectAttrs, final String sourceURI, final String sourceQuery) {
+		String redirectUri = getRedirectURI(sourceURI, sourceQuery);
+		LOG.debug("redirectUri: {}", redirectUri);
 		if (document.getAssignee() == null || document.getAssignee().getId() == null) {
 			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
-			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, "assignee is null");
-			return "redirect:" + BASE_PATH + PATH_LIST;
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
+			return "redirect:" + redirectUri;
 		}
 		if (document == null || document.getId() == null) {
 			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
-			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, "document is null");
-			return "redirect:" + BASE_PATH + PATH_LIST;
-		}
-		if (bindingResult.hasErrors()) {
-			return BASE_URL_TEMPLATE + PATH_LIST;
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
+			return "redirect:" + redirectUri;
 		}
 		LOG.debug("Assign document '{}' to user '{}'", document.getId(), document.getAssignee().getName());
 		final Document result = documentService.assignToUser(document, document.getAssignee());
 		if (result == null) {
 			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
-			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, "could not assign");
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
 		} else {
 			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_SUCCESS);
-			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, "assigned to " + result.getAssignee().getName());
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENT_ASSIGNED);
+			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_PARAMETER, result.getAssignee().getName());
 		}
-		return "redirect:" + BASE_PATH + PATH_LIST;
+		return "redirect:" + redirectUri;
 	}
 
 	@RequestMapping(value = PATH_UPDATE, params = { METHOD_ACCEPT }, method=RequestMethod.POST)
-	public String acceptDocument(final Document document, final Model model, final RedirectAttributes redirectAttrs) {
+	public String acceptDocument(final Document document, final Model model, final RedirectAttributes redirectAttrs, final String sourceURI, final String sourceQuery) {
+		String redirectUri = getRedirectURI(sourceURI, sourceQuery);
 		if (document == null || document.getId() == null) {
 			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
 			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
@@ -207,11 +224,12 @@ public class DocumentController {
 				redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENT_ACCEPTED);
 			}
 		}
-		return "redirect:" + BASE_PATH + PATH_LIST;
+		return "redirect:" + redirectUri;
 	}
 
 	@RequestMapping(value = PATH_UPDATE, params = { METHOD_REJECT }, method=RequestMethod.POST)
-	public String rejectDocument(final Document document, final Model model, final RedirectAttributes redirectAttrs) {
+	public String rejectDocument(final Document document, final Model model, final RedirectAttributes redirectAttrs, final String sourceURI, final String sourceQuery) {
+		String redirectUri = getRedirectURI(sourceURI, sourceQuery);
 		if (document == null || document.getId() == null) {
 			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
 			redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
@@ -225,7 +243,7 @@ public class DocumentController {
 				redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENT_REJECTED);
 			}
 		}
-		return "redirect:" + BASE_PATH + PATH_LIST;
+		return "redirect:" + redirectUri;
 	}
 
 }

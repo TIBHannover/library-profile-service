@@ -8,6 +8,8 @@ public class HomeController {
 	
 	/** Attribute name of the info message used in RedirectAttributes.FlashAttribute **/
 	public static final String ATTRIBUTE_INFO_MESSAGE = "infoMessage";
+	/** Attribute name of the info message parameter used in RedirectAttributes.FlashAttribute **/
+	public static final String ATTRIBUTE_INFO_MESSAGE_PARAMETER = "infoMessageParameter";
 	/** Attribute name of the info message type used in RedirectAttributes.FlashAttribute **/
 	public static final String ATTRIBUTE_INFO_MESSAGE_TYPE = "infoMessageType";
 	/** info message type for success message **/

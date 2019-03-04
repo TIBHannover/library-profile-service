@@ -17,7 +17,7 @@
 			<p th:text="#{documents.nroftotalelements(${page.totalElements},${page.totalPages})}">0 Eintr&auml;ge</p>
 			<!-- <a th:href="@{/document/list(page=0,id=${search.id})}">Test</a> -->
 			<!-- <span th:text="${searchQuery}"></span> -->
-			<span th:text="${searchQuery}"></span>
+			<!-- <span th:text="${T(eu.tib.profileservice.controller.DocumentController).buildSearchQuery(search)}"></span> -->
 		</div>
 		<table class="table">
 			<tbody>
@@ -46,6 +46,8 @@
 								</p>
 								<div class="col-lg-3">
 									<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocument}" method="post">
+										<input class="form-control" type="hidden" th:name="sourceURI" th:value="${#request.requestURI}" />
+										<input class="form-control" type="hidden" th:name="sourceQuery" th:value="${#request.queryString}" />
 										<input class="form-control" type="hidden" name="id" th:value="${document.id}" />
 										<button class="btn btn-sm btn-success" type="submit" th:name="${methodAccept}">
 												<span class="glyphicon glyphicon-ok"></span>
@@ -66,7 +68,8 @@
 								<div class="col-lg-9">
 									<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocument}" method="post">
 										<fieldset>
-											<!-- <input class="form-control" type="hidden" th:name="document" th:value="${document.id}" /> -->
+											<input class="form-control" type="hidden" th:name="sourceURI" th:value="${#request.requestURI}" />
+											<input class="form-control" type="hidden" th:name="sourceQuery" th:value="${#request.queryString}" />
 											<input class="form-control" type="hidden" th:name="id" th:value="${documents[__${docStat.index}__].id}" />
 											<select required="required" th:field="*{assignee}" th:errorclass="fieldError">
 												<option th:each="u : ${users}" th:value="${u.id}" th:text="${u.name}" />
@@ -119,29 +122,31 @@
 		</table>
 		
 		<div class="text-center" id="pagination" th:with="url=${#request.requestURI},
+			searchQuery=${T(eu.tib.profileservice.controller.DocumentController).buildSearchQuery(search)},			
+			searchQuery=${(searchQuery==null || searchQuery.length()==0)?'':'&' + searchQuery},
 			maxpages=7,
 			minpagenr=${T(Math).max(0, T(Math).min(page.number - T(Math).floor(maxpages / 2).intValue(), (page.totalPages - maxpages).intValue()) )},
 			maxpagenr=${T(Math).max(0, T(Math).min((minpagenr + maxpages - 1).intValue(),page.totalPages-1))}">
 			<ul class="pagination pagination-centered justify-content-center">
 				<li th:class="${page.isFirst()}? 'disabled' : ''">
 					<span th:if="${page.isFirst()}">&laquo;</span>
-					<a th:unless="${page.isFirst()}" th:href="@{${url}(page=0)}">&laquo;</a>
+					<a th:unless="${page.isFirst()}" th:href="@{__${url}__?page=0__${searchQuery}__}">&laquo;</a>
 				</li>
 				<li th:class="${page.hasPrevious()}? '' : 'disabled'">
 					<span th:unless="${page.hasPrevious()}">&lsaquo;</span>
-					<a th:if="${page.hasPrevious()}" th:href="@{${url}(page=${page.number-1})}">&lsaquo;</a>
+					<a th:if="${page.hasPrevious()}" th:href="@{__${url}__?page=__${page.number-1}____${searchQuery}__}">&lsaquo;</a>
 				</li>
 				<li th:each="pagenr : ${#numbers.sequence(minpagenr, maxpagenr)}" th:with="isCurrent=${pagenr == page.number}" th:class="${isCurrent}? 'active' : ''">
 					<span th:if="${isCurrent}" th:text="${pagenr+1}"></span>
-					<a th:unless="${isCurrent}" th:href="@{${url}(page=${pagenr})}" th:text="${pagenr+1}"></a>
+					<a th:unless="${isCurrent}" th:href="@{__${url}__?page=__${pagenr}____${searchQuery}__}" th:text="${pagenr+1}"></a>
 				</li>
 				<li th:class="${page.hasNext()}? '' : 'disabled'">
 					<span th:unless="${page.hasNext()}">&rsaquo;</span>
-					<a th:if="${page.hasNext()}" th:href="@{${url}(page=${page.number+1})}">&rsaquo;</a>
+					<a th:if="${page.hasNext()}" th:href="@{__${url}__?page=__${page.number+1}____${searchQuery}__}">&rsaquo;</a>
 				</li>
 				<li th:class="${page.isLast()}? 'disabled' : ''">
 					<span th:if="${page.isLast()}">&raquo;</span>
-					<a th:unless="${page.isLast()}" th:href="@{${url}(page=${page.totalPages-1})}">&raquo;</a>
+					<a th:unless="${page.isLast()}" th:href="@{__${url}__?page=__${page.totalPages-1}____${searchQuery}__}">&raquo;</a>
 				</li>
 			</ul>
 		</div>
