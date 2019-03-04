@@ -44,6 +44,10 @@
 									<span class="text-muted" th:text="#{assignee} + ':'" ></span>
 									<span th:text="${document.assignee?.name} ?: #{noassignee}" ></span>
 								</p>
+								<p>
+									<span class="text-muted" th:text="#{document.creation.date} + ':'" ></span>
+									<span th:text="${document.creationDateUtc}" ></span>
+								</p>
 								<div class="col-lg-3">
 									<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocument}" method="post">
 										<input class="form-control" type="hidden" th:name="sourceURI" th:value="${#request.requestURI}" />

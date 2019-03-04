@@ -1,6 +1,5 @@
 package eu.tib.profileservice.service;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;

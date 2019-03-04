@@ -1,6 +1,8 @@
 package eu.tib.profileservice.service;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -42,7 +44,6 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 			LOG.error("Cannot retrieve documents from DNB");
 		} else {
 			documents.forEach(doc->createNewDocument(doc, documentAssignmentFinder));
-			// TODO assign
 		}
 	}
 	
@@ -60,6 +61,8 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 			LOG.debug("document already exists: {}", buildDocumentMetadataString(documentMetadata));
 		} else {
 			Document document = new Document();
+			OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+			document.setCreationDateUtc(utc.toLocalDateTime());
 			document.setMetadata(documentMetadata);
 			if (shouldIgnore(documentMetadata)) {
 				document.setStatus(Status.IGNORED);

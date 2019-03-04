@@ -17,6 +17,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
+import org.springframework.data.web.SortDefault.SortDefaults;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -118,7 +122,8 @@ public class DocumentController {
 	}
 	
 	@GetMapping(PATH_LIST)
-	public String list(final Model model, final Pageable pageable, final Document search) {
+	public String list(final Document search, final Model model, 
+			@SortDefaults({@SortDefault(sort="creationDateUtc", direction=Sort.Direction.DESC)}) final Pageable pageable) {
 		LOG.debug("pageable: {}", pageable);
 		LOG.debug("search: {}", search);
 		LOG.debug("sort: {}", pageable.getSort());

@@ -1,6 +1,9 @@
 package eu.tib.profileservice.domain;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,6 +15,8 @@ import javax.persistence.OneToOne;
 
 @Entity
 public class Document {
+	
+	public static final String COLUMN_NAME_CREATION_DATE = "creation_date";
 
 	public enum Status {
 		ACCEPTED, REJECTED, IN_PROGRESS, IGNORED
@@ -30,7 +35,8 @@ public class Document {
 	@ManyToOne
 	private User assignee;
 	
-	
+	@Column(nullable = false)
+	private LocalDateTime creationDateUtc;
 
 	/**
 	 * @return the assignee
@@ -88,6 +94,20 @@ public class Document {
 		this.status = status;
 	}
 	
+	/**
+	 * @return the creationDateUtc
+	 */
+	public LocalDateTime getCreationDateUtc() {
+		return creationDateUtc;
+	}
+
+	/**
+	 * @param creationDateUtc the creationDateUtc to set
+	 */
+	public void setCreationDateUtc(LocalDateTime creationDateUtc) {
+		this.creationDateUtc = creationDateUtc;
+	}
+
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("id=").append(id);
