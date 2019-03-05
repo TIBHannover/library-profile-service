@@ -8,7 +8,7 @@ import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_
 
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.User;
-import eu.tib.profileservice.service.DocumentImportService;
+import eu.tib.profileservice.service.AsyncDocumentImport;
 import eu.tib.profileservice.service.DocumentService;
 import eu.tib.profileservice.service.UserService;
 import java.time.LocalDate;
@@ -60,9 +60,9 @@ public class DocumentController {
   @Autowired
   private DocumentService documentService;
   @Autowired
-  private DocumentImportService documentImportService;
-  @Autowired
   private UserService userService;
+  @Autowired
+  private AsyncDocumentImport asyncDocumentImport;
 
   @ModelAttribute("updateDocument")
   public Document populateUpdateDocument() {
@@ -157,7 +157,7 @@ public class DocumentController {
     return null;
   }
 
-  // TODO
+  // TODO just to test the import via browser
   @GetMapping("/import")
   public String importTest(final Model model) {
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -165,14 +165,11 @@ public class DocumentController {
     model.addAttribute("now", now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     return BASE_URL_TEMPLATE + "/import";
   }
-
   @RequestMapping(value = "/import", params = {"import"}, method = RequestMethod.POST)
   public String importDocuments(final String fromDate, final String toDate) {
-    //OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
-    //LocalDate now = utc.toLocalDate();
     LocalDate from = LocalDate.parse(fromDate);
     LocalDate to = LocalDate.parse(toDate);
-    documentImportService.importDocuments(from, to);
+    asyncDocumentImport.importDocuments(from, to);
     return "redirect:" + BASE_PATH + PATH_LIST;
   }
 

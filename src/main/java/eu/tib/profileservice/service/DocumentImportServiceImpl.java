@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DocumentImportServiceImpl implements DocumentImportService {
@@ -40,6 +41,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   @Autowired
   private DocumentRepository documentRepository;
 
+  @Transactional
   @Override
   public void importDocuments(LocalDate from, LocalDate to) {
     DocumentAssignmentFinder documentAssignmentFinder = new DocumentAssignmentFinder(userService
