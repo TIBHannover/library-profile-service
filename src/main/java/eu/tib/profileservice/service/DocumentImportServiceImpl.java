@@ -1,6 +1,9 @@
 package eu.tib.profileservice.service;
 
+import static eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType.DNB;
+
 import eu.tib.profileservice.connector.InstitutionConnector;
+import eu.tib.profileservice.connector.InstitutionConnectorFactory;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.DocumentMetadata;
@@ -13,18 +16,23 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DocumentImportServiceImpl implements DocumentImportService {
 
   private static final Logger LOG = LoggerFactory.getLogger(DocumentImportServiceImpl.class);
 
+  private class ImportStatistics {
+    private int retrieved = 0;
+    private int alreadyExists = 0;
+    private int invalid = 0;
+    private int ignored = 0;
+    private int imported = 0;
+  }
+
   @Autowired
-  @Qualifier("DnbConnector")
-  private InstitutionConnector dnbConn;
+  private InstitutionConnectorFactory connectorFactory;
 
   @Autowired
   private UserService userService;
@@ -37,26 +45,41 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     DocumentAssignmentFinder documentAssignmentFinder = new DocumentAssignmentFinder(userService
         .findAll());
 
-    List<DocumentMetadata> documents = dnbConn.retrieveDocuments(from, to);
-    if (documents == null) {
-      LOG.error("Cannot retrieve documents from DNB");
-    } else {
-      documents.forEach(doc -> createNewDocument(doc, documentAssignmentFinder));
+    LOG.info("Import documents from DNB (from: {}, to: {})", from, to);
+    ImportStatistics dnbStatistics = new ImportStatistics();
+    InstitutionConnector dnbConn = connectorFactory.createConnector(DNB, from, to);
+    while (dnbConn.hasNext()) {
+      LOG.debug("going for next request (retrieved {} documents yet)", dnbStatistics.retrieved);
+      List<DocumentMetadata> documents = dnbConn.retrieveNextDocuments();
+      if (documents == null) {
+        LOG.error("Cannot retrieve documents from DNB");
+        break;
+      } else {
+        dnbStatistics.retrieved += documents.size();
+        documents.forEach(doc -> createNewDocument(doc, documentAssignmentFinder, dnbStatistics));
+      }
     }
+    LOG.info(
+        "Import documents from DNB done."
+            + " (retrieved: {}, imported: {}, alreadyExists: {}, invalid: {}, ignored: {}",
+        dnbStatistics.retrieved, dnbStatistics.imported, dnbStatistics.alreadyExists,
+        dnbStatistics.invalid, dnbStatistics.ignored);
   }
 
   /**
    * Persist a new {@link Document} for the given {@link DocumentMetadata}, if not already existing.
    */
   private void createNewDocument(final DocumentMetadata documentMetadata,
-      final DocumentAssignmentFinder documentAssignmentFinder) {
+      final DocumentAssignmentFinder documentAssignmentFinder, final ImportStatistics statistics) {
     if (!isValid(documentMetadata)) {
       LOG.error("invalid document: {}", buildDocumentMetadataString(documentMetadata));
+      statistics.invalid++;
       return;
     }
     Document existingDocument = findExistingDocument(documentMetadata);
     if (existingDocument != null) {
-      LOG.debug("document already exists: {}", buildDocumentMetadataString(documentMetadata));
+      //LOG.debug("document already exists: {}", buildDocumentMetadataString(documentMetadata));
+      statistics.alreadyExists++;
     } else {
       Document document = new Document();
       OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -64,19 +87,17 @@ public class DocumentImportServiceImpl implements DocumentImportService {
       document.setMetadata(documentMetadata);
       if (shouldIgnore(documentMetadata)) {
         document.setStatus(Status.IGNORED);
+        statistics.ignored++;
       } else {
         document.setStatus(Status.IN_PROGRESS);
         document.setAssignee(documentAssignmentFinder.determineAssignee(documentMetadata));
+        statistics.imported++;
       }
-      document = save(document);
-      LOG.debug("document imported: {}", buildDocumentMetadataString(documentMetadata));
+      document = documentRepository.save(document);
+      //LOG.debug("document imported: {}", buildDocumentMetadataString(documentMetadata));
     }
   }
 
-  @Transactional
-  private Document save(final Document document) {
-    return documentRepository.save(document);
-  }
 
   /**
    * Check if the given document should be ignored.

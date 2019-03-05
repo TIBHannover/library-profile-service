@@ -5,6 +5,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import eu.tib.profileservice.connector.InstitutionConnector;
+import eu.tib.profileservice.connector.InstitutionConnectorFactory;
+import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.DocumentMetadata;
 import eu.tib.profileservice.repository.DocumentRepository;
@@ -13,6 +15,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -38,8 +41,10 @@ public class DocumentImportServiceTest {
   private DocumentImportService documentImportService;
   @MockBean
   private DocumentRepository documentRepository;
-  @MockBean(name = "DnbConnector")
-  private InstitutionConnector dnbConn;
+  @MockBean
+  private InstitutionConnectorFactory connectorFactory;
+  @MockBean
+  private InstitutionConnector connector;
   @MockBean
   private UserService userService;
 
@@ -51,14 +56,24 @@ public class DocumentImportServiceTest {
     return document;
   }
 
+  /**
+   * Setup.
+   */
+  @Before
+  public void setup() {
+    when(connectorFactory.createConnector(Mockito.any(ConnectorType.class), Mockito.any(
+            LocalDate.class), Mockito.any(LocalDate.class)))
+                .thenReturn(connector);
+    when(connector.hasNext()).thenReturn(true).thenReturn(false);
+  }
+
   @Test
   public void testImportDocumentsWithInvalidResult() {
     DocumentMetadata invalidMetadata = newDocumentMetadataDummy();
     invalidMetadata.setIsbns(null);
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
         invalidMetadata});
-    when(dnbConn.retrieveDocuments(Mockito.any(LocalDate.class), Mockito.any(LocalDate.class)))
-        .thenReturn(connectorResult);
+    when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now);
@@ -68,8 +83,7 @@ public class DocumentImportServiceTest {
 
   @Test
   public void testImportDocumentsWithNullResult() {
-    when(dnbConn.retrieveDocuments(Mockito.any(LocalDate.class), Mockito.any(LocalDate.class)))
-        .thenReturn(null);
+    when(connector.retrieveNextDocuments()).thenReturn(null);
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now);
@@ -81,8 +95,7 @@ public class DocumentImportServiceTest {
   public void testImportDocumentsWithoutExistingDocument() {
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
         newDocumentMetadataDummy()});
-    when(dnbConn.retrieveDocuments(Mockito.any(LocalDate.class), Mockito.any(LocalDate.class)))
-        .thenReturn(connectorResult);
+    when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
     when(documentRepository.findByMetadataIsbns(Mockito.anyString())).thenReturn(null);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -98,8 +111,7 @@ public class DocumentImportServiceTest {
     existingDocument.setMetadata(newDocumentMetadataDummy());
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
         newDocumentMetadataDummy()});
-    when(dnbConn.retrieveDocuments(Mockito.any(LocalDate.class), Mockito.any(LocalDate.class)))
-        .thenReturn(connectorResult);
+    when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
     when(documentRepository.findByMetadataIsbns(Mockito.anyString())).thenReturn(existingDocument);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
