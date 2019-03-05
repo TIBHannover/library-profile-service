@@ -2,8 +2,8 @@ package eu.tib.profileservice.domain;
 
 import java.util.List;
 import java.util.Set;
-
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,121 +13,151 @@ import javax.persistence.Id;
 @Entity
 public class DocumentMetadata {
 
-	private static final String TABLE_NAME_ISBNS = "document_metadata_isbns";
-	private static final String TABLE_NAME_DDC_CLASSES = "document_metadata_ddcs";
+  private static final String TABLE_NAME_ISBNS = "document_metadata_isbns";
+  private static final String TABLE_NAME_DDC_CLASSES = "document_metadata_ddcs";
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-	private String title;
-	private String remainderOfTitle;
-	private String author;
-	@ElementCollection
-	@CollectionTable(name = TABLE_NAME_ISBNS)
-	private List<String> isbns;
-	private String description;
+  @Column(length = 1024)
+  private String title;
+  @Column(length = 1024)
+  private String remainderOfTitle;
+  private String author;
+  @ElementCollection
+  @CollectionTable(name = TABLE_NAME_ISBNS)
+  private List<String> isbns;
+  private String description;
 
-	@ElementCollection
-	@CollectionTable(name = TABLE_NAME_DDC_CLASSES)
-	private Set<String> deweyDecimalClassifications;
+  @ElementCollection
+  @CollectionTable(name = TABLE_NAME_DDC_CLASSES)
+  private Set<String> deweyDecimalClassifications;
 
-	/**
-	 * @return the remainderOfTitle
-	 */
-	public String getRemainderOfTitle() {
-		return remainderOfTitle;
-	}
+  /**
+   * getter: id.
+   * 
+   * @return the id
+   */
+  public Long getId() {
+    return id;
+  }
 
-	/**
-	 * @param remainderOfTitle the remainderOfTitle to set
-	 */
-	public void setRemainderOfTitle(String remainderOfTitle) {
-		this.remainderOfTitle = remainderOfTitle;
-	}
+  /**
+   * setter: id.
+   * 
+   * @param id the id to set
+   */
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	/**
-	 * @return the isbns
-	 */
-	public List<String> getIsbns() {
-		return isbns;
-	}
+  /**
+   * getter: title.
+   * 
+   * @return the title
+   */
+  public String getTitle() {
+    return title;
+  }
 
-	/**
-	 * @param isbns the isbns to set
-	 */
-	public void setIsbns(List<String> isbns) {
-		this.isbns = isbns;
-	}
+  /**
+   * setter: title.
+   * 
+   * @param title the title to set
+   */
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
+  /**
+   * getter: remainderOfTitle.
+   * 
+   * @return the remainderOfTitle
+   */
+  public String getRemainderOfTitle() {
+    return remainderOfTitle;
+  }
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
+  /**
+   * setter: remainderOfTitle.
+   * 
+   * @param remainderOfTitle the remainderOfTitle to set
+   */
+  public void setRemainderOfTitle(String remainderOfTitle) {
+    this.remainderOfTitle = remainderOfTitle;
+  }
 
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
+  /**
+   * getter: author.
+   * 
+   * @return the author
+   */
+  public String getAuthor() {
+    return author;
+  }
 
-	/**
-	 * @param title the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
+  /**
+   * setter: author.
+   * 
+   * @param author the author to set
+   */
+  public void setAuthor(String author) {
+    this.author = author;
+  }
 
-	/**
-	 * @return the author
-	 */
-	public String getAuthor() {
-		return author;
-	}
+  /**
+   * getter: isbns.
+   * 
+   * @return the isbns
+   */
+  public List<String> getIsbns() {
+    return isbns;
+  }
 
-	/**
-	 * @param author the author to set
-	 */
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+  /**
+   * setter: isbns.
+   * 
+   * @param isbns the isbns to set
+   */
+  public void setIsbns(List<String> isbns) {
+    this.isbns = isbns;
+  }
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
+  /**
+   * getter: description.
+   * 
+   * @return the description
+   */
+  public String getDescription() {
+    return description;
+  }
 
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  /**
+   * setter: description.
+   * 
+   * @param description the description to set
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	/**
-	 * @return the deweyDecimalClassifications
-	 */
-	public Set<String> getDeweyDecimalClassifications() {
-		return deweyDecimalClassifications;
-	}
+  /**
+   * getter: deweyDecimalClassifications.
+   * 
+   * @return the deweyDecimalClassifications
+   */
+  public Set<String> getDeweyDecimalClassifications() {
+    return deweyDecimalClassifications;
+  }
 
-	/**
-	 * @param deweyDecimalClassifications the deweyDecimalClassifications to set
-	 */
-	public void setDeweyDecimalClassifications(Set<String> deweyDecimalClassifications) {
-		this.deweyDecimalClassifications = deweyDecimalClassifications;
-	}
+  /**
+   * setter: deweyDecimalClassifications.
+   * 
+   * @param deweyDecimalClassifications the deweyDecimalClassifications to set
+   */
+  public void setDeweyDecimalClassifications(Set<String> deweyDecimalClassifications) {
+    this.deweyDecimalClassifications = deweyDecimalClassifications;
+  }
 
 }

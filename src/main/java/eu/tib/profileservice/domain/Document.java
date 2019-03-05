@@ -1,7 +1,6 @@
 package eu.tib.profileservice.domain;
 
 import java.time.LocalDateTime;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,105 +14,127 @@ import javax.persistence.OneToOne;
 
 @Entity
 public class Document {
-	
-	public static final String COLUMN_NAME_CREATION_DATE = "creation_date";
 
-	public enum Status {
-		ACCEPTED, REJECTED, IN_PROGRESS, IGNORED
-	}
+  public static final String COLUMN_NAME_CREATION_DATE = "creation_date";
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+  public enum Status {
+    ACCEPTED, REJECTED, IN_PROGRESS, IGNORED
+  }
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private DocumentMetadata metadata;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-	@Enumerated(EnumType.STRING)
-	private Status status;
+  @OneToOne(cascade = CascadeType.ALL)
+  private DocumentMetadata metadata;
 
-	@ManyToOne
-	private User assignee;
-	
-	@Column(nullable = false)
-	private LocalDateTime creationDateUtc;
+  @Enumerated(EnumType.STRING)
+  private Status status;
 
-	/**
-	 * @return the assignee
-	 */
-	public User getAssignee() {
-		return assignee;
-	}
+  @ManyToOne
+  private User assignee;
 
-	/**
-	 * @param assignee the assignee to set
-	 */
-	public void setAssignee(User assignee) {
-		this.assignee = assignee;
-	}
+  @Column(name = COLUMN_NAME_CREATION_DATE, nullable = false)
+  private LocalDateTime creationDateUtc;
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("id=").append(id);
+    sb.append(",metadata=").append(metadata == null ? "null" : metadata.getId());
+    sb.append(",status=").append(status);
+    sb.append(",assignee=").append(assignee == null ? "null" : assignee.getId());
+    sb.append(",creationDateUtc=").append(creationDateUtc);
+    return sb.toString();
+  }
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
+  /**
+   * getter: id.
+   * 
+   * @return the id
+   */
+  public Long getId() {
+    return id;
+  }
 
-	/**
-	 * @return the metadata
-	 */
-	public DocumentMetadata getMetadata() {
-		return metadata;
-	}
+  /**
+   * setter: id.
+   * 
+   * @param id the id to set
+   */
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	/**
-	 * @param metadata the metadata to set
-	 */
-	public void setMetadata(DocumentMetadata metadata) {
-		this.metadata = metadata;
-	}
+  /**
+   * getter: metadata.
+   * 
+   * @return the metadata
+   */
+  public DocumentMetadata getMetadata() {
+    return metadata;
+  }
 
-	/**
-	 * @return the status
-	 */
-	public Status getStatus() {
-		return status;
-	}
+  /**
+   * setter: metadata.
+   * 
+   * @param metadata the metadata to set
+   */
+  public void setMetadata(DocumentMetadata metadata) {
+    this.metadata = metadata;
+  }
 
-	/**
-	 * @param status the status to set
-	 */
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-	
-	/**
-	 * @return the creationDateUtc
-	 */
-	public LocalDateTime getCreationDateUtc() {
-		return creationDateUtc;
-	}
+  /**
+   * getter: status.
+   * 
+   * @return the status
+   */
+  public Status getStatus() {
+    return status;
+  }
 
-	/**
-	 * @param creationDateUtc the creationDateUtc to set
-	 */
-	public void setCreationDateUtc(LocalDateTime creationDateUtc) {
-		this.creationDateUtc = creationDateUtc;
-	}
+  /**
+   * setter: status.
+   * 
+   * @param status the status to set
+   */
+  public void setStatus(Status status) {
+    this.status = status;
+  }
 
-	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("id=").append(id);
-		sb.append(",metadata=").append(metadata == null? "null" : metadata.getId());
-		sb.append(",status=").append(status);
-		sb.append(",assignee=").append(assignee == null? "null" : assignee.getId());
-		return sb.toString();
-	}
+  /**
+   * getter: assignee.
+   * 
+   * @return the assignee
+   */
+  public User getAssignee() {
+    return assignee;
+  }
+
+  /**
+   * setter: assignee.
+   * 
+   * @param assignee the assignee to set
+   */
+  public void setAssignee(User assignee) {
+    this.assignee = assignee;
+  }
+
+  /**
+   * getter: creationDateUtc.
+   * 
+   * @return the creationDateUtc
+   */
+  public LocalDateTime getCreationDateUtc() {
+    return creationDateUtc;
+  }
+
+  /**
+   * setter: creationDateUtc.
+   * 
+   * @param creationDateUtc the creationDateUtc to set
+   */
+  public void setCreationDateUtc(LocalDateTime creationDateUtc) {
+    this.creationDateUtc = creationDateUtc;
+  }
 }

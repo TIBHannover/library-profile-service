@@ -13,13 +13,13 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @WebMvcTest(HomeController.class)
 public class HomeControllerTest {
-	
-	@Autowired
-	private MockMvc mvc;
-	
-	@Test
-	public void testIndex() throws Exception {
-		mvc.perform(get("/")).andExpect(redirectedUrl(DocumentController.BASE_PATH));
-	}
+
+  @Autowired
+  private MockMvc mvc;
+
+  @Test
+  public void testIndex() throws Exception {
+    mvc.perform(get("/")).andExpect(redirectedUrl(DocumentController.BASE_PATH));
+  }
 
 }
