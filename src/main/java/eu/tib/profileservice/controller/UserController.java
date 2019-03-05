@@ -5,7 +5,9 @@ import static eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MES
 import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_ERROR;
 import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_SUCCESS;
 
+import eu.tib.profileservice.domain.Category;
 import eu.tib.profileservice.domain.User;
+import eu.tib.profileservice.service.CategoryService;
 import eu.tib.profileservice.service.UserService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,9 @@ public class UserController {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private CategoryService categoryService;
+
   @ModelAttribute("actionSave")
   public String populateActionAdd() {
     return BASE_PATH + PATH_SAVE;
@@ -66,6 +71,11 @@ public class UserController {
   @ModelAttribute("availableRoles")
   public User.Role[] populateAvailableRoles() {
     return User.Role.values();
+  }
+
+  @ModelAttribute("availableCategories")
+  public List<Category> populateAvailableCategories() {
+    return categoryService.findAll();
   }
 
   @GetMapping("**")

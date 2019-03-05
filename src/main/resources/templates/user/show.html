@@ -40,6 +40,16 @@
 					</div>
 				</div>
 			</div>
+			<div class="form-group">
+			<label for="categories" th:text="#{categories}">categories</label>
+			<div id=roles>
+				<div th:each="category : *{categories}" class="checkbox">
+					<label>
+						<input disabled="disabled" type="checkbox" th:field="*{categories}" th:value="${category.id}"><span th:text="${category}"></span>
+					</label>
+				</div>
+			</div>
+		</div>
 		</div>
 	</div>
 </body>

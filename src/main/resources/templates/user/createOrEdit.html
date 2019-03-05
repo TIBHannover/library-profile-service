@@ -60,6 +60,17 @@
 						</div>
 					</div>
 				</div>
+ 				<div class="form-group">
+					<!-- <input type="hidden" th:field="*{categories}" th:value="${category}"> -->
+					<label for="categories" th:text="#{categories}">categories</label>
+					<div id=roles>
+						<div th:each="category : ${availableCategories}" class="checkbox">
+							<label>
+								<input type="checkbox" th:field="*{categories}" th:value="${category.id}"><span th:text="${category}"></span>
+							</label>
+						</div>
+					</div>
+				</div>
 				<button type="submit" class="btn btn-primary" th:name="${saveMethod}" th:text="#{save}">Save</button>
 			</fieldset>
 		</form>

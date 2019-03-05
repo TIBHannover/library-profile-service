@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.DocumentMetadata;
-import eu.tib.profileservice.service.DocumentImportService;
+import eu.tib.profileservice.service.AsyncDocumentImport;
 import eu.tib.profileservice.service.DocumentService;
 import eu.tib.profileservice.service.UserService;
 import java.time.OffsetDateTime;
@@ -37,7 +37,7 @@ public class DocumentControllerTest {
   private MockMvc mvc;
 
   @MockBean
-  private DocumentImportService documentImportService;
+  private AsyncDocumentImport asyncDocumentImport;
   @MockBean
   private DocumentService documentService;
   @MockBean

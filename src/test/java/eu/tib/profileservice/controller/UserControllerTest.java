@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import eu.tib.profileservice.domain.Category;
 import eu.tib.profileservice.domain.Category.Type;
 import eu.tib.profileservice.domain.User;
+import eu.tib.profileservice.service.CategoryService;
 import eu.tib.profileservice.service.UserService;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +40,8 @@ public class UserControllerTest {
 
   @MockBean
   private UserService userService;
+  @MockBean
+  private CategoryService categoryService;
 
   private Category newCategory(final Category.Type type, final String title) {
     Category category = new Category();
