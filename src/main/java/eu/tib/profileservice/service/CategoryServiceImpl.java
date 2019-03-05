@@ -13,12 +13,13 @@ public class CategoryServiceImpl implements CategoryService {
   @Autowired
   private CategoryRepository categoryRepository;
 
+  @Transactional(readOnly = true)
   @Override
   public List<Category> findAll() {
     return categoryRepository.findAll();
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   @Override
   public List<Category> findByType(final Category.Type type) {
     return categoryRepository.findByType(type);
@@ -30,6 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     return categoryRepository.save(category);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public Category findByTypeAndCategory(final Category.Type type, String category) {
     return categoryRepository.findByTypeAndCategory(type, category);

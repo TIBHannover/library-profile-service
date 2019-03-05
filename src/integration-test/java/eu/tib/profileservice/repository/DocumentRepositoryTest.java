@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import eu.tib.profileservice.domain.Category;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.DocumentMetadata;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +44,7 @@ public class DocumentRepositoryTest {
     documentMeta.setDescription(description);
     documentMeta.setDeweyDecimalClassifications(ddcCategories);
     document.setMetadata(documentMeta);
+    document.setCreationDateUtc(OffsetDateTime.now(ZoneOffset.UTC).toLocalDateTime());
     return document;
   }
 

@@ -7,13 +7,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface DocumentService {
 
-  public Page<Document> findAll(final Pageable pageable);
-
   public Page<Document> findAllByExample(final Document example, final Pageable pageable);
 
   public Document findById(final Long id);
-
-  public Page<Document> retrieveDocumentsByUser(final User user, final Pageable pageable);
 
   public Document assignToUser(final Document document, final User user);
 

@@ -27,12 +27,6 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Transactional(readOnly = true)
   @Override
-  public Page<Document> findAll(final Pageable pageable) {
-    return documentRepository.findAll(pageable);
-  }
-
-  @Transactional(readOnly = true)
-  @Override
   public Page<Document> findAllByExample(Document example, Pageable pageable) {
     return documentRepository.findAll(Example.of(example), pageable);
   }
@@ -48,12 +42,6 @@ public class DocumentServiceImpl implements DocumentService {
     } catch (NoSuchElementException e) {
       return null;
     }
-  }
-
-  @Transactional(readOnly = true)
-  @Override
-  public Page<Document> retrieveDocumentsByUser(final User user, final Pageable pageable) {
-    return documentRepository.findAllByAssignee(user, pageable);
   }
 
   @Transactional

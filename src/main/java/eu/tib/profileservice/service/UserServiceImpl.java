@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
   @Autowired
   private UserRepository userRepository;
 
-  @Transactional
+  @Transactional(readOnly = true)
   public List<User> findAll() {
     return userRepository.findAll();
   }
@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
     return userRepository.save(user);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public User findByName(final String name) {
     return userRepository.findByName(name);
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserService {
     userRepository.delete(user);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   @Override
   public User findById(Long id) {
     if (id == null) {
