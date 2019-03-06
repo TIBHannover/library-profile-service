@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import eu.tib.profileservice.domain.Category;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.DocumentMetadata;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
@@ -35,13 +36,10 @@ public class DocumentRepositoryTest {
     return category;
   }
 
-  private Document newDocument(final String author, final String title, final String description,
-      final Set<String> ddcCategories) {
+  private Document newDocument(final String title, final Set<String> ddcCategories) {
     final Document document = new Document();
     final DocumentMetadata documentMeta = new DocumentMetadata();
     documentMeta.setTitle(title);
-    documentMeta.setAuthor(author);
-    documentMeta.setDescription(description);
     documentMeta.setDeweyDecimalClassifications(ddcCategories);
     document.setMetadata(documentMeta);
     document.setCreationDateUtc(OffsetDateTime.now(ZoneOffset.UTC).toLocalDateTime());
@@ -55,8 +53,8 @@ public class DocumentRepositoryTest {
     entityManager.persist(category1);
     entityManager.persist(category2);
     entityManager.persist(
-        newDocument("testauthor", "testtitle", "testdesc", new HashSet<String>(Arrays.asList(
-            new String[] {"104", "345.678"}))));
+        newDocument("testtitle", new HashSet<String>(Arrays.asList(new String[] {"104",
+            "345.678"}))));
 
     List<Document> documents = repository.findAll();
     assertThat(documents).isNotNull();
@@ -65,5 +63,23 @@ public class DocumentRepositoryTest {
         .getDeweyDecimalClassifications();
     assertThat(deweyDecimalClassifications).isNotNull();
     assertThat(deweyDecimalClassifications.size()).isEqualTo(2);
+  }
+
+  @Test
+  public void testDeleteByCreationDateUtcBefore() {
+    Document document1 = newDocument("title1", new HashSet<String>(Arrays.asList(new String[] {
+        "300"})));
+    document1.setCreationDateUtc(LocalDateTime.parse("2019-01-01T10:00:00"));
+    Document document2 = newDocument("title2", new HashSet<String>(Arrays.asList(new String[] {
+        "300"})));
+    document2.setCreationDateUtc(LocalDateTime.parse("2019-04-01T10:00:00"));
+    entityManager.persist(document1);
+    entityManager.persist(document2);
+
+    LocalDateTime expiryDate = LocalDateTime.parse("2019-02-01T00:00:00");
+    repository.deleteByCreationDateUtcBefore(expiryDate);
+    List<Document> documents = repository.findAll();
+    assertThat(documents).isNotNull();
+    assertThat(documents.size()).isEqualTo(1);
   }
 }

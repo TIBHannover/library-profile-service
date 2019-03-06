@@ -11,6 +11,7 @@ import eu.tib.profileservice.domain.DocumentMetadata;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.repository.UserRepository;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
@@ -153,6 +154,14 @@ public class DocumentServiceTest {
     assertThat(result.getStatus()).isEqualTo(Status.REJECTED);
 
     verify(documentRepository, times(1)).save(Mockito.any(Document.class));
+  }
+
+  @Test
+  public void testDeleteDocumentsBeforeExpiryDate() {
+    documentService.deleteDocumentCreatedBefore(OffsetDateTime.now(ZoneOffset.UTC)
+        .toLocalDateTime());
+    verify(documentRepository, times(1)).deleteByCreationDateUtcBefore(Mockito.any(
+        LocalDateTime.class));
   }
 
 }

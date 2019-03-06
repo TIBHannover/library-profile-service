@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.DocumentMetadata;
-import eu.tib.profileservice.service.AsyncDocumentImport;
 import eu.tib.profileservice.service.DocumentService;
 import eu.tib.profileservice.service.UserService;
 import java.time.OffsetDateTime;
@@ -19,6 +18,7 @@ import java.util.HashSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -37,7 +37,7 @@ public class DocumentControllerTest {
   private MockMvc mvc;
 
   @MockBean
-  private AsyncDocumentImport asyncDocumentImport;
+  private Scheduler scheduler;
   @MockBean
   private DocumentService documentService;
   @MockBean

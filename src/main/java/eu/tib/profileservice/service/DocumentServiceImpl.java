@@ -5,6 +5,7 @@ import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.repository.UserRepository;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +82,11 @@ public class DocumentServiceImpl implements DocumentService {
     final Document document = documentRepository.getOne(id);
     document.setStatus(Status.REJECTED);
     return documentRepository.save(document);
+  }
+
+  @Override
+  public void deleteDocumentCreatedBefore(LocalDateTime expiryDateUtc) {
+    documentRepository.deleteByCreationDateUtcBefore(expiryDateUtc);
   }
 
 }

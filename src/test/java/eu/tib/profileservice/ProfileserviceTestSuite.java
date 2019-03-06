@@ -9,6 +9,8 @@ import eu.tib.profileservice.controller.UserControllerTest;
 import eu.tib.profileservice.repository.CategoryRepositoryTest;
 import eu.tib.profileservice.repository.DocumentRepositoryTest;
 import eu.tib.profileservice.repository.UserRepositoryTest;
+import eu.tib.profileservice.scheduling.DocumentCleanupJobTest;
+import eu.tib.profileservice.scheduling.DocumentImportJobTest;
 import eu.tib.profileservice.service.CategoryServiceTest;
 import eu.tib.profileservice.service.DocumentImportServiceTest;
 import eu.tib.profileservice.service.DocumentServiceTest;
@@ -26,6 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
     InstitutionConnectorFactoryTest.class,
     HomeControllerTest.class, UserControllerTest.class,
     DocumentControllerTest.class,
+    DocumentCleanupJobTest.class, DocumentImportJobTest.class,
     CategoryServiceTest.class, DocumentImportServiceTest.class,
     DocumentServiceTest.class,
     UserDetailsServiceTest.class, UserServiceTest.class,
