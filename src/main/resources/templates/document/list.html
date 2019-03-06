@@ -25,9 +25,10 @@
 					<td>
 						<div class="card">
 							<div class="card-body">
-								<h4 class="card-title" th:text="${document.metadata.title}">title</h4>
-								<h5 class="card-subtitle mb-2" th:text="${document.metadata.remainderOfTitle}">remainder of title</h5>
-								<h6 class="card-subtitle mb-2 text-muted" th:text="${document.metadata.author}">author</h6>
+								<h3 class="card-title" th:text="${document.metadata.title}">title</h3>
+								<h5 th:if="${document.metadata.remainderOfTitle} != null" class="card-subtitle mb-2" th:text="${document.metadata.remainderOfTitle}">remainder of title</h5>
+								<h5 th:if="${document.metadata.termsOfAvailability} != null" class="card-subtitle mb-2" th:text="'(' + ${document.metadata.termsOfAvailability} + ')'">termsOfAvailability</h5>
+								<h5 class="card-subtitle mb-2 text-muted" th:text="${document.metadata.publisher}">publisher</h5>
 								<p>
 									<span class="text-muted" th:text="#{isbn} + ':'" ></span>
 									<span th:text="${#strings.listJoin(document.metadata.isbns, ', ')}" ></span>

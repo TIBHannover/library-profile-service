@@ -24,11 +24,20 @@ public class DocumentMetadata {
   private String title;
   @Column(length = 1024)
   private String remainderOfTitle;
+
+  // TODO
   private String author;
+  // TODO
+  private String description;
+
+  private String publisher;
+
+  @Column(length = 1024)
+  private String termsOfAvailability;
+
   @ElementCollection
   @CollectionTable(name = TABLE_NAME_ISBNS)
   private List<String> isbns;
-  private String description;
 
   @ElementCollection
   @CollectionTable(name = TABLE_NAME_DDC_CLASSES)
@@ -158,6 +167,42 @@ public class DocumentMetadata {
    */
   public void setDeweyDecimalClassifications(Set<String> deweyDecimalClassifications) {
     this.deweyDecimalClassifications = deweyDecimalClassifications;
+  }
+
+  /**
+   * getter: publisher.
+   * 
+   * @return the publisher
+   */
+  public String getPublisher() {
+    return publisher;
+  }
+
+  /**
+   * setter: publisher.
+   * 
+   * @param publisher the publisher to set
+   */
+  public void setPublisher(String publisher) {
+    this.publisher = publisher;
+  }
+
+  /**
+   * getter: termsOfAvailability.
+   * 
+   * @return the termsOfAvailability
+   */
+  public String getTermsOfAvailability() {
+    return termsOfAvailability;
+  }
+
+  /**
+   * setter: termsOfAvailability.
+   * 
+   * @param termsOfAvailability the termsOfAvailability to set
+   */
+  public void setTermsOfAvailability(String termsOfAvailability) {
+    this.termsOfAvailability = termsOfAvailability;
   }
 
 }

@@ -15,7 +15,7 @@
     </datafield>
     <datafield tag="020" ind1=" " ind2=" ">
       <subfield code="a">9876543210987</subfield>
-      <subfield code="c">Book + eBook : circa EUR 34.99 (DE), circa EUR 35.83 (AT), circa CHF 37.04 (freier Preis)</subfield>
+      <subfield code="c">EUR 34.99 (DE), EUR 35.83 (AT)</subfield>
       <subfield code="9">987-6-543-21098-7</subfield>
     </datafield>
     <datafield tag="020" ind1=" " ind2=" ">
@@ -69,8 +69,7 @@
     </datafield>
     <datafield tag="264" ind1=" " ind2="1">
       <subfield code="a">Wiesbaden</subfield>
-      <subfield code="b">Springer Fachmedien Wiesbaden GmbH</subfield>
-      <subfield code="b">Springer Gabler</subfield>
+      <subfield code="b">Verlag XYZ</subfield>
       <subfield code="c">2100</subfield>
     </datafield>
     <datafield tag="300" ind1=" " ind2=" ">

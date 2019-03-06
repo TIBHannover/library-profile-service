@@ -27,7 +27,6 @@ import org.marc4j.MarcException;
 import org.marc4j.MarcXmlReader;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
-import org.marc4j.marc.Subfield;
 import org.marc4j.marc.VariableField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,6 +167,8 @@ public class MarcXml2DocumentConverter {
     document.setTitle(getDataIfExists(record, "245", 'a'));
     document.setRemainderOfTitle(getDataIfExists(record, "245", 'b'));
     document.setIsbns(getAllData(record, "020", 'a'));
+    document.setPublisher(getPublisher(record));
+    document.setTermsOfAvailability(getDataIfExists(record, "020", 'c'));
 
     final Set<String> deweyDecimalClassifications = new HashSet<>();
     for (VariableField field : record.getVariableFields("082")) {
@@ -179,28 +180,46 @@ public class MarcXml2DocumentConverter {
       }
     }
     document.setDeweyDecimalClassifications(deweyDecimalClassifications);
-
     // document.setAuthor(record.);
     // document.setCategories(categories);
     // document.setDescription(description);
     return document;
   }
 
+  private String getPublisher(final Record record) {
+    String publisher = null;
+    List<String> publishers = getAllData(record, "264", 'b', null, '1');
+    if (publishers.size() > 0) {
+      publisher = publishers.get(0).trim(); // use first entry, ignore others
+    }
+    if (publisher == null) {
+      publishers = getAllData(record, "260", 'b');
+      if (publishers.size() > 0) {
+        publisher = publishers.get(0).trim(); // use first entry, ignore others
+      }
+    }
+    return publisher;
+  }
+
   private List<String> getAllData(final Record record, final String tag, char code) {
+    return getAllData(record, tag, code, null, null);
+  }
+
+  private List<String> getAllData(final Record record, final String tag, char code,
+      Character indicator1, Character indicator2) {
     final List<VariableField> fields = record.getVariableFields(tag);
     return fields.stream()
-        .filter(f -> f instanceof DataField && ((DataField) f).getSubfield(code) != null)
-        .map(f -> ((DataField) f).getSubfield(code).getData())
+        .filter(f -> f instanceof DataField && ((DataField) f).getSubfield(code) != null
+            && (indicator1 == null || ((DataField) f).getIndicator1() == indicator1.charValue())
+            && (indicator2 == null || ((DataField) f).getIndicator2() == indicator2.charValue()))
+        .map(f -> ((DataField) f).getSubfield(code).getData().trim())
         .collect(Collectors.toList());
   }
 
   private String getDataIfExists(final Record record, final String tag, char code) {
-    final DataField field = (DataField) record.getVariableField(tag);
-    if (field != null) {
-      final Subfield subfield = field.getSubfield(code);
-      if (subfield != null) {
-        return subfield.getData() == null ? null : subfield.getData().trim();
-      }
+    List<String> data = getAllData(record, tag, code);
+    if (data.size() > 0) {
+      return data.get(0);
     }
     return null;
   }
