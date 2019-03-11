@@ -45,6 +45,8 @@ public class DocumentMetadata {
   @Column(length = 1024)
   private String termsOfAvailability;
 
+  private String formOfProduct;
+
   @ElementCollection
   @CollectionTable(name = TABLE_NAME_ISBNS)
   private List<String> isbns;
@@ -285,6 +287,24 @@ public class DocumentMetadata {
    */
   public void setSeries(String series) {
     this.series = series;
+  }
+
+  /**
+   * getter: formOfProduct.
+   * 
+   * @return the formOfProduct
+   */
+  public String getFormOfProduct() {
+    return formOfProduct;
+  }
+
+  /**
+   * setter: formOfProduct.
+   * 
+   * @param formOfProduct the formOfProduct to set
+   */
+  public void setFormOfProduct(String formOfProduct) {
+    this.formOfProduct = formOfProduct;
   }
 
 }

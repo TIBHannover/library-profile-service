@@ -51,7 +51,7 @@
 								</div>
 								<div class="col-md-11">
 	  								<!-- <div class="collapse in" th:id="${'collapseDocumentInfo' + docStat.index}"> -->
-	  								<div class="collapse in" th:id="${'collapseDocumentInfo' + docStat.index}">
+	  								<div class="collapse" th:id="${'collapseDocumentInfo' + docStat.index}">
 										<p>
 											<span class="text-muted" th:text="#{isbn} + ':'" ></span>
 											<span th:text="${#strings.listJoin(document.metadata.isbns, ', ')}" ></span>
@@ -67,6 +67,10 @@
 										<p>
 											<span class="text-muted" th:text="#{physical.description} + ':'" ></span>
 											<span th:text="${document.metadata.physicalDescription}" ></span>
+										</p>
+										<p>
+											<span class="text-muted" th:text="#{product.form} + ':'" ></span>
+											<span th:text="${document.metadata.formOfProduct}" ></span>
 										</p>
 										<p>
 											<span class="text-muted" th:text="#{categories} + ':'" ></span>

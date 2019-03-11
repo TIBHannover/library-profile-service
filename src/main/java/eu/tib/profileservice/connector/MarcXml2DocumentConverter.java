@@ -173,10 +173,22 @@ public class MarcXml2DocumentConverter {
     document.setEdition(getDataIfExists(record, "250", 'a'));
     document.setPhysicalDescription(getPhysicalDescription(record));
     document.setSeries(getSeries(record));
+    document.setFormOfProduct(getFormOfProduct(record));
     document.setTermsOfAvailability(getDataIfExists(record, "020", 'c'));
     document.setAuthors(getAuthors(record));
     document.setDeweyDecimalClassifications(getDeweyDecimalClassifications(record));
     return document;
+  }
+
+  private String getFormOfProduct(final Record record) {
+    StringBuilder form = new StringBuilder();
+    for (VariableField field : record.find("653", "\\(Produktform\\).*")) {
+      if (form.length() > 0) {
+        form.append(", ");
+      }
+      form.append(getData(field, 'a').substring(13));
+    }
+    return form.toString();
   }
 
   private Set<String> getDeweyDecimalClassifications(final Record record) {

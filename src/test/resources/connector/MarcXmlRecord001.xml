@@ -101,6 +101,9 @@
 		<subfield code="a">(Produktform)Mixed media product</subfield>
 	</datafield>
 	<datafield tag="653" ind1=" " ind2=" ">
+		<subfield code="a">(Produktform)Another DNB product form</subfield>
+	</datafield>
+	<datafield tag="653" ind1=" " ind2=" ">
 		<subfield code="a">(BISAC Subject Heading)BUS043000</subfield>
 	</datafield>
 	<datafield tag="653" ind1=" " ind2=" ">
