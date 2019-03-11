@@ -171,6 +171,7 @@ public class MarcXml2DocumentConverter {
     document.setPlaceOfPublication(getPublicationPlace(record));
     document.setDateOfPublication(getPublicationDate(record));
     document.setEdition(getDataIfExists(record, "250", 'a'));
+    document.setPhysicalDescription(getPhysicalDescription(record));
     document.setTermsOfAvailability(getDataIfExists(record, "020", 'c'));
     document.setAuthors(getAuthors(record));
     document.setDeweyDecimalClassifications(getDeweyDecimalClassifications(record));
@@ -200,6 +201,37 @@ public class MarcXml2DocumentConverter {
     authors.addAll(getAllData(record, "700", 'a', "aut"));
 
     return new ArrayList<String>(authors);
+  }
+
+  private String getPhysicalDescription(final Record record) {
+    StringBuilder physicalDesc = new StringBuilder();
+    for (VariableField field : record.getVariableFields("300")) {
+      String extent = getData(field, 'a');
+      physicalDesc.append(extent);
+      String otherDetails = getData(field, 'b');
+      if (otherDetails.length() > 0 && !extent.endsWith(":")) {
+        physicalDesc.append(", ");
+      }
+      physicalDesc.append(otherDetails);
+      String dimensions = getData(field, 'c');
+      if (dimensions.length() > 0) {
+        physicalDesc.append(", ");
+      }
+      physicalDesc.append(dimensions);
+      String accompanyingMaterial = getData(field, 'e');
+      if (accompanyingMaterial.length() > 0) {
+        physicalDesc.append(", ");
+      }
+      physicalDesc.append(accompanyingMaterial);
+    }
+    return physicalDesc.toString();
+  }
+
+  private String getData(final VariableField field, final char code) {
+    if (field instanceof DataField && ((DataField) field).getSubfield(code) != null) {
+      return ((DataField) field).getSubfield(code).getData().trim();
+    }
+    return "";
   }
 
   private String getPublicationPlace(final Record record) {

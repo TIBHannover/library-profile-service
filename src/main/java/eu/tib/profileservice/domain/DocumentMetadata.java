@@ -34,6 +34,9 @@ public class DocumentMetadata {
   private String placeOfPublication;
   private String dateOfPublication;
 
+  @Column(length = 1024)
+  private String physicalDescription;
+
   private String edition;
 
   @Column(length = 1024)
@@ -243,6 +246,24 @@ public class DocumentMetadata {
    */
   public void setEdition(String edition) {
     this.edition = edition;
+  }
+
+  /**
+   * getter: physicalDescription.
+   * 
+   * @return the physicalDescription
+   */
+  public String getPhysicalDescription() {
+    return physicalDescription;
+  }
+
+  /**
+   * setter: physicalDescription.
+   * 
+   * @param physicalDescription the physicalDescription to set
+   */
+  public void setPhysicalDescription(String physicalDescription) {
+    this.physicalDescription = physicalDescription;
   }
 
 }

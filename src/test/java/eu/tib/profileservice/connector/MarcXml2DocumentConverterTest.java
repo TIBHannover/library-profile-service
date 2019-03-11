@@ -46,6 +46,8 @@ public class MarcXml2DocumentConverterTest {
       assertThat(metadata.getAuthors()).isNotNull();
       assertThat(metadata.getAuthors().size()).isEqualTo(2);
       assertThat(metadata.getAuthors()).contains("Test2, Author", "Test1, Author");
+      assertEquals("160 Seiten in 1 Teil, 23.5 cm x 15.5 cm, Enthält: 1 Online-Ressource", metadata
+          .getPhysicalDescription());
     }
   }
 
@@ -67,6 +69,8 @@ public class MarcXml2DocumentConverterTest {
       assertEquals("2019", metadata.getDateOfPublication());
       assertEquals("Testort", metadata.getPlaceOfPublication());
       assertEquals("1. Auflage 2019", metadata.getEdition());
+      assertEquals("viii, 416 p., [7] leaves of plates :ill. ;, 24 cm.", metadata
+          .getPhysicalDescription());
     }
   }
 
