@@ -93,6 +93,10 @@
 		<subfield code="b">zu</subfield>
 		<subfield code="2">rdacarrier</subfield>
 	</datafield>
+	<datafield tag="490" ind1="1" ind2=" ">
+		<subfield code="a">Testseries</subfield>
+		<subfield code="v">3</subfield>
+	</datafield>
 	<datafield tag="653" ind1=" " ind2=" ">
 		<subfield code="a">(Produktform)Mixed media product</subfield>
 	</datafield>
@@ -182,6 +186,10 @@
 		<subfield code="a">Springer Fachmedien Wiesbaden GmbH</subfield>
 		<subfield code="e">Verlag</subfield>
 		<subfield code="4">pbl</subfield>
+	</datafield>
+	<datafield tag="830" ind1=" " ind2="0">
+		<subfield code="a">Testseries</subfield>
+		<subfield code="v">3</subfield>
 	</datafield>
 	<datafield tag="856" ind1="4" ind2="2">
 		<subfield code="m">X:MVB</subfield>

@@ -41,42 +41,50 @@
 									<span th:text="${document.metadata.termsOfAvailability}" ></span>
 								</p>
 							</div>
-							<div class="card-body">
-								<p>
-									<a class="btn btn-secondary" data-toggle="collapse" th:href="${'#collapseDocumentInfo' + docStat.index}" role="button" aria-expanded="false" aria-controls="collapseDocumentInfo">
-										<span class="glyphicon glyphicon-collapse-down"></span>
-									</a>
-								</p>
-  								<!-- <div class="collapse in" th:id="${'collapseDocumentInfo' + docStat.index}"> -->
-  								<div class="collapse" th:id="${'collapseDocumentInfo' + docStat.index}">
+							<div class="row card-body">
+								<div class="col-md-1">
 									<p>
-										<span class="text-muted" th:text="#{isbn} + ':'" ></span>
-										<span th:text="${#strings.listJoin(document.metadata.isbns, ', ')}" ></span>
+										<a class="btn btn-secondary" data-toggle="collapse" th:href="${'#collapseDocumentInfo' + docStat.index}" role="button" aria-expanded="false" aria-controls="collapseDocumentInfo">
+											<span class="glyphicon glyphicon-collapse-down"></span>
+										</a>
 									</p>
-									<p>
-										<span class="text-muted" th:text="#{edition} + ':'" ></span>
-										<span th:text="${document.metadata.edition}" ></span>
-									</p>
-									<p>
-										<span class="text-muted" th:text="#{physical.description} + ':'" ></span>
-										<span th:text="${document.metadata.physicalDescription}" ></span>
-									</p>
-									<p>
-										<span class="text-muted" th:text="#{categories} + ':'" ></span>
-										<span th:text="${#strings.listJoin(document.metadata.deweyDecimalClassifications, ', ')}" ></span>
-									</p>
-									<p>
-										<span class="text-muted" th:text="#{status} + ':'" ></span>
-										<span th:text="${document.status}" ></span>
-									</p>
-									<p>
-										<span class="text-muted" th:text="#{assignee} + ':'" ></span>
-										<span th:text="${document.assignee?.name} ?: #{noassignee}" ></span>
-									</p>
-									<p>
-										<span class="text-muted" th:text="#{document.creation.date} + ':'" ></span>
-										<span th:text="${document.creationDateUtc}" ></span>
-									</p>
+								</div>
+								<div class="col-md-11">
+	  								<!-- <div class="collapse in" th:id="${'collapseDocumentInfo' + docStat.index}"> -->
+	  								<div class="collapse in" th:id="${'collapseDocumentInfo' + docStat.index}">
+										<p>
+											<span class="text-muted" th:text="#{isbn} + ':'" ></span>
+											<span th:text="${#strings.listJoin(document.metadata.isbns, ', ')}" ></span>
+										</p>
+										<p>
+											<span class="text-muted" th:text="#{edition} + ':'" ></span>
+											<span th:text="${document.metadata.edition}" ></span>
+										</p>
+										<p>
+											<span class="text-muted" th:text="#{series} + ':'" ></span>
+											<span th:text="${document.metadata.series}" ></span>
+										</p>
+										<p>
+											<span class="text-muted" th:text="#{physical.description} + ':'" ></span>
+											<span th:text="${document.metadata.physicalDescription}" ></span>
+										</p>
+										<p>
+											<span class="text-muted" th:text="#{categories} + ':'" ></span>
+											<span th:text="${#strings.listJoin(document.metadata.deweyDecimalClassifications, ', ')}" ></span>
+										</p>
+										<p>
+											<span class="text-muted" th:text="#{status} + ':'" ></span>
+											<span th:text="${document.status}" ></span>
+										</p>
+										<p>
+											<span class="text-muted" th:text="#{assignee} + ':'" ></span>
+											<span th:text="${document.assignee?.name} ?: #{noassignee}" ></span>
+										</p>
+										<p>
+											<span class="text-muted" th:text="#{document.creation.date} + ':'" ></span>
+											<span th:text="${document.creationDateUtc}" ></span>
+										</p>
+									</div>
 								</div>
 							</div>
 							<div class="card-footer">

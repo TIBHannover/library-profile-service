@@ -46,8 +46,9 @@ public class MarcXml2DocumentConverterTest {
       assertThat(metadata.getAuthors()).isNotNull();
       assertThat(metadata.getAuthors().size()).isEqualTo(2);
       assertThat(metadata.getAuthors()).contains("Test2, Author", "Test1, Author");
-      assertEquals("160 Seiten in 1 Teil, 23.5 cm x 15.5 cm, Enthält: 1 Online-Ressource", metadata
+      assertEquals("160 Seiten in 1 Teil, 23.5 cm x 15.5 cm, Enthält: 1 Online-Ressource", metadata
           .getPhysicalDescription());
+      assertEquals("Testseries, 3", metadata.getSeries());
     }
   }
 

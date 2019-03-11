@@ -172,6 +172,7 @@ public class MarcXml2DocumentConverter {
     document.setDateOfPublication(getPublicationDate(record));
     document.setEdition(getDataIfExists(record, "250", 'a'));
     document.setPhysicalDescription(getPhysicalDescription(record));
+    document.setSeries(getSeries(record));
     document.setTermsOfAvailability(getDataIfExists(record, "020", 'c'));
     document.setAuthors(getAuthors(record));
     document.setDeweyDecimalClassifications(getDeweyDecimalClassifications(record));
@@ -203,6 +204,18 @@ public class MarcXml2DocumentConverter {
     return new ArrayList<String>(authors);
   }
 
+  private String getSeries(final Record record) {
+    StringBuilder series = new StringBuilder();
+    for (VariableField field : record.getVariableFields("490")) {
+      series.append(getData(field, 'a'));
+      String volume = getData(field, 'v');
+      if (volume.length() > 0) {
+        series.append(", ").append(volume);
+      }
+    }
+    return series.toString();
+  }
+
   private String getPhysicalDescription(final Record record) {
     StringBuilder physicalDesc = new StringBuilder();
     for (VariableField field : record.getVariableFields("300")) {
@@ -216,20 +229,21 @@ public class MarcXml2DocumentConverter {
       String dimensions = getData(field, 'c');
       if (dimensions.length() > 0) {
         physicalDesc.append(", ");
+        physicalDesc.append(dimensions);
       }
-      physicalDesc.append(dimensions);
       String accompanyingMaterial = getData(field, 'e');
       if (accompanyingMaterial.length() > 0) {
         physicalDesc.append(", ");
+        physicalDesc.append(accompanyingMaterial);
       }
-      physicalDesc.append(accompanyingMaterial);
     }
     return physicalDesc.toString();
   }
 
   private String getData(final VariableField field, final char code) {
     if (field instanceof DataField && ((DataField) field).getSubfield(code) != null) {
-      return ((DataField) field).getSubfield(code).getData().trim();
+      String data = ((DataField) field).getSubfield(code).getData().trim();
+      return Normalizer.normalize(data, Form.NFC);
     }
     return "";
   }
@@ -305,8 +319,7 @@ public class MarcXml2DocumentConverter {
         .filter(f -> f instanceof DataField && ((DataField) f).getSubfield(code) != null
             && (indicator1 == null || ((DataField) f).getIndicator1() == indicator1.charValue())
             && (indicator2 == null || ((DataField) f).getIndicator2() == indicator2.charValue()))
-        .map(f -> ((DataField) f).getSubfield(code).getData().trim())
-        .map(s -> Normalizer.normalize(s, Form.NFC))
+        .map(f -> getData(f, code))
         .collect(Collectors.toList());
   }
 

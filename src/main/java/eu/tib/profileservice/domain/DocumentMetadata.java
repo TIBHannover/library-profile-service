@@ -37,6 +37,9 @@ public class DocumentMetadata {
   @Column(length = 1024)
   private String physicalDescription;
 
+  @Column(length = 1024)
+  private String series;
+
   private String edition;
 
   @Column(length = 1024)
@@ -264,6 +267,24 @@ public class DocumentMetadata {
    */
   public void setPhysicalDescription(String physicalDescription) {
     this.physicalDescription = physicalDescription;
+  }
+
+  /**
+   * getter: series.
+   * 
+   * @return the series
+   */
+  public String getSeries() {
+    return series;
+  }
+
+  /**
+   * setter: series.
+   * 
+   * @param series the series to set
+   */
+  public void setSeries(String series) {
+    this.series = series;
   }
 
 }
