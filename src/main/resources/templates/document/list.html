@@ -29,7 +29,13 @@
 									<span class="card-title" th:text="${document.metadata.title}"></span>									
 									<br/><small th:if="${document.metadata.remainderOfTitle} != null" class="card-subtitle mb-2" th:text="${document.metadata.remainderOfTitle}">remainder of title</small>
 								</h3>
-								<h5 class="card-subtitle mb-2" th:text="${#strings.listJoin(document.metadata.authors, '; ')} + ' (' + ${document.metadata.publisher} + ')'">authors (publisher)</h5>
+								<h5 class="card-subtitle mb-2">
+									<span th:text="${#strings.listJoin(document.metadata.authors, '; ')}"></span>
+									<span th:with="publicationDate=${document.metadata.dateOfPublication == null ? '' : (', ' + document.metadata.dateOfPublication)},
+										publicationPlace=${document.metadata.placeOfPublication == null ? '' : (', ' + document.metadata.placeOfPublication)},
+										publicationInfo='('+ ${document.metadata.publisher} + ${publicationPlace} + ${publicationDate} + ')'
+									" th:text="${publicationInfo}"></span>
+								</h5>
 							</div>
 							<div class="card-body">
 								<p th:if="${document.metadata.termsOfAvailability} != null">

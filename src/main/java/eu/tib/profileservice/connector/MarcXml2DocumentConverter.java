@@ -168,6 +168,8 @@ public class MarcXml2DocumentConverter {
     document.setRemainderOfTitle(getDataIfExists(record, "245", 'b'));
     document.setIsbns(getAllData(record, "020", 'a'));
     document.setPublisher(getPublisher(record));
+    document.setPlaceOfPublication(getPublicationPlace(record));
+    document.setDateOfPublication(getPublicationDate(record));
     document.setTermsOfAvailability(getDataIfExists(record, "020", 'c'));
     document.setAuthors(getAuthors(record));
     document.setDeweyDecimalClassifications(getDeweyDecimalClassifications(record));
@@ -199,19 +201,43 @@ public class MarcXml2DocumentConverter {
     return new ArrayList<String>(authors);
   }
 
+  private String getPublicationPlace(final Record record) {
+    return getPublicationInfo(record, 'a');
+  }
+
   private String getPublisher(final Record record) {
-    String publisher = null;
-    List<String> publishers = getAllData(record, "264", 'b', null, null, '1');
-    if (publishers.size() > 0) {
-      publisher = publishers.get(0).trim(); // use first entry, ignore others
+    return getPublicationInfo(record, 'b');
+  }
+
+  private String getPublicationDate(final Record record) {
+    return getPublicationInfo(record, 'c');
+  }
+
+  /**
+   * Get publication info from the given record.
+   * <ul>
+   * <li>code = <i>a</i> => place</li>
+   * <li>code = <i>b</i> => publisher name</li>
+   * <li>code = <i>c</i> => data</li>
+   * </ul>
+   * 
+   * @param record the record
+   * @param code the code
+   * @return
+   */
+  private String getPublicationInfo(final Record record, char code) {
+    String publicationInfo = null;
+    List<String> publicationInfos = getAllData(record, "264", code, null, null, '1');
+    if (publicationInfos.size() > 0) {
+      publicationInfo = publicationInfos.get(0).trim(); // use first entry, ignore others
     }
-    if (publisher == null) {
-      publishers = getAllData(record, "260", 'b');
-      if (publishers.size() > 0) {
-        publisher = publishers.get(0).trim(); // use first entry, ignore others
+    if (publicationInfo == null) {
+      publicationInfos = getAllData(record, "260", code);
+      if (publicationInfos.size() > 0) {
+        publicationInfo = publicationInfos.get(0).trim(); // use first entry, ignore others
       }
     }
-    return publisher;
+    return publicationInfo;
   }
 
   private List<String> getAllData(final Record record, final String tag, final char code) {

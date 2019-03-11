@@ -31,6 +31,8 @@ public class DocumentMetadata {
   private List<String> authors;
 
   private String publisher;
+  private String placeOfPublication;
+  private String dateOfPublication;
 
   @Column(length = 1024)
   private String termsOfAvailability;
@@ -185,6 +187,42 @@ public class DocumentMetadata {
    */
   public List<String> getAuthors() {
     return authors;
+  }
+
+  /**
+   * getter: placeOfPublication.
+   * 
+   * @return the placeOfPublication
+   */
+  public String getPlaceOfPublication() {
+    return placeOfPublication;
+  }
+
+  /**
+   * setter: placeOfPublication.
+   * 
+   * @param placeOfPublication the placeOfPublication to set
+   */
+  public void setPlaceOfPublication(String placeOfPublication) {
+    this.placeOfPublication = placeOfPublication;
+  }
+
+  /**
+   * getter: dateOfPublication.
+   * 
+   * @return the dateOfPublication
+   */
+  public String getDateOfPublication() {
+    return dateOfPublication;
+  }
+
+  /**
+   * setter: dateOfPublication.
+   * 
+   * @param dateOfPublication the dateOfPublication to set
+   */
+  public void setDateOfPublication(String dateOfPublication) {
+    this.dateOfPublication = dateOfPublication;
   }
 
 }

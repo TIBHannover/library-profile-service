@@ -69,9 +69,9 @@
 		<subfield code="a">200006</subfield>
 	</datafield>
 	<datafield tag="264" ind1=" " ind2="1">
-		<subfield code="a">Wiesbaden</subfield>
+		<subfield code="a">Testort</subfield>
 		<subfield code="b">Verlag XYZ</subfield>
-		<subfield code="c">2100</subfield>
+		<subfield code="c">2019</subfield>
 	</datafield>
 	<datafield tag="300" ind1=" " ind2=" ">
 		<subfield code="a">160 Seiten in 1 Teil</subfield>

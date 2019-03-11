@@ -41,9 +41,9 @@
 		<subfield code="a">1st AMS ed.</subfield>
 	</datafield>
 	<datafield tag="260" ind1=" " ind2=" ">
-		<subfield code="a">New York :</subfield>
+		<subfield code="a">Testort</subfield>
 		<subfield code="b">Verlag XYZ</subfield>
-		<subfield code="c">[1978]</subfield>
+		<subfield code="c">2019</subfield>
 	</datafield>
 	<datafield tag="300" ind1=" " ind2=" ">
 		<subfield code="a">viii, 416 p., [7] leaves of plates :</subfield>

@@ -39,6 +39,8 @@ public class MarcXml2DocumentConverterTest {
       assertTrue(metadata.getIsbns().contains("1234567890"));
       assertTrue(metadata.getIsbns().contains("9876543210987"));
       assertEquals("Verlag XYZ", metadata.getPublisher());
+      assertEquals("2019", metadata.getDateOfPublication());
+      assertEquals("Testort", metadata.getPlaceOfPublication());
       assertEquals("EUR 34.99 (DE), EUR 35.83 (AT)", metadata.getTermsOfAvailability());
       assertThat(metadata.getAuthors()).isNotNull();
       assertThat(metadata.getAuthors().size()).isEqualTo(2);
@@ -61,6 +63,8 @@ public class MarcXml2DocumentConverterTest {
       assertEquals(1, metadata.getIsbns().size());
       assertEquals("1234567890", metadata.getIsbns().get(0));
       assertEquals("Verlag XYZ", metadata.getPublisher());
+      assertEquals("2019", metadata.getDateOfPublication());
+      assertEquals("Testort", metadata.getPlaceOfPublication());
     }
   }
 
