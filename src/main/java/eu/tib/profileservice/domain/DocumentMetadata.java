@@ -34,6 +34,8 @@ public class DocumentMetadata {
   private String placeOfPublication;
   private String dateOfPublication;
 
+  private String edition;
+
   @Column(length = 1024)
   private String termsOfAvailability;
 
@@ -223,6 +225,24 @@ public class DocumentMetadata {
    */
   public void setDateOfPublication(String dateOfPublication) {
     this.dateOfPublication = dateOfPublication;
+  }
+
+  /**
+   * getter: edition.
+   * 
+   * @return the edition
+   */
+  public String getEdition() {
+    return edition;
+  }
+
+  /**
+   * setter: edition.
+   * 
+   * @param edition the edition to set
+   */
+  public void setEdition(String edition) {
+    this.edition = edition;
   }
 
 }

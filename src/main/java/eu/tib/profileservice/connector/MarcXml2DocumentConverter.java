@@ -170,6 +170,7 @@ public class MarcXml2DocumentConverter {
     document.setPublisher(getPublisher(record));
     document.setPlaceOfPublication(getPublicationPlace(record));
     document.setDateOfPublication(getPublicationDate(record));
+    document.setEdition(getDataIfExists(record, "250", 'a'));
     document.setTermsOfAvailability(getDataIfExists(record, "020", 'c'));
     document.setAuthors(getAuthors(record));
     document.setDeweyDecimalClassifications(getDeweyDecimalClassifications(record));
