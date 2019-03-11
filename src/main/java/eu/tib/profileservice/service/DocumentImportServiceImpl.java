@@ -132,7 +132,6 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     final StringBuilder sb = new StringBuilder();
     sb.append(documentMetadata.getTitle());
     sb.append(", ").append(documentMetadata.getRemainderOfTitle());
-    sb.append(", ").append(documentMetadata.getAuthor());
     sb.append(", ").append(documentMetadata.getIsbns());
     return sb.toString();
   }

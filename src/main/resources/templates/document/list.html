@@ -24,11 +24,18 @@
 				<tr th:each="document,docStat : ${documents}">
 					<td>
 						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">
+									<span class="card-title" th:text="${document.metadata.title}"></span>									
+									<br/><small th:if="${document.metadata.remainderOfTitle} != null" class="card-subtitle mb-2" th:text="${document.metadata.remainderOfTitle}">remainder of title</small>
+								</h3>
+								<h5 class="card-subtitle mb-2" th:text="${#strings.listJoin(document.metadata.authors, '; ')} + ' (' + ${document.metadata.publisher} + ')'">authors (publisher)</h5>
+							</div>
 							<div class="card-body">
-								<h3 class="card-title" th:text="${document.metadata.title}">title</h3>
-								<h5 th:if="${document.metadata.remainderOfTitle} != null" class="card-subtitle mb-2" th:text="${document.metadata.remainderOfTitle}">remainder of title</h5>
-								<h5 th:if="${document.metadata.termsOfAvailability} != null" class="card-subtitle mb-2" th:text="'(' + ${document.metadata.termsOfAvailability} + ')'">termsOfAvailability</h5>
-								<h5 class="card-subtitle mb-2 text-muted" th:text="${document.metadata.publisher}">publisher</h5>
+								<p th:if="${document.metadata.termsOfAvailability} != null">
+									<span class="text-muted" th:text="#{termsofavailability} + ':'" ></span>
+									<span th:text="${document.metadata.termsOfAvailability}" ></span>
+								</p>
 								<p>
 									<span class="text-muted" th:text="#{isbn} + ':'" ></span>
 									<span th:text="${#strings.listJoin(document.metadata.isbns, ', ')}" ></span>

@@ -5,6 +5,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -160,8 +162,6 @@ public class MarcXml2DocumentConverter {
   }
 
   private DocumentMetadata record2Document(final Record record) {
-    // TODO
-    //LOG.debug(record.toString());
     final DocumentMetadata document = new DocumentMetadata();
 
     document.setTitle(getDataIfExists(record, "245", 'a'));
@@ -169,7 +169,12 @@ public class MarcXml2DocumentConverter {
     document.setIsbns(getAllData(record, "020", 'a'));
     document.setPublisher(getPublisher(record));
     document.setTermsOfAvailability(getDataIfExists(record, "020", 'c'));
+    document.setAuthors(getAuthors(record));
+    document.setDeweyDecimalClassifications(getDeweyDecimalClassifications(record));
+    return document;
+  }
 
+  private Set<String> getDeweyDecimalClassifications(final Record record) {
     final Set<String> deweyDecimalClassifications = new HashSet<>();
     for (VariableField field : record.getVariableFields("082")) {
       if (field instanceof DataField) {
@@ -179,16 +184,24 @@ public class MarcXml2DocumentConverter {
 
       }
     }
-    document.setDeweyDecimalClassifications(deweyDecimalClassifications);
-    // document.setAuthor(record.);
-    // document.setCategories(categories);
-    // document.setDescription(description);
-    return document;
+    return deweyDecimalClassifications;
+  }
+
+  private List<String> getAuthors(final Record record) {
+    Set<String> authors = new HashSet<String>();
+    String fieldMainEntryPersonalName = getDataIfExists(record, "100", 'a');
+    if (fieldMainEntryPersonalName != null) {
+      authors.add(fieldMainEntryPersonalName);
+    }
+
+    authors.addAll(getAllData(record, "700", 'a', "aut"));
+
+    return new ArrayList<String>(authors);
   }
 
   private String getPublisher(final Record record) {
     String publisher = null;
-    List<String> publishers = getAllData(record, "264", 'b', null, '1');
+    List<String> publishers = getAllData(record, "264", 'b', null, null, '1');
     if (publishers.size() > 0) {
       publisher = publishers.get(0).trim(); // use first entry, ignore others
     }
@@ -201,18 +214,40 @@ public class MarcXml2DocumentConverter {
     return publisher;
   }
 
-  private List<String> getAllData(final Record record, final String tag, char code) {
-    return getAllData(record, tag, code, null, null);
+  private List<String> getAllData(final Record record, final String tag, final char code) {
+    return getAllData(record, tag, code, null);
   }
 
-  private List<String> getAllData(final Record record, final String tag, char code,
-      Character indicator1, Character indicator2) {
-    final List<VariableField> fields = record.getVariableFields(tag);
+  private List<String> getAllData(final Record record, final String tag, final char code,
+      final String pattern) {
+    return getAllData(record, tag, code, pattern, null, null);
+  }
+
+  /**
+   * Determine data matching the given criteria.
+   * 
+   * @param record record to extract the data from
+   * @param tag tag of the datafield
+   * @param code code of the subfield
+   * @param pattern subfield-data has to match this pattern; may be null(no pattern-check)
+   * @param indicator1 indicator1 of the datafield; may be null - in this case: ignore indicator1
+   * @param indicator2 indicator2 of the datafield; may be null - in this case: ignore indicator2
+   * @return
+   */
+  private List<String> getAllData(final Record record, final String tag, final char code,
+      final String pattern, final Character indicator1, final Character indicator2) {
+    List<VariableField> fields;
+    if (pattern != null) {
+      fields = record.find(tag, pattern);
+    } else {
+      fields = record.getVariableFields(tag);
+    }
     return fields.stream()
         .filter(f -> f instanceof DataField && ((DataField) f).getSubfield(code) != null
             && (indicator1 == null || ((DataField) f).getIndicator1() == indicator1.charValue())
             && (indicator2 == null || ((DataField) f).getIndicator2() == indicator2.charValue()))
         .map(f -> ((DataField) f).getSubfield(code).getData().trim())
+        .map(s -> Normalizer.normalize(s, Form.NFC))
         .collect(Collectors.toList());
   }
 

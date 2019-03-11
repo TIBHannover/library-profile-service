@@ -13,6 +13,7 @@ import javax.persistence.Id;
 @Entity
 public class DocumentMetadata {
 
+  private static final String TABLE_NAME_AUTHORS = "document_metadata_authors";
   private static final String TABLE_NAME_ISBNS = "document_metadata_isbns";
   private static final String TABLE_NAME_DDC_CLASSES = "document_metadata_ddcs";
 
@@ -25,10 +26,9 @@ public class DocumentMetadata {
   @Column(length = 1024)
   private String remainderOfTitle;
 
-  // TODO
-  private String author;
-  // TODO
-  private String description;
+  @ElementCollection
+  @CollectionTable(name = TABLE_NAME_AUTHORS)
+  private List<String> authors;
 
   private String publisher;
 
@@ -98,24 +98,6 @@ public class DocumentMetadata {
   }
 
   /**
-   * getter: author.
-   * 
-   * @return the author
-   */
-  public String getAuthor() {
-    return author;
-  }
-
-  /**
-   * setter: author.
-   * 
-   * @param author the author to set
-   */
-  public void setAuthor(String author) {
-    this.author = author;
-  }
-
-  /**
    * getter: isbns.
    * 
    * @return the isbns
@@ -131,24 +113,6 @@ public class DocumentMetadata {
    */
   public void setIsbns(List<String> isbns) {
     this.isbns = isbns;
-  }
-
-  /**
-   * getter: description.
-   * 
-   * @return the description
-   */
-  public String getDescription() {
-    return description;
-  }
-
-  /**
-   * setter: description.
-   * 
-   * @param description the description to set
-   */
-  public void setDescription(String description) {
-    this.description = description;
   }
 
   /**
@@ -203,6 +167,24 @@ public class DocumentMetadata {
    */
   public void setTermsOfAvailability(String termsOfAvailability) {
     this.termsOfAvailability = termsOfAvailability;
+  }
+
+  /**
+   * setter: authors.
+   * 
+   * @param authors the authors to set
+   */
+  public void setAuthors(List<String> authors) {
+    this.authors = authors;
+  }
+
+  /**
+   * getter: authors.
+   * 
+   * @return the authors
+   */
+  public List<String> getAuthors() {
+    return authors;
   }
 
 }

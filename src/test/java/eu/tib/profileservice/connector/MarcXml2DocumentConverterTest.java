@@ -1,5 +1,6 @@
 package eu.tib.profileservice.connector;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -32,13 +33,16 @@ public class MarcXml2DocumentConverterTest {
       assertNotNull(result);
       assertEquals(1, result.size());
       final DocumentMetadata metadata = result.get(0);
-      assertEquals("Test Title Test", metadata.getTitle());
+      assertEquals("Test Title Test mit ü", metadata.getTitle());
       assertEquals("Test Remainder Title Test", metadata.getRemainderOfTitle());
       assertEquals(2, metadata.getIsbns().size());
       assertTrue(metadata.getIsbns().contains("1234567890"));
       assertTrue(metadata.getIsbns().contains("9876543210987"));
       assertEquals("Verlag XYZ", metadata.getPublisher());
       assertEquals("EUR 34.99 (DE), EUR 35.83 (AT)", metadata.getTermsOfAvailability());
+      assertThat(metadata.getAuthors()).isNotNull();
+      assertThat(metadata.getAuthors().size()).isEqualTo(2);
+      assertThat(metadata.getAuthors()).contains("Test2, Author", "Test1, Author");
     }
   }
 
