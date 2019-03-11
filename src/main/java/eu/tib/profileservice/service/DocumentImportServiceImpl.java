@@ -2,8 +2,10 @@ package eu.tib.profileservice.service;
 
 import static eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType.DNB;
 
+import eu.tib.profileservice.connector.ConnectorException;
 import eu.tib.profileservice.connector.InstitutionConnector;
 import eu.tib.profileservice.connector.InstitutionConnectorFactory;
+import eu.tib.profileservice.connector.InventoryConnector;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.DocumentMetadata;
@@ -34,6 +36,9 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 
   @Autowired
   private InstitutionConnectorFactory connectorFactory;
+
+  @Autowired
+  private InventoryConnector inventoryConnector;
 
   @Autowired
   private UserService userService;
@@ -78,9 +83,8 @@ public class DocumentImportServiceImpl implements DocumentImportService {
       statistics.invalid++;
       return;
     }
-    Document existingDocument = findExistingDocument(documentMetadata);
-    if (existingDocument != null) {
-      //LOG.debug("document already exists: {}", buildDocumentMetadataString(documentMetadata));
+    boolean documentExists = containedInInventory(documentMetadata);
+    if (documentExists) {
       statistics.alreadyExists++;
     } else {
       Document document = new Document();
@@ -113,19 +117,35 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   }
 
   /**
-   * Find the already existing {@link Document} that matches the given {@link DocumentMetadata}.
+   * Check if the given {@link DocumentMetadata} already exists in the inventory (local and
+   * external).
    * 
    * @param documentMetadata has to match this document
-   * @return the {@link Document}, if existing; null otherwise
+   * @return true, if the document is contained in the inventory; false, otherwise
    */
-  private Document findExistingDocument(final DocumentMetadata documentMetadata) {
+  private boolean containedInInventory(final DocumentMetadata documentMetadata) {
+    // check local inventory
     for (String isbn : documentMetadata.getIsbns()) {
       Document existingDocument = documentRepository.findByMetadataIsbns(isbn);
       if (existingDocument != null) {
-        return existingDocument;
+        LOG.debug("document already exists in local inventory: {}", buildDocumentMetadataString(
+            documentMetadata));
+        return true;
       }
     }
-    return null;
+
+    // check remote inventory
+    try {
+      boolean exists = inventoryConnector.contains(documentMetadata);
+      if (exists) {
+        LOG.debug("document already exists in remote inventory: {}", buildDocumentMetadataString(
+            documentMetadata));
+        return true;
+      }
+    } catch (ConnectorException e) {
+      LOG.error("error in inventory connector", e);
+    }
+    return false;
   }
 
   private String buildDocumentMetadataString(final DocumentMetadata documentMetadata) {

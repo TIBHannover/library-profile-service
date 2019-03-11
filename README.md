@@ -25,9 +25,9 @@ https://services.dnb.de/oai/accessToken~${token}/repository?verb=ListRecords&fro
     
 ### Bestandsabgleich
 
-**TODO**
+Titel werden gegen den eigenen Bestand abgeglichen werden, so dass Titel, die im eigenen Bestand vorhanden sind nicht importiert werden. Berücksichtigt wird dabei der lokale Bestand der Anwendung und ein externen Bestand, der über einen _InventoryConnector_ abgefragt wird.
 
-Titel sollen gegen den eigenen Bestand abgeglichen werden, so dass Titel, die im eigenen Bestand vorhanden sind nicht importiert werden.
+Implementiert: _TibConnector_, der gegen _https://getinfo.tib.eu/sru_ prüft.
 
 ### Filterregeln
 

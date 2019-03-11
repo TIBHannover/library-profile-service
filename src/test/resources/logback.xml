@@ -8,6 +8,7 @@
 	</appender>
 	<logger name="org.springframework" level="WARN" />
 	<logger name="eu.tib" level="DEBUG" />
+	<logger name="eu.tib.profileservice.connector.TibConnector" level="INFO" />
 	<root level="error">
 		<appender-ref ref="STDOUT" />
 	</root>

@@ -3,6 +3,7 @@ package eu.tib.profileservice;
 import eu.tib.profileservice.connector.DnbConnectorTest;
 import eu.tib.profileservice.connector.InstitutionConnectorFactoryTest;
 import eu.tib.profileservice.connector.MarcXml2DocumentConverterTest;
+import eu.tib.profileservice.connector.TibConnectorTest;
 import eu.tib.profileservice.controller.DocumentControllerTest;
 import eu.tib.profileservice.controller.HomeControllerTest;
 import eu.tib.profileservice.controller.UserControllerTest;
@@ -25,7 +26,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses(value = {
     // Unit Tests
     DnbConnectorTest.class, MarcXml2DocumentConverterTest.class,
-    InstitutionConnectorFactoryTest.class,
+    InstitutionConnectorFactoryTest.class, TibConnectorTest.class,
     HomeControllerTest.class, UserControllerTest.class,
     DocumentControllerTest.class,
     DocumentCleanupJobTest.class, DocumentImportJobTest.class,

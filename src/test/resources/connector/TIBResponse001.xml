@@ -1,0 +1,91 @@
+<searchRetrieveResponse xsi:schemaLocation="http://www.loc.gov/zing/srw/ http://www.loc.gov/standards/sru/sru1-1archive/xml-files/srw-types.xsd">
+	<version>2.0</version>
+	<numberOfRecords>1</numberOfRecords>
+	<records>
+		<record>
+			<recordSchema>info:srw/schema/1/marcxml-v1.1</recordSchema>
+			<recordPacking>xml</recordPacking>
+			<recordData>
+				<record>
+					<leader>00960nam a22003011 4500</leader>
+					<controlfield tag="001">772916411</controlfield>
+					<controlfield tag="003">DE-89</controlfield>
+					<controlfield tag="005">20190311144142.0</controlfield>
+					<controlfield tag="008">190311s1985 gw s 0|| ||eng d</controlfield>
+					<datafield ind1="7" ind2=" " tag="024">
+						<subfield code="a">TIBKAT:772916411</subfield>
+						<subfield code="2">TIB_ID</subfield>
+					</datafield>
+					<datafield ind1="4" ind2=" " tag="856">
+						<subfield code="u">https://www.tib.eu/de/suchen/id/TIBKAT%3A772916411</subfield>
+						<subfield code="3">link to metadata</subfield>
+					</datafield>
+					<datafield ind1=" " ind2=" " tag="040">
+						<subfield code="a">DE-89</subfield>
+						<subfield code="b">ger</subfield>
+						<subfield code="c">DE-89</subfield>
+					</datafield>
+					<datafield ind1=" " ind2=" " tag="500">
+						<subfield code="a">Buch</subfield>
+					</datafield>
+					<datafield ind1="7" ind2=" " tag="024">
+						<subfield code="a">772916411</subfield>
+						<subfield code="2">ppn</subfield>
+					</datafield>
+					<datafield ind1="7" ind2=" " tag="024">
+						<subfield code="a">10.1007/978-3-662-00547-7</subfield>
+						<subfield code="2">doi</subfield>
+					</datafield>
+					<datafield ind1="7" ind2=" " tag="024">
+						<subfield code="a">GBV:772916411</subfield>
+						<subfield code="2">firstid</subfield>
+					</datafield>
+					<datafield ind1=" " ind2=" " tag="020">
+						<subfield code="a">9783662005477</subfield>
+					</datafield>
+					<datafield ind1=" " ind2=" " tag="300">
+						<subfield code="a">Online-Ressource (XIV, 450p. 35 illus) (unknown)</subfield>
+					</datafield>
+					<datafield ind1="0" ind2="0" tag="245">
+						<subfield code="a">Nonlinear Functional Analysis</subfield>
+					</datafield>
+					<datafield ind1="1" ind2=" " tag="100">
+						<subfield code="e">author</subfield>
+						<subfield code="a">Deimling, Klaus</subfield>
+					</datafield>
+					<datafield ind1=" " ind2=" " tag="260">
+						<subfield code="b">Springer Berlin Heidelberg</subfield>
+						<subfield code="c">1985</subfield>
+						<subfield code="a">Berlin, Heidelberg</subfield>
+					</datafield>
+					<datafield ind1="0" ind2=" " tag="787">
+						<subfield code="o">(collectioncode)ZDB-2-SMA</subfield>
+						<subfield code="o">(collectioncode)ZDB-2-BAE</subfield>
+					</datafield>
+					<datafield ind1=" " ind2=" " tag="300">
+						<subfield code="b">online resource</subfield>
+					</datafield>
+					<datafield ind1=" " ind2=" " tag="084">
+						<subfield code="2">loc</subfield>
+						<subfield code="a">QA299.6-433</subfield>
+					</datafield>
+					<datafield ind1=" " ind2=" " tag="084">
+						<subfield code="2">ddc</subfield>
+						<subfield code="a">515</subfield>
+					</datafield>
+					<datafield ind1=" " ind2=" " tag="084">
+						<subfield code="2">linsearch</subfield>
+						<subfield code="a">mat</subfield>
+					</datafield>
+					<datafield ind1="1" ind2="0" tag="650">
+						<subfield code="a">Mathematics</subfield>
+					</datafield>
+					<datafield ind1="1" ind2="0" tag="650">
+						<subfield code="a">Global analysis (Mathematics)</subfield>
+					</datafield>
+				</record>
+			</recordData>
+			<recordPosition>1</recordPosition>
+		</record>
+	</records>
+</searchRetrieveResponse>

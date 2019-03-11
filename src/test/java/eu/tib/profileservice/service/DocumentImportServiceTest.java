@@ -4,9 +4,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import eu.tib.profileservice.connector.ConnectorException;
 import eu.tib.profileservice.connector.InstitutionConnector;
 import eu.tib.profileservice.connector.InstitutionConnectorFactory;
 import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType;
+import eu.tib.profileservice.connector.InventoryConnector;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.DocumentMetadata;
 import eu.tib.profileservice.repository.DocumentRepository;
@@ -45,6 +47,8 @@ public class DocumentImportServiceTest {
   private InstitutionConnectorFactory connectorFactory;
   @MockBean
   private InstitutionConnector connector;
+  @MockBean
+  private InventoryConnector inventoryConnector;
   @MockBean
   private UserService userService;
 
@@ -106,7 +110,7 @@ public class DocumentImportServiceTest {
   }
 
   @Test
-  public void testImportDocumentsWithExistingDocument() {
+  public void testImportDocumentsWithExistingLocalDocument() {
     Document existingDocument = new Document();
     existingDocument.setMetadata(newDocumentMetadataDummy());
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
@@ -119,6 +123,41 @@ public class DocumentImportServiceTest {
     documentImportService.importDocuments(now, now);
 
     verify(documentRepository, times(0)).save(Mockito.any(Document.class));
+  }
+
+  @Test
+  public void testImportDocumentsWithExistingRemoteDocument() throws ConnectorException {
+    Document existingDocument = new Document();
+    existingDocument.setMetadata(newDocumentMetadataDummy());
+    List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
+        newDocumentMetadataDummy()});
+    when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
+    when(documentRepository.findByMetadataIsbns(Mockito.anyString())).thenReturn(null);
+    when(inventoryConnector.contains(Mockito.any(DocumentMetadata.class))).thenReturn(true);
+
+    OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+    LocalDate now = utc.toLocalDate();
+    documentImportService.importDocuments(now, now);
+
+    verify(documentRepository, times(0)).save(Mockito.any(Document.class));
+  }
+
+  @Test
+  public void testImportDocumentsWithExistingRemoteConnectorFailure() throws ConnectorException {
+    Document existingDocument = new Document();
+    existingDocument.setMetadata(newDocumentMetadataDummy());
+    List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
+        newDocumentMetadataDummy()});
+    when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
+    when(documentRepository.findByMetadataIsbns(Mockito.anyString())).thenReturn(null);
+    when(inventoryConnector.contains(Mockito.any(DocumentMetadata.class))).thenThrow(
+        ConnectorException.class);
+
+    OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+    LocalDate now = utc.toLocalDate();
+    documentImportService.importDocuments(now, now);
+
+    verify(documentRepository, times(1)).save(Mockito.any(Document.class));
   }
 
 }
