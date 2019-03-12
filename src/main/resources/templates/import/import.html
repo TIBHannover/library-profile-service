@@ -4,11 +4,20 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 	layout:decorate="~{layout}">
 <head>
-<title th:text="#{title.document.import}">Import</title>
+<title th:text="#{import.document.schedule.title}">Import</title>
 </head>
 <body>
 	<div layout:fragment="page_content">
-		<form action="#" th:action="@{/document/import}" method="post">
+		<div class="row">
+			<div class="container col-lg-12">
+				<ul class="breadcrumb">
+					<li><a href="#" th:href="@{/import/listfilters}" th:text="#{import.title}">Import</a></li>
+					<li class="active" th:text="#{import.document.schedule.title}"></li>
+				</ul>
+			</div>
+		</div>
+		<span>zum Testen via Browser: Import anstoßen</span>
+		<form action="#" th:action="@{/import/import}" method="post">
 			<input type="text" class="form-control" required="required" th:name="fromDate" th:value="${now}"/>
 			<input type="text" class="form-control" required="required" th:name="toDate" th:value="${now}"/>
 			<button class="btn btn-sm btn-primary" type="submit" name="import">

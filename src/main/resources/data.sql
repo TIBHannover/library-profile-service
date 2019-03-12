@@ -1,9 +1,15 @@
 insert into user (email, initials, name, password, id) values ('test@abc.de', 'TM', 'test', '$2a$10$MfjKeK.5UjXXJBV0mZONKumJqJYVd//im/3F0oy.38b.aOmLuqhFW', -1) // pw xxx
 insert into user_role (user_id, role_id) values (-1, 'MANAGE_USERS')
 insert into user_role (user_id, role_id) values (-1, 'PROCESS_DOCUMENTS')
+insert into user_role (user_id, role_id) values (-1, 'IMPORT_DOCUMENTS')
 
 insert into user (email, initials, name, password, id) values ('test@xyz.de', 'AU', 'Another User', '$2a$10$MfjKeK.5UjXXJBV0mZONKumJqJYVd//im/3F0oy.38b.aOmLuqhFW', -2) // pw xxx
 insert into user_role (user_id, role_id) values (-2, 'PROCESS_DOCUMENTS')
+
+insert into import_filter (id, condition_type, condition, action) values (-1, 'FORM_KEYWORD', '.*Jugendbuch.*', 'IGNORE')
+insert into import_filter (id, condition_type, condition, action) values (-2, 'FORM_KEYWORD', '.*Jugendliteratur.*', 'IGNORE')
+insert into import_filter (id, condition_type, condition, action) values (-3, 'FORM_KEYWORD', '.*juvenile literature.*', 'IGNORE')
+insert into import_filter (id, condition_type, condition, action) values (-4, 'FORM_KEYWORD', '.*Reiseführer.*', 'IGNORE')
 
 insert into category (type, category, description, id) values ('DDC', '000', 'Allgemeines, Wissenschaft', -1)
 insert into category (type, category, description, id) values ('DDC', '004', 'Informatik', -2)

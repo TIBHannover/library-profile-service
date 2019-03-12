@@ -8,22 +8,9 @@ import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_
 
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.User;
-import eu.tib.profileservice.scheduling.DocumentImportJob;
 import eu.tib.profileservice.service.DocumentService;
 import eu.tib.profileservice.service.UserService;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,8 +56,6 @@ public class DocumentController {
   private DocumentService documentService;
   @Autowired
   private UserService userService;
-  @Autowired
-  private Scheduler scheduler;
 
   @ModelAttribute("updateDocument")
   public Document populateUpdateDocument() {
@@ -163,34 +148,6 @@ public class DocumentController {
       return userService.findByName(authentication.getName());
     }
     return null;
-  }
-
-  // TODO just to test the import via browser
-  @GetMapping("/import")
-  public String importTest(final Model model) {
-    OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
-    LocalDate now = utc.toLocalDate();
-    model.addAttribute("now", now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-    return BASE_URL_TEMPLATE + "/import";
-  }
-  @RequestMapping(value = "/import", params = {"import"}, method = RequestMethod.POST)
-  public String importDocuments(final String fromDate, final String toDate)
-      throws SchedulerException {
-    JobDataMap jobDataMap = new JobDataMap();
-    jobDataMap.put(DocumentImportJob.JOB_DATA_FROM_DATE, fromDate);
-    jobDataMap.put(DocumentImportJob.JOB_DATA_TO_DATE, toDate);
-    JobDetail jobDetail = JobBuilder.newJob().ofType(DocumentImportJob.class)
-        .storeDurably()
-        .withIdentity(UUID.randomUUID().toString(), "document-import-jobs")
-        .usingJobData(jobDataMap)
-        .build();
-    Trigger trigger = TriggerBuilder.newTrigger()
-        .forJob(jobDetail)
-        .withIdentity(jobDetail.getKey().getName(), "document-import-triggers")
-        .startNow()
-        .build();
-    scheduler.scheduleJob(jobDetail, trigger);
-    return "redirect:" + BASE_PATH + PATH_LIST;
   }
 
   private String getRedirectUri(final String sourceUri, final String sourceQuery) {

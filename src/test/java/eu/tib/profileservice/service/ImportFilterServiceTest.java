@@ -11,6 +11,7 @@ import eu.tib.profileservice.domain.ImportFilter.ConditionType;
 import eu.tib.profileservice.repository.ImportFilterRepository;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,21 @@ public class ImportFilterServiceTest {
     List<ImportFilter> all = service.findAll();
     assertThat(all).isNotNull();
     assertThat(all.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void testFindById() {
+    ImportFilter filter = newFilter(Action.IGNORE, "test", ConditionType.FORM_KEYWORD);
+    when(repository.findById(1L)).thenReturn(Optional.of(filter));
+    ImportFilter result = service.findById(1L);
+    assertThat(result).isNotNull();
+
+    result = service.findById(null);
+    assertThat(result).isNull();
+
+    when(repository.findById(1L)).thenReturn(Optional.ofNullable(null));
+    result = service.findById(1L);
+    assertThat(result).isNull();
   }
 
 }

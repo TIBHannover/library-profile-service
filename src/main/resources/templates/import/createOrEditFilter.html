@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout}">
+<head>
+<title th:text="#{import.filter.title}">Filter</title>
+</head>
+<body>
+	<div layout:fragment="page_content">
+		<div class="row">
+			<div class="container col-lg-12">
+				<ul class="breadcrumb">
+					<li><a href="#" th:href="@{/import/listfilters}" th:text="#{import.title}">Import</a></li>
+					<li><a href="#" th:href="@{/import/listfilters}" th:text="#{import.filters}">Filter</a></li>
+					<li class="active" th:switch="${edit}"><span th:case="true"
+						th:text="#{import.filter.edit}"></span> <span th:case="*"
+						th:text="#{import.filter.create}"></span></li>
+				</ul>
+			</div>
+		</div>
+		<form action="#" th:action="@{${actionSaveFilter}}" th:object="${filter}" method="post">
+			<fieldset>
+				<ul th:if="${#fields.hasErrors('*')}" class="errorlist">
+					<li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input
+						is incorrect</li>
+				</ul>
+				<input class="form-control" type="hidden" th:name="id"
+					th:value="*{id}" />
+				<div class="form-group">
+					<label for="conditionType" th:text="#{import.filter.type}">type</label>
+					<select class="form-control" th:field="*{conditionType}" th:errorclass="fieldError">
+						<option th:each="type : ${availableFilterConditionTypes}" th:value="${type}" th:utext="#{import.filter.type.+${type}}"/>
+				   </select>
+				</div>
+				<div class="form-group">
+					<label for="condition" th:text="#{import.filter.condition}">condition</label>
+					<input type="text" class="form-control" th:field="*{condition}" th:placeholder="#{import.filter.condition.regular.expression}" th:errorclass="fieldError" />
+				</div>
+				<div class="form-group">
+					<label for="action" th:text="#{import.filter.action}">action</label>
+					<select class="form-control" required="required" th:field="*{action}" th:errorclass="fieldError">
+						<option th:each="action : ${availableFilterActions}" th:value="${action}" th:utext="#{import.filter.action.+${action}}"/>
+				   </select>
+				</div>
+				<button type="submit" class="btn btn-primary" th:name="save" th:text="#{save}">Save</button>
+			</fieldset>
+		</form>
+
+	</div>
+</body>
+</html>

@@ -39,7 +39,7 @@ public class ImportFilter {
   @Enumerated(EnumType.STRING)
   private ConditionType conditionType;
 
-  @Column(length = 512)
+  @Column(length = 1024)
   private String condition;
 
   @Column(nullable = false)

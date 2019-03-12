@@ -27,13 +27,18 @@ https://services.dnb.de/oai/accessToken~${token}/repository?verb=ListRecords&fro
 
 Titel werden gegen den eigenen Bestand abgeglichen werden, so dass Titel, die im eigenen Bestand vorhanden sind nicht importiert werden. Berücksichtigt wird dabei der lokale Bestand der Anwendung und ein externen Bestand, der über einen _InventoryConnector_ abgefragt wird.
 
-Implementiert: _TibConnector_, der gegen _https://getinfo.tib.eu/sru_ prüft.
+Implementiert: _TibConnector_ - SRU-Schnittstelle + Prüfung wieviele Ergebnisse geliefert werden.
+
+Konfiguration über _inventory.tib.baseurl_ (URL der SRU-Schnittstelle) und _inventory.tib.recordnrpath_ (XPath Pfad zur Anzahl der Ergebnisse im Reply) in den _application.properties_.
 
 ### Filterregeln
 
-**TODO**
-
-Es sollen Regeln erstellt werden können, so dass Titel direkt beim Import abgelehnt werden können.
+Es können Regeln erstellt werden, so dass Titel direkt beim Import abgelehnt werden können. Die Konfiguration der Filterregeln ist über die Weboberfläche möglich.
+Es können folgende Bedingungen konfiguriert werden:
+* __Formschlagwort + regulärer Ausdruck__: es wird geprüft, der reguläre Ausdruck auf ein beliebiges Formschlagwort der Neuerscheinung passt.
+    * **Beispiel**: _.*Jugendbuch.*_ => zB wird Neuerscheinung mit Formschlagwort "Jugendbuch ab 11 Jahren" aussortiert.
+* __Sachgruppe + regulärer Ausdruck__: es wird geprüft, der reguläre Ausdruck auf eine beliebige Sachgruppe der Neuerscheinung passt.
+    * **Beispiel**: _123.*_ => zB wird Neuerscheinung mit Sachgruppe 123.456 aussortiert.
     
 ### Cleanup
 

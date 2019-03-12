@@ -1,7 +1,9 @@
 package eu.tib.profileservice;
 
 import eu.tib.profileservice.controller.DocumentController;
+import eu.tib.profileservice.controller.ImportController;
 import eu.tib.profileservice.controller.UserController;
+import eu.tib.profileservice.domain.User.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,18 +24,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   private UserDetailsService userDetailsService;
 
   @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  protected void configure(final HttpSecurity http) throws Exception {
     http
         .authorizeRequests().antMatchers(UserController.BASE_PATH + "/**").hasAuthority(
             "MANAGE_USERS")
         .and().authorizeRequests().antMatchers(DocumentController.BASE_PATH + "/**").hasAuthority(
             "PROCESS_DOCUMENTS")
+        .and().authorizeRequests().antMatchers(ImportController.BASE_PATH
+            + ImportController.PATH_IMPORT).hasAuthority(
+                Role.IMPORT_DOCUMENTS.toString())
         .and().formLogin().permitAll()
         .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
   }
 
   @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+  protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
   }
 

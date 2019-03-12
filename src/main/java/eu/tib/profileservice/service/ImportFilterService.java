@@ -30,4 +30,12 @@ public interface ImportFilterService {
    */
   public List<ImportFilter> findAll();
 
+  /**
+   * Retrieve {@link ImportFilter} for the given id.
+   * 
+   * @param id id
+   * @return filter
+   */
+  public ImportFilter findById(final Long id);
+
 }

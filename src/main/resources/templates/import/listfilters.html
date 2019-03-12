@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	layout:decorate="~{layout}">
+<head>
+<title th:text="#{import.title}">Import</title>
+</head>
+<body>
+	<div layout:fragment="page_content">
+
+		<div class="row">
+			<div class="container col-lg-12">
+				<ul class="breadcrumb">
+					<li><a href="#" th:href="@{/import/listfilters}" th:text="#{import.title}">Import</a></li>
+					<li class="active" th:text="#{import.filters}">Filter</li>
+				</ul>
+			</div>
+		</div>
+
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th th:text="#{import.filter.type}">Type</th>
+					<th th:text="#{import.filter.condition}">Condition</th>
+					<th th:text="#{import.filter.action}">Action</th>
+					<th><a class="btn btn-xs btn-primary" href="#"
+						th:href="@{/import/createfilter}"> <span
+							class="glyphicon glyphicon-plus-sign"></span> <span
+							th:text="#{import.filter.create}">Neuer Filter</span>
+					</a></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="filter : ${filters}">
+					<td th:text="#{import.filter.type.+${filter.conditionType}}"></td>
+					<td th:with="maxLength=${T(Math).min(filter.condition.length(), 70)}" th:text="${#strings.substring(filter.condition,0,maxLength)}"></td>
+					<td th:text="#{import.filter.action.+${filter.action}}"></td>
+					<td>
+						<div class="btn-group">
+							<a class="btn btn-sm btn-default" href="#"
+								th:title="#{import.filter.show}"
+								th:href="@{/import/showfilter/__${filter.id}__}"> <span
+								class="glyphicon glyphicon-eye-open"></span>
+							</a> <a class="btn btn-sm btn-default" href="#"
+								th:title="#{import.filter.edit}"
+								th:href="@{/import/editfilter/__${filter.id}__}"> <i
+								class="glyphicon glyphicon-pencil"></i>
+							</a>
+						</div>
+						<div class="btn-group">
+							<form action="#" th:action="@{/import/deletefilter}"
+								method="post">
+								<fieldset>
+									<input class="form-control" type="hidden" th:name="id"
+										th:value="${filter.id}" />
+									<button class="btn btn-sm btn-danger" type="submit"
+										th:title="#{import.filter.delete}"
+										th:onclick="'return confirm(\'' + #{import.filter.delete.question} + '\');'">
+										<span class="glyphicon glyphicon-trash"></span>
+									</button>
+								</fieldset>
+							</form>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

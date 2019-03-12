@@ -22,7 +22,8 @@ public class User {
 
   public enum Role {
     MANAGE_USERS,
-    PROCESS_DOCUMENTS
+    PROCESS_DOCUMENTS,
+    IMPORT_DOCUMENTS
   }
 
   public static final String COLUMN_NAME_NAME = "name";
@@ -75,7 +76,7 @@ public class User {
    * 
    * @param id the id to set
    */
-  public void setId(Long id) {
+  public void setId(final Long id) {
     this.id = id;
   }
 
@@ -93,7 +94,7 @@ public class User {
    * 
    * @param name the name to set
    */
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -111,7 +112,7 @@ public class User {
    * 
    * @param password the password to set
    */
-  public void setPassword(String password) {
+  public void setPassword(final String password) {
     this.password = password;
   }
 
@@ -129,7 +130,7 @@ public class User {
    * 
    * @param initials the initials to set
    */
-  public void setInitials(String initials) {
+  public void setInitials(final String initials) {
     this.initials = initials;
   }
 
@@ -147,7 +148,7 @@ public class User {
    * 
    * @param email the email to set
    */
-  public void setEmail(String email) {
+  public void setEmail(final String email) {
     this.email = email;
   }
 
@@ -165,7 +166,7 @@ public class User {
    * 
    * @param roles the roles to set
    */
-  public void setRoles(List<Role> roles) {
+  public void setRoles(final List<Role> roles) {
     this.roles = roles;
   }
 
@@ -183,7 +184,7 @@ public class User {
    * 
    * @param categories the categories to set
    */
-  public void setCategories(List<Category> categories) {
+  public void setCategories(final List<Category> categories) {
     this.categories = categories;
   }
 
