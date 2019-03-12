@@ -16,6 +16,7 @@ public class DocumentMetadata {
   private static final String TABLE_NAME_AUTHORS = "document_metadata_authors";
   private static final String TABLE_NAME_ISBNS = "document_metadata_isbns";
   private static final String TABLE_NAME_DDC_CLASSES = "document_metadata_ddcs";
+  private static final String TABLE_NAME_FORM_KEYWORDS = "document_metadata_form_keywords";
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,6 +47,10 @@ public class DocumentMetadata {
   private String termsOfAvailability;
 
   private String formOfProduct;
+
+  @ElementCollection
+  @CollectionTable(name = TABLE_NAME_FORM_KEYWORDS)
+  private List<String> formKeywords;
 
   @ElementCollection
   @CollectionTable(name = TABLE_NAME_ISBNS)
@@ -305,6 +310,24 @@ public class DocumentMetadata {
    */
   public void setFormOfProduct(String formOfProduct) {
     this.formOfProduct = formOfProduct;
+  }
+
+  /**
+   * getter: formKeywords.
+   * 
+   * @return the formKeywords
+   */
+  public List<String> getFormKeywords() {
+    return formKeywords;
+  }
+
+  /**
+   * setter: formKeywords.
+   * 
+   * @param formKeywords the formKeywords to set
+   */
+  public void setFormKeywords(List<String> formKeywords) {
+    this.formKeywords = formKeywords;
   }
 
 }

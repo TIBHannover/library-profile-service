@@ -50,6 +50,9 @@ public class MarcXml2DocumentConverterTest {
           .getPhysicalDescription());
       assertEquals("Testseries, 3", metadata.getSeries());
       assertEquals("Mixed media product, Another DNB product form", metadata.getFormOfProduct());
+      assertThat(metadata.getFormKeywords()).isNotNull();
+      assertThat(metadata.getFormKeywords().size()).isEqualTo(1);
+      assertThat(metadata.getFormKeywords()).contains("Testbücher bis 11 Jahre");
     }
   }
 

@@ -177,6 +177,7 @@ public class MarcXml2DocumentConverter {
     document.setTermsOfAvailability(getDataIfExists(record, "020", 'c'));
     document.setAuthors(getAuthors(record));
     document.setDeweyDecimalClassifications(getDeweyDecimalClassifications(record));
+    document.setFormKeywords(getAllData(record, "655", 'a'));
     return document;
   }
 

@@ -172,6 +172,9 @@
 	<datafield tag="653" ind1=" " ind2=" ">
 		<subfield code="a">(VLB-WN)1785: Hardcover, Softcover / Wirtschaft/Werbung, Marketing</subfield>
 	</datafield>
+	<datafield tag="655" ind1=" " ind2="7">
+		<subfield code="a">Testbücher bis 11 Jahre</subfield>
+	</datafield>
 	<datafield tag="700" ind1="1" ind2=" ">
 		<subfield code="a">Test2, Author</subfield>
 		<subfield code="e">Verfasser</subfield>
