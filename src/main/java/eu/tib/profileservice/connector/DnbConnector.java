@@ -42,6 +42,7 @@ public class DnbConnector implements InstitutionConnector {
   private String resumptionToken;
   private boolean isFirstRequest;
 
+  private boolean errorOccurred;
 
   /**
    * New instance of {@link DnbConnector}.
@@ -52,8 +53,9 @@ public class DnbConnector implements InstitutionConnector {
    * @param from from
    * @param to to
    */
-  public DnbConnector(RestTemplate restTemplate, String baseUrl, String accessToken, LocalDate from,
-      LocalDate to) {
+  public DnbConnector(final RestTemplate restTemplate, final String baseUrl,
+      final String accessToken, final LocalDate from,
+      final LocalDate to) {
     this.restTemplate = restTemplate;
     this.baseUrl = baseUrl;
     this.accessToken = accessToken;
@@ -61,6 +63,7 @@ public class DnbConnector implements InstitutionConnector {
     this.to = to;
     resumptionToken = null;
     isFirstRequest = true;
+    errorOccurred = false;
   }
 
   private String buildRequestRetrieveRecords() {
@@ -100,18 +103,21 @@ public class DnbConnector implements InstitutionConnector {
             .getBody());
         if (converter.hasErrors()) {
           LOG.warn("Errors occurred during data conversion");
+          errorOccurred = true;
           converter.getErrors().forEach(e -> LOG.warn(e.toString()));
         }
         resumptionToken = getResumptionToken(response.getBody());
         LOG.debug("Got resumption token {}", resumptionToken);
       } else {
         LOG.warn("Cannot retrieve data from DNB ({}) - status: {}", request.replace(accessToken,
-            "xxx"), response
-                .getStatusCode());
+            "xxx"), response.getStatusCode());
+        errorOccurred = true;
         resumptionToken = null;
       }
     } catch (RestClientException e) {
       LOG.error("Error while accessing: " + baseUrl, e);
+      errorOccurred = true;
+      resumptionToken = null;
     }
     return documents;
   }
@@ -132,6 +138,12 @@ public class DnbConnector implements InstitutionConnector {
   @Override
   public boolean hasNext() {
     return isFirstRequest || (resumptionToken != null && resumptionToken.length() > 0);
+  }
+
+
+  @Override
+  public boolean hasErrors() {
+    return errorOccurred;
   }
 
 }

@@ -74,6 +74,9 @@ public class DocumentImportServiceImpl implements DocumentImportService {
             dnbStatistics));
       }
     }
+    if (dnbConn.hasErrors()) {
+      LOG.error("There was an error while retrieving documents from DNB");
+    }
     LOG.info(
         "Import documents from DNB done."
             + " (retrieved: {}, imported: {}, alreadyExists: {}, invalid: {}, ignored: {}",

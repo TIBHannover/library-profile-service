@@ -70,10 +70,8 @@ public class TibConnector implements InventoryConnector {
   private int getNrOfRecords(final String responseDcxXml) throws ConnectorException {
     final XPath xpath = XPathFactory.newInstance().newXPath();
     try {
-      InputSource src = new InputSource(new StringReader(responseDcxXml));
       final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      final Document xml = builder.parse(src);
-
+      final Document xml = builder.parse(new InputSource(new StringReader(responseDcxXml)));
       return Integer.valueOf(xpath.evaluate(pathNumberOfRecords, xml));
     } catch (XPathExpressionException | ParserConfigurationException | SAXException
         | IOException e) {
