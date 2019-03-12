@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -90,23 +91,27 @@ public class DnbConnector implements InstitutionConnector {
     List<DocumentMetadata> documents = null;
     final String request = buildRequestRetrieveRecords();
     LOG.debug("retrieveDocuments with request: {}", request.replace(accessToken, "xxx"));
-    final ResponseEntity<String> response = restTemplate.getForEntity(request, String.class);
-    LOG.debug("response: {}", response.getStatusCode().toString());
-    if (HttpStatus.OK.equals(response.getStatusCode()) && response.hasBody()) {
-      MarcXml2DocumentConverter converter = new MarcXml2DocumentConverter();
-      documents = converter.extractMarcXmlRecordsAndConvert(MARCXML_RECORD_PATH, response
-          .getBody());
-      if (converter.hasErrors()) {
-        LOG.warn("Errors occurred during data conversion");
-        converter.getErrors().forEach(e -> LOG.warn(e.toString()));
+    try {
+      final ResponseEntity<String> response = restTemplate.getForEntity(request, String.class);
+      LOG.debug("response: {}", response.getStatusCode().toString());
+      if (HttpStatus.OK.equals(response.getStatusCode()) && response.hasBody()) {
+        MarcXml2DocumentConverter converter = new MarcXml2DocumentConverter();
+        documents = converter.extractMarcXmlRecordsAndConvert(MARCXML_RECORD_PATH, response
+            .getBody());
+        if (converter.hasErrors()) {
+          LOG.warn("Errors occurred during data conversion");
+          converter.getErrors().forEach(e -> LOG.warn(e.toString()));
+        }
+        resumptionToken = getResumptionToken(response.getBody());
+        LOG.debug("Got resumption token {}", resumptionToken);
+      } else {
+        LOG.warn("Cannot retrieve data from DNB ({}) - status: {}", request.replace(accessToken,
+            "xxx"), response
+                .getStatusCode());
+        resumptionToken = null;
       }
-      resumptionToken = getResumptionToken(response.getBody());
-      LOG.debug("Got resumption token {}", resumptionToken);
-    } else {
-      LOG.warn("Cannot retrieve data from DNB ({}) - status: {}", request.replace(accessToken,
-          "xxx"), response
-          .getStatusCode());
-      resumptionToken = null;
+    } catch (RestClientException e) {
+      LOG.error("Error while accessing: " + baseUrl, e);
     }
     return documents;
   }

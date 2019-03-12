@@ -9,8 +9,10 @@ import eu.tib.profileservice.connector.InventoryConnector;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.DocumentMetadata;
+import eu.tib.profileservice.domain.ImportFilter;
 import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.util.DocumentAssignmentFinder;
+import eu.tib.profileservice.util.ImportFilterProcessor;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -46,9 +48,14 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   @Autowired
   private DocumentRepository documentRepository;
 
+  @Autowired
+  private ImportFilterService importFilterService;
+
   @Transactional
   @Override
-  public void importDocuments(LocalDate from, LocalDate to) {
+  public void importDocuments(final LocalDate from, final LocalDate to) {
+    List<ImportFilter> filterRules = importFilterService.findAll();
+    ImportFilterProcessor filterProcessor = new ImportFilterProcessor(filterRules);
     DocumentAssignmentFinder documentAssignmentFinder = new DocumentAssignmentFinder(userService
         .findAll());
 
@@ -63,7 +70,8 @@ public class DocumentImportServiceImpl implements DocumentImportService {
         break;
       } else {
         dnbStatistics.retrieved += documents.size();
-        documents.forEach(doc -> createNewDocument(doc, documentAssignmentFinder, dnbStatistics));
+        documents.forEach(doc -> createNewDocument(doc, documentAssignmentFinder, filterProcessor,
+            dnbStatistics));
       }
     }
     LOG.info(
@@ -77,7 +85,8 @@ public class DocumentImportServiceImpl implements DocumentImportService {
    * Persist a new {@link Document} for the given {@link DocumentMetadata}, if not already existing.
    */
   private void createNewDocument(final DocumentMetadata documentMetadata,
-      final DocumentAssignmentFinder documentAssignmentFinder, final ImportStatistics statistics) {
+      final DocumentAssignmentFinder documentAssignmentFinder,
+      final ImportFilterProcessor filterProcessor, final ImportStatistics statistics) {
     if (!isValid(documentMetadata)) {
       LOG.error("invalid document: {}", buildDocumentMetadataString(documentMetadata));
       statistics.invalid++;
@@ -91,10 +100,13 @@ public class DocumentImportServiceImpl implements DocumentImportService {
       OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
       document.setCreationDateUtc(utc.toLocalDateTime());
       document.setMetadata(documentMetadata);
-      if (shouldIgnore(documentMetadata)) {
-        document.setStatus(Status.IGNORED);
+
+      filterProcessor.process(document);
+
+      if (Status.IGNORED.equals(document.getStatus())) {
         statistics.ignored++;
-      } else {
+        //} else if (document.getStatus()==null||document.getStatus().equals(Status.IN_PROGRESS)) {
+      } else { // currently only IGNORED is possible for FilterProcessor
         document.setStatus(Status.IN_PROGRESS);
         document.setAssignee(documentAssignmentFinder.determineAssignee(documentMetadata));
         statistics.imported++;
@@ -104,17 +116,6 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     }
   }
 
-
-  /**
-   * Check if the given document should be ignored.
-   * 
-   * @param documentMetadata document to check
-   * @return true, if the document should be ignored; false otherwise
-   */
-  private boolean shouldIgnore(final DocumentMetadata documentMetadata) {
-    // TODO rules (ignore new documents)
-    return false;
-  }
 
   /**
    * Check if the given {@link DocumentMetadata} already exists in the inventory (local and

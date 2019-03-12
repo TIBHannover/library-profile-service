@@ -1,5 +1,6 @@
 package eu.tib.profileservice.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -10,16 +11,24 @@ import eu.tib.profileservice.connector.InstitutionConnectorFactory;
 import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType;
 import eu.tib.profileservice.connector.InventoryConnector;
 import eu.tib.profileservice.domain.Document;
+import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.DocumentMetadata;
+import eu.tib.profileservice.domain.ImportFilter;
+import eu.tib.profileservice.domain.ImportFilter.Action;
+import eu.tib.profileservice.domain.ImportFilter.ConditionType;
 import eu.tib.profileservice.repository.DocumentRepository;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -51,13 +60,30 @@ public class DocumentImportServiceTest {
   private InventoryConnector inventoryConnector;
   @MockBean
   private UserService userService;
+  @MockBean
+  private ImportFilterService importFilterService;
 
   private DocumentMetadata newDocumentMetadataDummy() {
     final DocumentMetadata document = new DocumentMetadata();
     document.setTitle("title");
     document.setRemainderOfTitle("remainderOfTitle");
     document.setIsbns(Arrays.asList(new String[] {"1234567890"}));
+    Set<String> categories = new HashSet<String>();
+    categories.add("123.456");
+    categories.add("987.6");
+    document.setDeweyDecimalClassifications(categories);
+    List<String> formKeywords = new ArrayList<String>();
+    formKeywords.add("test");
+    document.setFormKeywords(formKeywords);
     return document;
+  }
+
+  private ImportFilter newIgnoreFilter(final String condition, final ConditionType conditionType) {
+    ImportFilter filter = new ImportFilter();
+    filter.setAction(Action.IGNORE);
+    filter.setCondition(condition);
+    filter.setConditionType(conditionType);
+    return filter;
   }
 
   /**
@@ -93,6 +119,27 @@ public class DocumentImportServiceTest {
     documentImportService.importDocuments(now, now);
 
     verify(documentRepository, times(0)).save(Mockito.any(Document.class));
+  }
+
+  @Test
+  public void testImportDocumentsWithMatchingFilter() {
+    List<ImportFilter> filters = Arrays.asList(new ImportFilter[] {newIgnoreFilter("test",
+        ConditionType.FORM_KEYWORD)});
+    List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
+        newDocumentMetadataDummy()});
+    when(importFilterService.findAll()).thenReturn(filters);
+    when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
+    when(documentRepository.findByMetadataIsbns(Mockito.anyString())).thenReturn(null);
+
+    OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+    LocalDate now = utc.toLocalDate();
+    documentImportService.importDocuments(now, now);
+
+    ArgumentCaptor<Document> arg1 = ArgumentCaptor.forClass(Document.class);
+    verify(documentRepository, times(1)).save(arg1.capture());
+    Document doc = arg1.getValue();
+    assertThat(doc).isNotNull();
+    assertThat(doc.getStatus()).isEqualTo(Status.IGNORED);
   }
 
   @Test
