@@ -1,5 +1,6 @@
 package eu.tib.profileservice.connector;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -18,10 +19,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 @RunWith(SpringRunner.class)
+@ContextConfiguration(classes = TibConnector.class)
+@TestPropertySource(value = "classpath:application.properties")
 public class TibConnectorTest {
 
   @TestConfiguration
@@ -79,6 +84,10 @@ public class TibConnectorTest {
     expectResourceAsRestTemplateRespone("connector/TIBResponse001.xml");
     boolean contains = connector.contains(newDocumentMetadataDummy("123456789", "987654321"));
     assertTrue(contains);
+
+    expectResourceAsRestTemplateRespone("connector/TIBResponse002.xml");
+    contains = connector.contains(newDocumentMetadataDummy("123456789", "987654321"));
+    assertFalse(contains);
   }
 
 }

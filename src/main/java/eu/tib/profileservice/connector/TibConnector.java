@@ -12,15 +12,26 @@ import javax.xml.xpath.XPathFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ * Implementation of {@link InventoryConnector} for sru api of <i>tib.eu</i>.
+ * 
+ * <p>
+ * The connector just checks if the numberOfRecords in the response is gt 0.
+ * </p>
+ */
 @Component
+@PropertySource("classpath:application.properties")
 public class TibConnector implements InventoryConnector {
 
   private static final Logger LOG = LoggerFactory.getLogger(TibConnector.class);
@@ -31,7 +42,10 @@ public class TibConnector implements InventoryConnector {
   //  private static final String MARCXML_RECORD_PATH =
   //      "/searchRetrieveResponse/records/record/recordData/record";
 
-  private final String baseUrl = "https://getinfo.tib.eu/sru";
+  @Value("${inventory.tib.baseurl}")
+  private String baseUrl;
+  @Value("${inventory.tib.recordnrpath}")
+  private String pathNumberOfRecords;
 
   @Autowired
   private RestTemplate restTemplate;
@@ -60,7 +74,7 @@ public class TibConnector implements InventoryConnector {
       final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       final Document xml = builder.parse(src);
 
-      return Integer.valueOf(xpath.evaluate("/searchRetrieveResponse/numberOfRecords", xml));
+      return Integer.valueOf(xpath.evaluate(pathNumberOfRecords, xml));
     } catch (XPathExpressionException | ParserConfigurationException | SAXException
         | IOException e) {
       throw new ConnectorException("error while parsing reply", e);
@@ -71,18 +85,22 @@ public class TibConnector implements InventoryConnector {
   public boolean contains(final DocumentMetadata documentMetadata) throws ConnectorException {
     final String request = buildRequest(documentMetadata);
     LOG.debug("retrieveDocument with request: {}", request);
-    final ResponseEntity<String> response = restTemplate.getForEntity(request, String.class);
-    LOG.debug("response: {}", response.getStatusCode().toString());
-    boolean contained = false;
-    if (HttpStatus.OK.equals(response.getStatusCode()) && response.hasBody()) {
-      LOG.debug("response body: {}", response.getBody());
-      int nrOfExistingDocuments = getNrOfRecords(response.getBody());
-      contained = nrOfExistingDocuments > 0;
-    } else {
-      throw new ConnectorException("Cannot retrieve document from: " + baseUrl);
+    try {
+      final ResponseEntity<String> response = restTemplate.getForEntity(request, String.class);
+      LOG.debug("response: {}", response.getStatusCode().toString());
+      boolean contained = false;
+      if (HttpStatus.OK.equals(response.getStatusCode()) && response.hasBody()) {
+        LOG.debug("response body: {}", response.getBody());
+        int nrOfExistingDocuments = getNrOfRecords(response.getBody());
+        contained = nrOfExistingDocuments > 0;
+      } else {
+        throw new ConnectorException("Cannot retrieve document from: " + baseUrl);
+      }
+      LOG.debug("contained in inventory: {}", contained);
+      return contained;
+    } catch (RestClientException e) {
+      throw new ConnectorException("Error while accessing: " + baseUrl, e);
     }
-    LOG.debug("contained in inventory: {}", contained);
-    return contained;
   }
 
 }
