@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
@@ -30,7 +29,6 @@ import org.xml.sax.SAXException;
  * The connector just checks if the numberOfRecords in the response is gt 0.
  * </p>
  */
-@Component
 @PropertySource("classpath:application.properties")
 public class TibConnector implements InventoryConnector {
 

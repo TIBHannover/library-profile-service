@@ -43,11 +43,41 @@ Vorhandene Sachgruppen
     
 ### Bestandsabgleich
 
-Titel werden gegen den eigenen Bestand abgeglichen werden, so dass Titel, die im eigenen Bestand vorhanden sind nicht importiert werden. Berücksichtigt wird dabei der lokale Bestand der Anwendung und ein externen Bestand, der über einen _InventoryConnector_ abgefragt wird.
+Titel werden gegen den eigenen Bestand abgeglichen, so dass Titel, die im eigenen Bestand vorhanden sind nicht importiert werden. Berücksichtigt wird dabei der lokale Bestand der Anwendung und ein(!) externer Bestand (optional), der über einen _InventoryConnector_ abgefragt wird.
 
-Implementiert: _TibConnector_ - SRU-Schnittstelle + Prüfung wieviele Ergebnisse geliefert werden.
+Kriterien für den Abgleich im lokalen Bestand: ISBN
 
-Konfiguration über _inventory.tib.baseurl_ (URL der SRU-Schnittstelle) und _inventory.tib.recordnrpath_ (XPath Pfad zur Anzahl der Ergebnisse im Reply) in den _application.properties_.
+#### InventoryConnector
+
+Der (remote) _InventoryConnector_ wird aktiviert in den _application.properties_ über _inventory.system_. Der dort konfigurierte Connector wird in der Configuration _WebConfig_ eingerichtet (weitere Implementationen müssen hier auch registriert werden).
+
+Ist dort kein Connector konfiguriert, so findet kein Abgleich zum externen Bestand statt.
+
+Implementierte Connectoren: 
+
+##### TibConnector 
+* SRU-Schnittstelle + Prüfung wieviele Ergebnisse geliefert werden.
+* Kriterien für den Abgleich: ISBN
+     * **TODO**:
+     
+> zur Klärung und Ergänzung des Punktes Dublettencheck gegen unseren OPAC noch ein Nachtrag:
+>
+> E-Books enthalten oftmals zwei ISBNs, nämlich die des E-Books selbst und die der Printausgabe (Parallelausgabe).
+> Wenn im OPAC daher ein Titel nur als E-Book vorhanden ist (dies betrifft v.a. eingespielte große E-Book-Pakete,  z.B. Springer oder EBA), dann darf die Printausgabe aus dem Profildienst nicht entfernt werden.
+     
+* Aktivieren: _application.properties_: _inventory.system=tib_
+* Konfiguration _application.properties_
+     * _inventory.tib.baseurl_ (URL der SRU-Schnittstelle)
+     * _inventory.tib.recordnrpath_ (XPath Pfad zur Anzahl der Ergebnisse im Reply)
+
+Beispiel  
+        
+```
+inventory.system=tib
+inventory.tib.baseurl=https://getinfo.tib.eu/sru
+inventory.tib.recordnrpath=/searchRetrieveResponse/numberOfRecords
+```
+
 
 ### Filterregeln
 
@@ -62,4 +92,4 @@ Es können folgende Bedingungen konfiguriert werden:
 
 Die Daten werden nach einem bestimmten Zeitraum wieder aus dem System gelöscht über den _eu.tib.profileservice.scheduling.DocumentCleanupJob_.
 
-**TODO**: dabei keine Titel mit Status "zurückgestellt" löschen.
+**TODO**: dabei keine Titel mit Status "zurückgestellt" löschen oder mit "expiryDate" oä arbeiten (noch zu klären).

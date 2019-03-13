@@ -38,7 +38,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   @Autowired
   private InstitutionConnectorFactory connectorFactory;
 
-  @Autowired
+  @Autowired(required = false)
   private InventoryConnector inventoryConnector;
 
   @Autowired
@@ -54,12 +54,15 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   @Override
   public void importDocuments(final LocalDate from, final LocalDate to,
       final ConnectorType connectorType) {
+    LOG.info("Import documents from {} (from: {}, to: {})", connectorType, from, to);
+    if (inventoryConnector == null) {
+      LOG.debug("no inventory connector");
+    }
     List<ImportFilter> filterRules = importFilterService.findAll();
     ImportFilterProcessor filterProcessor = new ImportFilterProcessor(filterRules);
     DocumentAssignmentFinder documentAssignmentFinder = new DocumentAssignmentFinder(userService
         .findAll());
 
-    LOG.info("Import documents from {} (from: {}, to: {})", connectorType, from, to);
     ImportStatistics statistics = new ImportStatistics();
     InstitutionConnector connector = connectorFactory.createConnector(connectorType, from, to);
     while (connector.hasNext()) {
@@ -118,7 +121,6 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     }
   }
 
-
   /**
    * Check if the given {@link DocumentMetadata} already exists in the inventory (local and
    * external).
@@ -138,15 +140,17 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     }
 
     // check remote inventory
-    try {
-      boolean exists = inventoryConnector.contains(documentMetadata);
-      if (exists) {
-        LOG.debug("document already exists in remote inventory: {}", buildDocumentMetadataString(
-            documentMetadata));
-        return true;
+    if (inventoryConnector != null) {
+      try {
+        boolean exists = inventoryConnector.contains(documentMetadata);
+        if (exists) {
+          LOG.debug("document already exists in remote inventory: {}", buildDocumentMetadataString(
+              documentMetadata));
+          return true;
+        }
+      } catch (ConnectorException e) {
+        LOG.error("error in inventory connector", e);
       }
-    } catch (ConnectorException e) {
-      LOG.error("error in inventory connector", e);
     }
     return false;
   }
@@ -164,6 +168,24 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     boolean valid = documentMetadata.getIsbns() != null && documentMetadata.getIsbns().size() > 0;
 
     return valid;
+  }
+
+  /**
+   * getter: inventoryConnector.
+   * 
+   * @return the inventoryConnector
+   */
+  public InventoryConnector getInventoryConnector() {
+    return inventoryConnector;
+  }
+
+  /**
+   * setter: inventoryConnector.
+   * 
+   * @param inventoryConnector the inventoryConnector to set
+   */
+  public void setInventoryConnector(final InventoryConnector inventoryConnector) {
+    this.inventoryConnector = inventoryConnector;
   }
 
 }

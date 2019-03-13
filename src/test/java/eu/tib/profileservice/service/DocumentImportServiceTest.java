@@ -57,8 +57,6 @@ public class DocumentImportServiceTest {
   @MockBean
   private InstitutionConnector connector;
   @MockBean
-  private InventoryConnector inventoryConnector;
-  @MockBean
   private UserService userService;
   @MockBean
   private ImportFilterService importFilterService;
@@ -174,6 +172,9 @@ public class DocumentImportServiceTest {
 
   @Test
   public void testImportDocumentsWithExistingRemoteDocument() throws ConnectorException {
+    InventoryConnector inventoryConnector = Mockito.mock(InventoryConnector.class);
+    ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(inventoryConnector);
+
     Document existingDocument = new Document();
     existingDocument.setMetadata(newDocumentMetadataDummy());
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
@@ -187,10 +188,34 @@ public class DocumentImportServiceTest {
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
     verify(documentRepository, times(0)).save(Mockito.any(Document.class));
+    ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(null);
+  }
+
+  @Test
+  public void testImportDocumentsWithoutExistingRemoteDocument() throws ConnectorException {
+    InventoryConnector inventoryConnector = Mockito.mock(InventoryConnector.class);
+    ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(inventoryConnector);
+
+    Document existingDocument = new Document();
+    existingDocument.setMetadata(newDocumentMetadataDummy());
+    List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
+        newDocumentMetadataDummy()});
+    when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
+    when(documentRepository.findByMetadataIsbns(Mockito.anyString())).thenReturn(null);
+    when(inventoryConnector.contains(Mockito.any(DocumentMetadata.class))).thenReturn(false);
+
+    OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+    LocalDate now = utc.toLocalDate();
+    documentImportService.importDocuments(now, now, ConnectorType.DNB);
+
+    verify(documentRepository, times(1)).save(Mockito.any(Document.class));
+    ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(null);
   }
 
   @Test
   public void testImportDocumentsWithExistingRemoteConnectorFailure() throws ConnectorException {
+    InventoryConnector inventoryConnector = Mockito.mock(InventoryConnector.class);
+    ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(inventoryConnector);
     Document existingDocument = new Document();
     existingDocument.setMetadata(newDocumentMetadataDummy());
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
@@ -205,6 +230,7 @@ public class DocumentImportServiceTest {
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
     verify(documentRepository, times(1)).save(Mockito.any(Document.class));
+    ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(null);
   }
 
 }
