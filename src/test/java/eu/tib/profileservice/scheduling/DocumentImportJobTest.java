@@ -5,6 +5,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType;
 import eu.tib.profileservice.service.DocumentImportService;
 import java.time.LocalDate;
 import org.junit.Test;
@@ -46,7 +47,15 @@ public class DocumentImportJobTest {
     when(testContext.getMergedJobDataMap()).thenReturn(new JobDataMap());
     importJob.execute(testContext);
     verify(documentImportService, times(1)).importDocuments(Mockito.any(LocalDate.class), Mockito
-        .any(LocalDate.class));
+        .any(LocalDate.class), Mockito.any(ConnectorType.class));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidConnectorType() throws SchedulerException {
+    JobDataMap jobDataMap = new JobDataMap();
+    jobDataMap.put(DocumentImportJob.JOB_DATA_CONNECTOR_TYPE, "invalid");
+    when(testContext.getMergedJobDataMap()).thenReturn(jobDataMap);
+    importJob.execute(testContext);
   }
 
   @Test
@@ -54,16 +63,20 @@ public class DocumentImportJobTest {
     JobDataMap jobDataMap = new JobDataMap();
     jobDataMap.put(DocumentImportJob.JOB_DATA_FROM_DATE, "2019-03-05");
     jobDataMap.put(DocumentImportJob.JOB_DATA_TO_DATE, "2019-03-06");
+    jobDataMap.put(DocumentImportJob.JOB_DATA_CONNECTOR_TYPE, "DNB");
 
     when(testContext.getMergedJobDataMap()).thenReturn(jobDataMap);
     importJob.execute(testContext);
     ArgumentCaptor<LocalDate> arg1 = ArgumentCaptor.forClass(LocalDate.class);
     ArgumentCaptor<LocalDate> arg2 = ArgumentCaptor.forClass(LocalDate.class);
-    verify(documentImportService, times(1)).importDocuments(arg1.capture(), arg2.capture());
+    ArgumentCaptor<ConnectorType> arg3 = ArgumentCaptor.forClass(ConnectorType.class);
+    verify(documentImportService, times(1)).importDocuments(arg1.capture(), arg2.capture(), arg3
+        .capture());
     LocalDate expectedFromDate = LocalDate.parse("2019-03-05");
     LocalDate expectedToDate = LocalDate.parse("2019-03-06");
     assertEquals(expectedFromDate, arg1.getValue());
     assertEquals(expectedToDate, arg2.getValue());
+    assertEquals(ConnectorType.DNB, arg3.getValue());
   }
 
 }

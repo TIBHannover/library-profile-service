@@ -1,10 +1,9 @@
 package eu.tib.profileservice.service;
 
-import static eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType.DNB;
-
 import eu.tib.profileservice.connector.ConnectorException;
 import eu.tib.profileservice.connector.InstitutionConnector;
 import eu.tib.profileservice.connector.InstitutionConnectorFactory;
+import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType;
 import eu.tib.profileservice.connector.InventoryConnector;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
@@ -53,35 +52,36 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 
   @Transactional
   @Override
-  public void importDocuments(final LocalDate from, final LocalDate to) {
+  public void importDocuments(final LocalDate from, final LocalDate to,
+      final ConnectorType connectorType) {
     List<ImportFilter> filterRules = importFilterService.findAll();
     ImportFilterProcessor filterProcessor = new ImportFilterProcessor(filterRules);
     DocumentAssignmentFinder documentAssignmentFinder = new DocumentAssignmentFinder(userService
         .findAll());
 
-    LOG.info("Import documents from DNB (from: {}, to: {})", from, to);
-    ImportStatistics dnbStatistics = new ImportStatistics();
-    InstitutionConnector dnbConn = connectorFactory.createConnector(DNB, from, to);
-    while (dnbConn.hasNext()) {
-      LOG.debug("going for next request (retrieved {} documents yet)", dnbStatistics.retrieved);
-      List<DocumentMetadata> documents = dnbConn.retrieveNextDocuments();
+    LOG.info("Import documents from {} (from: {}, to: {})", connectorType, from, to);
+    ImportStatistics statistics = new ImportStatistics();
+    InstitutionConnector connector = connectorFactory.createConnector(connectorType, from, to);
+    while (connector.hasNext()) {
+      LOG.debug("going for next request (retrieved {} documents yet)", statistics.retrieved);
+      List<DocumentMetadata> documents = connector.retrieveNextDocuments();
       if (documents == null) {
-        LOG.error("Cannot retrieve documents from DNB");
+        LOG.error("Cannot retrieve documents from {}", connectorType);
         break;
       } else {
-        dnbStatistics.retrieved += documents.size();
+        statistics.retrieved += documents.size();
         documents.forEach(doc -> createNewDocument(doc, documentAssignmentFinder, filterProcessor,
-            dnbStatistics));
+            statistics));
       }
     }
-    if (dnbConn.hasErrors()) {
-      LOG.error("There was an error while retrieving documents from DNB");
+    if (connector.hasErrors()) {
+      LOG.error("There was an error while retrieving documents from {}", connectorType);
     }
     LOG.info(
-        "Import documents from DNB done."
+        "Import documents from {} done."
             + " (retrieved: {}, imported: {}, alreadyExists: {}, invalid: {}, ignored: {}",
-        dnbStatistics.retrieved, dnbStatistics.imported, dnbStatistics.alreadyExists,
-        dnbStatistics.invalid, dnbStatistics.ignored);
+        connectorType, statistics.retrieved, statistics.imported, statistics.alreadyExists,
+        statistics.invalid, statistics.ignored);
   }
 
   /**
@@ -108,7 +108,6 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 
       if (Status.IGNORED.equals(document.getStatus())) {
         statistics.ignored++;
-        //} else if (document.getStatus()==null||document.getStatus().equals(Status.IN_PROGRESS)) {
       } else { // currently only IGNORED is possible for FilterProcessor
         document.setStatus(Status.IN_PROGRESS);
         document.setAssignee(documentAssignmentFinder.determineAssignee(documentMetadata));

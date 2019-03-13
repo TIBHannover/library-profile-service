@@ -5,6 +5,7 @@ import static eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MES
 import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_ERROR;
 import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_SUCCESS;
 
+import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType;
 import eu.tib.profileservice.domain.ImportFilter;
 import eu.tib.profileservice.scheduling.DocumentImportJob;
 import eu.tib.profileservice.service.ImportFilterService;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import org.quartz.JobBuilder;
@@ -208,6 +210,7 @@ public class ImportController {
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
     model.addAttribute("now", now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+    model.addAttribute("connectorTypes", Arrays.asList(ConnectorType.values()));
     return BASE_URL_TEMPLATE + TEMPLATE_IMPORT;
   }
 
@@ -219,11 +222,12 @@ public class ImportController {
    * @return template
    */
   @RequestMapping(value = PATH_IMPORT, params = {"import"}, method = RequestMethod.POST)
-  public String importDocuments(final String fromDate, final String toDate,
+  public String importDocuments(final String fromDate, final String toDate, final String type,
       final RedirectAttributes redirectAttrs) {
     JobDataMap jobDataMap = new JobDataMap();
     jobDataMap.put(DocumentImportJob.JOB_DATA_FROM_DATE, fromDate);
     jobDataMap.put(DocumentImportJob.JOB_DATA_TO_DATE, toDate);
+    jobDataMap.put(DocumentImportJob.JOB_DATA_CONNECTOR_TYPE, type);
     JobDetail jobDetail = JobBuilder.newJob().ofType(DocumentImportJob.class)
         .storeDurably()
         .withIdentity(UUID.randomUUID().toString(), "document-import-jobs")

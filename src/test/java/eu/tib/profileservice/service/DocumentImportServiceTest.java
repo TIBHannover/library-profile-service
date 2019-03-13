@@ -106,7 +106,7 @@ public class DocumentImportServiceTest {
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
-    documentImportService.importDocuments(now, now);
+    documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
     verify(documentRepository, times(0)).save(Mockito.any(Document.class));
   }
@@ -116,7 +116,7 @@ public class DocumentImportServiceTest {
     when(connector.retrieveNextDocuments()).thenReturn(null);
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
-    documentImportService.importDocuments(now, now);
+    documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
     verify(documentRepository, times(0)).save(Mockito.any(Document.class));
   }
@@ -133,7 +133,7 @@ public class DocumentImportServiceTest {
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
-    documentImportService.importDocuments(now, now);
+    documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
     ArgumentCaptor<Document> arg1 = ArgumentCaptor.forClass(Document.class);
     verify(documentRepository, times(1)).save(arg1.capture());
@@ -151,7 +151,7 @@ public class DocumentImportServiceTest {
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
-    documentImportService.importDocuments(now, now);
+    documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
     verify(documentRepository, times(1)).save(Mockito.any(Document.class));
   }
@@ -167,7 +167,7 @@ public class DocumentImportServiceTest {
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
-    documentImportService.importDocuments(now, now);
+    documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
     verify(documentRepository, times(0)).save(Mockito.any(Document.class));
   }
@@ -184,7 +184,7 @@ public class DocumentImportServiceTest {
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
-    documentImportService.importDocuments(now, now);
+    documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
     verify(documentRepository, times(0)).save(Mockito.any(Document.class));
   }
@@ -202,7 +202,7 @@ public class DocumentImportServiceTest {
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
-    documentImportService.importDocuments(now, now);
+    documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
     verify(documentRepository, times(1)).save(Mockito.any(Document.class));
   }

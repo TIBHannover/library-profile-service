@@ -16,10 +16,19 @@
 				</ul>
 			</div>
 		</div>
-		<span>zum Testen via Browser: Import anstoßen</span>
+		<p>zum Testen via Browser: Import anstoßen</p>
 		<form action="#" th:action="@{/import/import}" method="post">
-			<input type="text" class="form-control" required="required" th:name="fromDate" th:value="${now}"/>
-			<input type="text" class="form-control" required="required" th:name="toDate" th:value="${now}"/>
+			<div class="form-group">
+				<select class="form-control" >
+					<option th:each="type : ${connectorTypes}" th:name="type" th:value="${type.toString()}" th:utext="${type.toString()}" />
+			   </select>
+			</div>
+			<div class="form-group">
+				<input type="text" class="form-control" required="required" th:name="fromDate" th:value="${now}"/>
+			</div>
+			<div class="form-group">
+				<input type="text" class="form-control" required="required" th:name="toDate" th:value="${now}"/>
+			</div>
 			<button class="btn btn-sm btn-primary" type="submit" name="import">
 				<span>Import</span>
 			</button>

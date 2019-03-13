@@ -23,6 +23,7 @@ https://services.dnb.de/oai/accessToken~${token}/repository?verb=ListRecords&fro
 * Konfiguration in den _application.properties_
      * externalsystem.dnb.baseurl - URL der OAI-Schnittstelle
      * externalsystem.dnb.token - DNB access token
+     * externalsystem.dnb.schedule.cron - Cron Schedule des Import-Jobs;  wenn leer, dann gibt es keinen automatischen Import für diesen Connector
 
 ##### LOC
 * TODO
