@@ -7,9 +7,13 @@ import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_
 
 import eu.tib.profileservice.domain.Category;
 import eu.tib.profileservice.domain.User;
+import eu.tib.profileservice.domain.User.Role;
 import eu.tib.profileservice.service.CategoryService;
 import eu.tib.profileservice.service.UserService;
+import java.util.Arrays;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +28,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping(value = UserController.BASE_PATH)
 public class UserController {
+
+  @SuppressWarnings("unused")
+  private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
   protected static final String CODE_MESSAGE_USER_NOTFOUND = "message.user.notfound";
   protected static final String CODE_MESSAGE_USER_DELETED = "message.user.delete.success";
@@ -92,6 +99,9 @@ public class UserController {
 
   @GetMapping(PATH_ADD)
   public String add(final User user, final Model model) {
+    List<Role> defaultRoles = Arrays.asList(Role.MANAGE_USERS, Role.PROCESS_DOCUMENTS);
+    user.setRoles(defaultRoles);
+    model.addAttribute("user", user);
     return BASE_URL_TEMPLATE + TEMPLATE_CREATE_OR_EDIT;
   }
 

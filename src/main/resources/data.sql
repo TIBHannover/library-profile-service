@@ -1,10 +1,7 @@
-insert into user (email, initials, name, password, id) values ('test@abc.de', 'TM', 'test', '$2a$10$MfjKeK.5UjXXJBV0mZONKumJqJYVd//im/3F0oy.38b.aOmLuqhFW', -1) // pw xxx
+insert into user (name, password, id) values ('admin', '$2a$10$VurnNhud5afA1jRh0JQm2ebjBYN2RfO1OfQSXwdlw9YFGxbghvGYm', -1) // pw admin
 insert into user_role (user_id, role_id) values (-1, 'MANAGE_USERS')
 insert into user_role (user_id, role_id) values (-1, 'PROCESS_DOCUMENTS')
 insert into user_role (user_id, role_id) values (-1, 'IMPORT_DOCUMENTS')
-
-insert into user (email, initials, name, password, id) values ('test@xyz.de', 'AU', 'Another User', '$2a$10$MfjKeK.5UjXXJBV0mZONKumJqJYVd//im/3F0oy.38b.aOmLuqhFW', -2) // pw xxx
-insert into user_role (user_id, role_id) values (-2, 'PROCESS_DOCUMENTS')
 
 insert into import_filter (id, condition_type, condition, action) values (-1, 'FORM_KEYWORD', '.*Jugendbuch.*', 'IGNORE')
 insert into import_filter (id, condition_type, condition, action) values (-2, 'FORM_KEYWORD', '.*Jugendliteratur.*', 'IGNORE')

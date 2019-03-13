@@ -1,26 +1,43 @@
 # Profildienst
 
-Webanwendung, die Neuerscheinungen aus diversen Quellen einliest und Nutzern zur Bearbeitung zuweist. Jedem Nutzer sind Sachgruppen zugeordnet über die die Zuordnung stattfindet.
-Die Nutzer können die Titel dann zum Kauf vormerken, ablehnen oder einem anderen Nutzer zuweisen.
+* Webanwendung, die Neuerscheinungen aus diversen Quellen einliest und Nutzern zur Bearbeitung zuweist.
+* Jedem Nutzer sind Sachgruppen zugeordnet über die die Zuordnung stattfindet.
+* Die Nutzer können die Titel dann zum Kauf vormerken, ablehnen oder einem anderen Nutzer zuweisen.
+
+### Konfiguration
+* Einrichten der angebundenen Systeme: _s.u._
+* Einrichten des Bestandsabgleiches: _s.u._
+* Erste Anmeldung möglich mit User _admin/admin_
 
 ### Angebundene Systeme
 
 Der Import findet regelmäßig statt über den _eu.tib.profileservice.scheduling.DocumentImportJob_.
 
-* DNB
-    * Neuerscheinungen werden importiert via OAI
+##### DNB
+
+* Neuerscheinungen werden importiert via OAI (siehe <https://www.dnb.de/DE/Service/DigitaleDienste/OAI/oai_node.html>) im Format _marcxml_
 
 ```
 https://services.dnb.de/oai/accessToken~${token}/repository?verb=ListRecords&from=2019-02-18&until=2019-02-18&set=dnb-all:reiheN&metadataPrefix=MARC21-xml
 ```
+* Konfiguration in den _application.properties_
+     * externalsystem.dnb.baseurl - URL der OAI-Schnittstelle
+     * externalsystem.dnb.token - DNB access token
 
-* LOC
-    * TODO
-* BL
-    * TODO
+##### LOC
+* TODO
+
+##### BL
+* TODO
 
 ### Kategorien (Sachgruppen)
 
+* Über die Sachgruppen wird ermittelt wem eine Neuerscheingung zugeordnet werden soll.
+     * Jedem Nutzer ist eine Menge von Sachgruppen zugeordnet.
+     * Eine Sachgruppe kann nicht mehrfach verteilt werden.
+* Hat eine Neuerscheinung mehrere Sachgruppen, die verschiedenen Nutzern zugeordnet sind, so findet die Zuordnung zum passenden Nutzer zufällig statt.
+
+Vorhandene Sachgruppen
  * DDC (DNB)
     
 ### Bestandsabgleich
