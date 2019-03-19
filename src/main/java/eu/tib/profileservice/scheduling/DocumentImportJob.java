@@ -53,7 +53,7 @@ public class DocumentImportJob implements Job {
     } else {
       OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
       LocalDate yesterday = utc.minusDays(1).toLocalDate();
-      from = yesterday;
+      from = utc.minusDays(7).toLocalDate();
       to = yesterday;
     }
     String connectorType = jobDataMap.getString(JOB_DATA_CONNECTOR_TYPE);

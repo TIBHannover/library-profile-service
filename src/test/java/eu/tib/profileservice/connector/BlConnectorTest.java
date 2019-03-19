@@ -9,8 +9,6 @@ import eu.tib.profileservice.domain.DocumentMetadata;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -37,18 +35,31 @@ public class BlConnectorTest {
    * Setup.
    */
   @Before
-  public void setup() {
-    OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
-    LocalDate now = utc.toLocalDate();
-    connector = new BlConnector(restTemplateMock, "http://some.url", now, now);
+  public void setup() throws IOException {
+    LocalDate from = LocalDate.parse("2019-03-07");
+    LocalDate to = LocalDate.parse("2019-03-13");
+    connector = new BlConnector(restTemplateMock, "http://some.url", from, to);
+    expectStringResourceAsRestTemplateRespone("connector/BLConnectorOverview.txt");
+    connector.initialize();
   }
 
-  private void expectResourceAsRestTemplateRespone(final String resourceName) throws IOException {
+  private void expectZipResourceAsRestTemplateRespone(final String resourceName)
+      throws IOException {
     try (InputStream is = getClass().getClassLoader().getResourceAsStream(resourceName)) {
       final byte[] responseBody = IOUtils.toByteArray(is);
       ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(responseBody, HttpStatus.OK);
       when(restTemplateMock.getForEntity(Mockito.anyString(), ArgumentMatchers
           .<Class<byte[]>>any())).thenReturn(response);
+    }
+  }
+
+  private void expectStringResourceAsRestTemplateRespone(final String resourceName)
+      throws IOException {
+    try (InputStream is = getClass().getClassLoader().getResourceAsStream(resourceName)) {
+      final String responseBody = IOUtils.toString(is);
+      ResponseEntity<String> response = new ResponseEntity<String>(responseBody, HttpStatus.OK);
+      when(restTemplateMock.getForEntity(Mockito.anyString(), ArgumentMatchers
+          .<Class<String>>any())).thenReturn(response);
     }
   }
 
@@ -59,10 +70,10 @@ public class BlConnectorTest {
     List<String> result = connector.determineRdfFilesForDateRange(from, to);
     assertThat(result).containsExactly("bnbrdf_N3536.zip");
 
-    from = LocalDate.parse("2019-03-12");
-    to = LocalDate.parse("2019-03-13");
+    from = LocalDate.parse("2019-03-05");
+    to = LocalDate.parse("2019-03-06");
     result = connector.determineRdfFilesForDateRange(from, to);
-    assertThat(result).containsExactly("bnbrdf_N3535.zip", "bnbrdf_N3536.zip");
+    assertThat(result).containsExactly("bnbrdf_N3535.zip");
 
     from = LocalDate.parse("2019-03-13");
     to = LocalDate.parse("2019-03-19");
@@ -72,12 +83,43 @@ public class BlConnectorTest {
     from = LocalDate.parse("2019-03-01");
     to = LocalDate.parse("2019-03-15");
     result = connector.determineRdfFilesForDateRange(from, to);
-    assertThat(result).containsExactly("bnbrdf_N3534.zip", "bnbrdf_N3535.zip", "bnbrdf_N3536.zip");
+    assertThat(result).containsExactly("bnbrdf_N3535.zip", "bnbrdf_N3536.zip");
+
+    from = LocalDate.parse("2019-03-06");
+    to = LocalDate.parse("2019-03-13");
+    result = connector.determineRdfFilesForDateRange(from, to);
+    assertThat(result).containsExactly("bnbrdf_N3535.zip", "bnbrdf_N3536.zip");
 
     from = LocalDate.parse("2019-03-14");
     to = LocalDate.parse("2019-03-13");
     result = connector.determineRdfFilesForDateRange(from, to);
     assertThat(result).isEmpty();
+  }
+
+  @Test
+  public void testDetermineRdfFilesFailsWithNotOkStatus() throws IOException {
+    ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+    when(restTemplateMock.getForEntity(Mockito.anyString(), ArgumentMatchers
+        .<Class<String>>any())).thenReturn(response);
+    connector.determineRdfFilesForDateRange(LocalDate.now(), LocalDate.now());
+    assertTrue(connector.hasErrors());
+  }
+
+  @Test
+  public void testDetermineRdfFilesFailsWithoutBody() throws IOException {
+    ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.OK);
+    when(restTemplateMock.getForEntity(Mockito.anyString(), ArgumentMatchers
+        .<Class<String>>any())).thenReturn(response);
+    connector.determineRdfFilesForDateRange(LocalDate.now(), LocalDate.now());
+    assertTrue(connector.hasErrors());
+  }
+
+  @Test
+  public void testDetermineRdfFilesFailsWithRestClientException() throws IOException {
+    when(restTemplateMock.getForEntity(Mockito.anyString(), ArgumentMatchers
+        .<Class<String>>any())).thenThrow(RestClientException.class);
+    connector.determineRdfFilesForDateRange(LocalDate.now(), LocalDate.now());
+    assertTrue(connector.hasErrors());
   }
 
   @Test
@@ -112,9 +154,17 @@ public class BlConnectorTest {
   }
 
   @Test
-  public void testRetrieveDocumentsFailsWithRestClientException() {
-    when(restTemplateMock.getForEntity(Mockito.anyString(), ArgumentMatchers.<Class<byte[]>>any()))
-        .thenThrow(RestClientException.class);
+  public void testRetrieveDocumentsFailsWithRestClientException() throws IOException {
+    LocalDate from = LocalDate.parse("2019-03-07");
+    LocalDate to = LocalDate.parse("2019-03-13");
+    connector = new BlConnector(restTemplateMock, "http://some.url", from, to);
+    try (InputStream is = getClass().getClassLoader().getResourceAsStream(
+        "connector/BLConnectorOverview.txt")) {
+      final String responseBody = IOUtils.toString(is);
+      ResponseEntity<String> response = new ResponseEntity<String>(responseBody, HttpStatus.OK);
+      when(restTemplateMock.getForEntity(Mockito.anyString(), ArgumentMatchers
+          .<Class<String>>any())).thenReturn(response).thenThrow(RestClientException.class);
+    }
 
     List<DocumentMetadata> result = connector.retrieveNextDocuments();
     assertTrue(result == null || result.isEmpty());
@@ -135,7 +185,7 @@ public class BlConnectorTest {
 
   @Test
   public void testRetrieveDocumentsFailsWithInvalidZipEntry() throws IOException {
-    expectResourceAsRestTemplateRespone("connector/BLResponse001.zip");
+    expectZipResourceAsRestTemplateRespone("connector/BLResponse001.zip");
 
     List<DocumentMetadata> result = connector.retrieveNextDocuments();
     assertTrue(result == null || result.isEmpty());
@@ -144,7 +194,7 @@ public class BlConnectorTest {
 
   @Test
   public void testRetrieveDocumentsFailsWithCorruptZipFile() throws IOException {
-    expectResourceAsRestTemplateRespone("connector/BLResponse002.zip");
+    expectZipResourceAsRestTemplateRespone("connector/BLResponse002.zip");
 
     List<DocumentMetadata> result = connector.retrieveNextDocuments();
     assertTrue(result == null || result.isEmpty());
@@ -153,7 +203,7 @@ public class BlConnectorTest {
 
   @Test
   public void testRetrieveDocumentsOk() throws IOException {
-    expectResourceAsRestTemplateRespone("connector/BLResponse003.zip");
+    expectZipResourceAsRestTemplateRespone("connector/BLResponse003.zip");
 
     List<DocumentMetadata> result = connector.retrieveNextDocuments();
     assertThat(result).isNotNull();
@@ -166,14 +216,11 @@ public class BlConnectorTest {
     LocalDate from = LocalDate.parse("2019-03-01");
     LocalDate to = LocalDate.parse("2019-03-15");
     connector = new BlConnector(restTemplateMock, "http://some.url", from, to);
-    expectResourceAsRestTemplateRespone("connector/BLResponse003.zip");
+    expectStringResourceAsRestTemplateRespone("connector/BLConnectorOverview.txt");
+    assertTrue(connector.hasNext());
+    expectZipResourceAsRestTemplateRespone("connector/BLResponse003.zip");
 
     List<DocumentMetadata> result;
-    assertTrue(connector.hasNext());
-    result = connector.retrieveNextDocuments();
-    assertThat(result).isNotNull();
-    assertThat(result.size()).isEqualTo(1);
-    assertTrue(connector.hasNext());
     result = connector.retrieveNextDocuments();
     assertThat(result).isNotNull();
     assertThat(result.size()).isEqualTo(1);
