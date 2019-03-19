@@ -7,7 +7,7 @@
 ### Konfiguration
 * Einrichten der angebundenen Systeme: _s.u._
 * Einrichten des Bestandsabgleiches: _s.u._
-* Erste Anmeldung möglich mit User _admin/admin_
+* Erste Anmeldung möglich mit User _admin/admin_, dann können selbst User angelegt werden und der Admin gelöscht werden.
 
 ### Angebundene Systeme
 
@@ -29,7 +29,16 @@ https://services.dnb.de/oai/accessToken~${token}/repository?verb=ListRecords&fro
 * TODO
 
 ##### BL
-* TODO
+* Neuerscheinungen der letzten 25 Wochen verfügbar im Format RDF/XML als Zip-Datei via http: <http://www.bl.uk/bibliographic/bnbrdfxml.html>, zB <http://www.bl.uk/bibliographic/bnbrdf/bnbrdf_N3536.zip>
+* Die Zip-Datei hat eine fortlaufende Nummer, die jede Woche erhöht wird. Allerdings gibt es auch Wochen, die ausgelassen werden (zB auf Grund von Feiertagen).
+    * => Das macht es schwierig zu einem Datum die aktuelle Nummer und damit Datei zu ermitteln.
+    * Ansätze: TODO: welchen? andere?
+         * Dateinummer errechnen, bekannte Ausnahmen berücksichtigen: Ausnahmen müssen ständig aktualisiert werden :(
+         * Dateinummer zu einem Datum aus der Übersicht (html, s.o.) ermitteln: html parsen und hoffen, dass sich die html-Seite nicht ändert :(
+         * Letzte Dateinummer errechnen und schauen, ob die Datei verfügbar ist. Falls nicht: Nummer runterzählen bis Datei gefunden wird. Raten, ungenau, mit der Zeit immer mehr unnötige Abfragen :(
+* Konfiguration in den _application.properties_
+     * externalsystem.bl.baseurl - base URL für die rdf Dateien (http://www.bl.uk/bibliographic/bnbrdf)
+     * externalsystem.bl.schedule.cron - Cron Schedule des Import-Jobs;  wenn leer, dann gibt es keinen automatischen Import für diesen Connector
 
 ### Kategorien (Sachgruppen)
 
@@ -39,7 +48,7 @@ https://services.dnb.de/oai/accessToken~${token}/repository?verb=ListRecords&fro
 * Hat eine Neuerscheinung mehrere Sachgruppen, die verschiedenen Nutzern zugeordnet sind, so findet die Zuordnung zum passenden Nutzer zufällig statt.
 
 Vorhandene Sachgruppen
- * DDC (DNB)
+ * DDC (DNB+BL)
     
 ### Bestandsabgleich
 

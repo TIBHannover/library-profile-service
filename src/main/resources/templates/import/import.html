@@ -19,7 +19,7 @@
 		<p>zum Testen via Browser: Import anstoßen</p>
 		<form action="#" th:action="@{/import/import}" method="post">
 			<div class="form-group">
-				<select class="form-control" >
+				<select class="form-control" th:name="type">
 					<option th:each="type : ${connectorTypes}" th:name="type" th:value="${type.toString()}" th:utext="${type.toString()}" />
 			   </select>
 			</div>

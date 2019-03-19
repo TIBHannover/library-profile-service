@@ -31,6 +31,9 @@ public class ScheduleConfig {
   @Value("${externalsystem.dnb.schedule.cron}")
   private String dnbSchedule;
 
+  @Value("${externalsystem.bl.schedule.cron}")
+  private String blSchedule;
+
   /**
    * Initializing document-import-jobs.
    * 
@@ -39,12 +42,13 @@ public class ScheduleConfig {
   @PostConstruct
   public void initDocumentImportJobs() throws SchedulerException {
     LOG.debug("init document import jobs");
+    scheduleDocumentImportJob("BL", blSchedule);
     scheduleDocumentImportJob("DNB", dnbSchedule);
   }
 
   private void scheduleDocumentImportJob(final String identityPrefix, final String cronExpression)
       throws SchedulerException {
-    if (dnbSchedule == null || dnbSchedule.length() == 0) {
+    if (cronExpression == null || cronExpression.length() == 0) {
       LOG.info("{} schedule not configured", identityPrefix);
       return;
     }

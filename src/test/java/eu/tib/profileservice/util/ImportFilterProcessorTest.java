@@ -52,7 +52,7 @@ public class ImportFilterProcessorTest {
   @Before
   public void setUp() {
     List<ImportFilter> filterRules = new ArrayList<ImportFilter>();
-    filterRules.add(newFilter(Action.IGNORE, ".*(Testbuch|Testbücher).*",
+    filterRules.add(newFilter(Action.IGNORE, "(?i).*(Testbuch|Testbücher).*",
         ConditionType.FORM_KEYWORD));
     filterRules.add(newFilter(Action.IGNORE, "300.*", ConditionType.CATEGORY));
     processor = new ImportFilterProcessor(filterRules);
@@ -60,7 +60,7 @@ public class ImportFilterProcessorTest {
 
   @Test
   public void testProcessDocumentMatches() {
-    List<String> formKeywords = Arrays.asList(new String[] {"Testbücher"});
+    List<String> formKeywords = Arrays.asList(new String[] {"testbücher"});
     Set<String> ddcCategories = new HashSet<>();
     Document document = newDocument(formKeywords, ddcCategories);
 

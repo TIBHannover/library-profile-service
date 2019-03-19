@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 public class InstitutionConnectorFactory {
 
   public enum ConnectorType {
+    BL,
     DNB
   }
 
@@ -35,6 +36,8 @@ public class InstitutionConnectorFactory {
     switch (connectorType) {
       case DNB:
         return createDnbConnector(from, to);
+      case BL:
+        return createBlConnector(from, to);
       default:
         throw new IllegalArgumentException("Cannot create connector of type " + connectorType);
     }
@@ -46,4 +49,8 @@ public class InstitutionConnectorFactory {
     return new DnbConnector(restTemplate, baseUrl, accessToken, from, to);
   }
 
+  private InstitutionConnector createBlConnector(final LocalDate from, final LocalDate to) {
+    String baseUrl = env.getProperty("externalsystem.bl.baseurl");
+    return new BlConnector(restTemplate, baseUrl, from, to);
+  }
 }

@@ -94,7 +94,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
       final DocumentAssignmentFinder documentAssignmentFinder,
       final ImportFilterProcessor filterProcessor, final ImportStatistics statistics) {
     if (!isValid(documentMetadata)) {
-      LOG.error("invalid document: {}", buildDocumentMetadataString(documentMetadata));
+      LOG.debug("invalid document: {}", buildDocumentMetadataString(documentMetadata));
       statistics.invalid++;
       return;
     }

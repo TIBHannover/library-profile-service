@@ -46,7 +46,8 @@ public class DocumentImportJobTest {
   public void testWithoutGivenDateRange() throws SchedulerException {
     when(testContext.getMergedJobDataMap()).thenReturn(new JobDataMap());
     importJob.execute(testContext);
-    verify(documentImportService, times(1)).importDocuments(Mockito.any(LocalDate.class), Mockito
+    verify(documentImportService, times(ConnectorType.values().length)).importDocuments(Mockito.any(
+        LocalDate.class), Mockito
         .any(LocalDate.class), Mockito.any(ConnectorType.class));
   }
 

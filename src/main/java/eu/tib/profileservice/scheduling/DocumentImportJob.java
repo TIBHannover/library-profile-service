@@ -63,6 +63,7 @@ public class DocumentImportJob implements Job {
     } else {
       connectors = Arrays.asList(ConnectorType.values());
     }
+    LOG.debug("from: {}, to: {}, connectors: {}", from, to, connectors);
 
     connectors.stream().forEach(c -> documentImportService.importDocuments(from, to, c));
 

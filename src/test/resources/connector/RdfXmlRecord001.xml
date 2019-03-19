@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:isbd="http://iflastandards.info/ns/isbd/elements/" xmlns:owlt="http://www.w3.org/2006/time#" xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+	xmlns:bibo="http://purl.org/ontology/bibo/" xmlns:rda="http://rdvocab.info/Elements/" xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+	<rdf:Description>
+		<dcterms:title>Testtitle</dcterms:title>
+		<dcterms:creator>
+			<rdf:Description>
+				<rdfs:label>test author1</rdfs:label>
+				<rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person" />
+			</rdf:Description>
+		</dcterms:creator>
+		<dcterms:contributor>
+			<rdf:Description>
+				<rdfs:label>test author2</rdfs:label>
+				<rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person" />
+			</rdf:Description>
+		</dcterms:contributor>
+		<dcterms:contributor>
+			<rdf:Description>
+				<rdfs:label>organization</rdfs:label>
+				<rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Organization" />
+			</rdf:Description>
+		</dcterms:contributor>
+		<dcterms:contributor>
+			<rdf:Description>
+				<rdfs:label>test author3</rdfs:label>
+				<rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person" />
+			</rdf:Description>
+		</dcterms:contributor>
+		<dcterms:type>
+			<rdf:Description>
+				<rdfs:label>text</rdfs:label>
+			</rdf:Description>
+		</dcterms:type>
+		<dcterms:type>
+			<rdf:Description>
+				<rdfs:label>monographic</rdfs:label>
+			</rdf:Description>
+		</dcterms:type>
+		<dcterms:type>
+			<rdf:Description>
+				<rdfs:label>electronic</rdfs:label>
+			</rdf:Description>
+		</dcterms:type>
+		<isbd:P1016>
+			<rdf:Description>
+				<rdfs:label>testplace</rdfs:label>
+			</rdf:Description>
+		</isbd:P1016>
+		<rda:placeOfPublication>
+			<rdf:Description>
+				<skos:inScheme rdf:resource="http://id.loc.gov/vocabulary/countries" />
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+				<rdfs:label>enk</rdfs:label>
+			</rdf:Description>
+		</rda:placeOfPublication>
+		<dcterms:publisher>
+			<rdf:Description>
+				<rdfs:label>test publisher</rdfs:label>
+			</rdf:Description>
+		</dcterms:publisher>
+		<dcterms:issued>2006</dcterms:issued>
+		<dcterms:language>
+			<rdf:Description>
+				<skos:inScheme rdf:resource="http://id.loc.gov/vocabulary/iso639-2" />
+				<rdfs:label>eng</rdfs:label>
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:language>
+		<isbd:P1008>test edition</isbd:P1008>
+		<dcterms:extent>
+			<rdf:Description>
+				<rdfs:label>1 test resource (xi, 260 pages)</rdfs:label>
+			</rdf:Description>
+		</dcterms:extent>
+		<dcterms:description>Includes bibliographical references (pages 243-251) and index.</dcterms:description>
+		<dcterms:description>Print version record.</dcterms:description>
+		<dcterms:subject>
+			<rdf:Description>
+				<skos:inScheme rdf:resource="http://id.loc.gov/authorities/subjects" />
+				<rdfs:label>test book</rdfs:label>
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:subject>
+			<rdf:Description>
+				<rdfs:label>HISTORY--Europe--General.</rdfs:label>
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:subject>
+			<rdf:Description>
+				<rdfs:label>Diplomatic relations.</rdfs:label>
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:subject>
+			<rdf:Description>
+				<rdfs:label>Nationalism.</rdfs:label>
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:subject>
+			<rdf:Description>
+				<skos:inScheme rdf:resource="http://id.loc.gov/authorities/subjects" />
+				<rdfs:label>another test</rdfs:label>
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:subject>
+			<rdf:Description>
+				<skos:inScheme rdf:resource="http://id.loc.gov/authorities/subjects" />
+				<rdfs:label>another test</rdfs:label>
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:subject>
+			<rdf:Description>
+				<rdfs:label>Albania.</rdfs:label>
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:subject>
+			<rdf:Description>
+				<rdfs:label>Turkey.</rdfs:label>
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:subject>
+			<rdf:Description>
+				<skos:notation rdf:datatype="http://dewey.info/schema-terms/Notation">949.65</skos:notation>
+				<skos:inScheme rdf:resource="http://dewey.info/scheme/e22/" />
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:subject>
+			<rdf:Description>
+				<skos:notation rdf:datatype="http://dewey.info/schema-terms/Notation">950</skos:notation>
+				<skos:inScheme rdf:resource="http://dewey.info/scheme/e22/" />
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:subject>
+			<rdf:Description>
+				<skos:notation rdf:datatype="some other notation">123</skos:notation>
+				<skos:inScheme rdf:resource="http://dewey.info/scheme/e22/" />
+				<rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+			</rdf:Description>
+		</dcterms:subject>
+		<dcterms:spatial>
+			<rdf:Description>
+				<rdfs:label>Turkey</rdfs:label>
+			</rdf:Description>
+		</dcterms:spatial>
+		<dcterms:spatial>
+			<rdf:Description>
+				<rdfs:label>Albania</rdfs:label>
+			</rdf:Description>
+		</dcterms:spatial>
+		<rda:seriesStatement>series1</rda:seriesStatement>
+		<rda:seriesStatement>series2</rda:seriesStatement>
+		<dcterms:isPartOf>
+			<rdf:Description>
+				<rdfs:label>Library of Ottoman studies</rdfs:label>
+			</rdf:Description>
+		</dcterms:isPartOf>
+		<rda:termsOfAvailability>£9.50</rda:termsOfAvailability>
+		<dcterms:identifier>(Uk)019270707</dcterms:identifier>
+		<dcterms:identifier>GBB946473</dcterms:identifier>
+		<bibo:isbn13>9781786724441</bibo:isbn13>
+		<bibo:isbn10>1786724448</bibo:isbn10>
+		<dcterms:identifier>urn:isbn:9781786724441</dcterms:identifier>
+		<dcterms:identifier>urn:isbn:1786724448</dcterms:identifier>
+	</rdf:Description>
+
+
+
+</rdf:RDF>
