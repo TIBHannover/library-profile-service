@@ -1,0 +1,71 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+	<changeSet author="mhoffmann" id="201903201145">
+		<comment>insert default categories</comment>
+		<loadData file="db/changelog/default-categories.csv" tableName="category">
+			<column name="type" />
+			<column name="category" />
+			<column name="description" />
+		</loadData>
+		<rollback/>
+	</changeSet>
+
+	<changeSet author="mhoffmann" id="201903201153">
+		<comment>insert default user admin/admin</comment>
+		<insert tableName="user">
+			<column name="id" value="-1" />
+			<column name="name" value="admin" />
+			<column name="password" value="$2a$10$VurnNhud5afA1jRh0JQm2ebjBYN2RfO1OfQSXwdlw9YFGxbghvGYm" />
+		</insert>
+		<insert tableName="user_role">
+			<column name="user_id" value="-1" />
+			<column name="role_id" value="MANAGE_USERS" />
+		</insert>
+		<insert tableName="user_role">
+			<column name="user_id" value="-1" />
+			<column name="role_id" value="PROCESS_DOCUMENTS" />
+		</insert>
+		<insert tableName="user_role">
+			<column name="user_id" value="-1" />
+			<column name="role_id" value="IMPORT_DOCUMENTS" />
+		</insert>
+		<rollback>
+			<delete tableName="user">
+				<where>id = -1</where>
+			</delete>
+			<delete tableName="user_role">
+				<where>user_id = -1</where>
+			</delete>
+		</rollback>
+	</changeSet>
+
+	<changeSet author="mhoffmann" id="201903201210">
+		<comment>insert default import filters</comment>
+
+		<insert tableName="import_filter">
+			<column name="condition_type" value="FORM_KEYWORD" />
+			<column name="condition" value="(?i).*Jugendbuch.*" />
+			<column name="action" value="IGNORE" />
+		</insert>
+		<insert tableName="import_filter">
+			<column name="condition_type" value="FORM_KEYWORD" />
+			<column name="condition" value="(?i).*Jugendliteratur.*" />
+			<column name="action" value="IGNORE" />
+		</insert>
+		<insert tableName="import_filter">
+			<column name="condition_type" value="FORM_KEYWORD" />
+			<column name="condition" value="(?i).*juvenile literature.*" />
+			<column name="action" value="IGNORE" />
+		</insert>
+		<insert tableName="import_filter">
+			<column name="condition_type" value="FORM_KEYWORD" />
+			<column name="condition" value="(?i).*Reiseführer.*" />
+			<column name="action" value="IGNORE" />
+		</insert>
+		<rollback/>
+	</changeSet>
+
+</databaseChangeLog>

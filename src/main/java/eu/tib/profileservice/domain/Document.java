@@ -12,9 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-@Entity
+@Entity(name = Document.ENTITY_NAME)
 public class Document {
 
+  public static final String ENTITY_NAME = "document";
   public static final String COLUMN_NAME_CREATION_DATE = "creation_date";
 
   public enum Status {
@@ -25,7 +26,7 @@ public class Document {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.ALL, optional = false)
   private DocumentMetadata metadata;
 
   @Enumerated(EnumType.STRING)
@@ -62,7 +63,7 @@ public class Document {
    * 
    * @param id the id to set
    */
-  public void setId(Long id) {
+  public void setId(final Long id) {
     this.id = id;
   }
 
@@ -80,7 +81,7 @@ public class Document {
    * 
    * @param metadata the metadata to set
    */
-  public void setMetadata(DocumentMetadata metadata) {
+  public void setMetadata(final DocumentMetadata metadata) {
     this.metadata = metadata;
   }
 
@@ -98,7 +99,7 @@ public class Document {
    * 
    * @param status the status to set
    */
-  public void setStatus(Status status) {
+  public void setStatus(final Status status) {
     this.status = status;
   }
 
@@ -116,7 +117,7 @@ public class Document {
    * 
    * @param assignee the assignee to set
    */
-  public void setAssignee(User assignee) {
+  public void setAssignee(final User assignee) {
     this.assignee = assignee;
   }
 
@@ -134,7 +135,7 @@ public class Document {
    * 
    * @param creationDateUtc the creationDateUtc to set
    */
-  public void setCreationDateUtc(LocalDateTime creationDateUtc) {
+  public void setCreationDateUtc(final LocalDateTime creationDateUtc) {
     this.creationDateUtc = creationDateUtc;
   }
 }

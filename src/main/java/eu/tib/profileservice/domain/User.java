@@ -13,11 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
-@Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {User.COLUMN_NAME_NAME})})
+@Entity(name = User.ENTITY_NAME)
 public class User {
 
   public enum Role {
@@ -26,7 +23,7 @@ public class User {
     IMPORT_DOCUMENTS
   }
 
-  public static final String COLUMN_NAME_NAME = "name";
+  public static final String ENTITY_NAME = "user";
 
   public static final String JOIN_TABLE_NAME_USERROLE = "user_role";
   public static final String JOIN_TABLE_COLUMN_NAME_USERID = "user_id";
@@ -39,7 +36,7 @@ public class User {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column(name = COLUMN_NAME_NAME, nullable = false)
+  @Column(nullable = false, unique = true)
   private String name;
 
   @Column(nullable = false)

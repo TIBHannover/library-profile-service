@@ -1,0 +1,168 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="hoffmann (generated)" id="1553078288428-1">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-2">
+        <createTable tableName="category">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="categoryPK"/>
+            </column>
+            <column name="category" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-3">
+        <createTable tableName="document">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="documentPK"/>
+            </column>
+            <column name="creation_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="assignee_id" type="BIGINT"/>
+            <column name="metadata_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-4">
+        <createTable tableName="document_metadata">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="document_metadataPK"/>
+            </column>
+            <column name="date_of_publication" type="VARCHAR(255)"/>
+            <column name="edition" type="VARCHAR(255)"/>
+            <column name="form_of_product" type="VARCHAR(255)"/>
+            <column name="physical_description" type="VARCHAR(1024)"/>
+            <column name="place_of_publication" type="VARCHAR(255)"/>
+            <column name="publisher" type="VARCHAR(255)"/>
+            <column name="remainder_of_title" type="VARCHAR(1024)"/>
+            <column name="series" type="VARCHAR(1024)"/>
+            <column name="terms_of_availability" type="VARCHAR(1024)"/>
+            <column name="title" type="VARCHAR(1024)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-5">
+        <createTable tableName="document_metadata_authors">
+            <column name="document_metadata_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="authors" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-6">
+        <createTable tableName="document_metadata_ddcs">
+            <column name="document_metadata_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dewey_decimal_classifications" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-7">
+        <createTable tableName="document_metadata_form_keywords">
+            <column name="document_metadata_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="form_keywords" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-8">
+        <createTable tableName="document_metadata_isbns">
+            <column name="document_metadata_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="isbns" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-9">
+        <createTable tableName="import_filter">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="import_filterPK"/>
+            </column>
+            <column name="action" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="condition" type="VARCHAR(1024)"/>
+            <column name="condition_type" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-10">
+        <createTable tableName="user">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="userPK"/>
+            </column>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="initials" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-11">
+        <createTable tableName="user_categories">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-12">
+        <createTable tableName="user_role">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-13">
+        <addUniqueConstraint columnNames="name" constraintName="UC_USERNAME_COL" tableName="user"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-14">
+        <addUniqueConstraint columnNames="category_id" constraintName="UK_bfkv357oo78o8fdn1q6mdg0vr" tableName="user_categories"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-15">
+        <addUniqueConstraint columnNames="metadata_id" constraintName="UK_t58pfs3lvvp16frqhp4n1e8o" tableName="document"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-16">
+        <addUniqueConstraint columnNames="category, type" constraintName="UKjymq1fxo0dkx1ogsklt1uu6xa" tableName="category"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-17">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_role" constraintName="FK859n2jvi8ivhui0rl0esws6o" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-18">
+        <addForeignKeyConstraint baseColumnNames="document_metadata_id" baseTableName="document_metadata_isbns" constraintName="FKbovesed17h0s7annmxiv2ajge" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="document_metadata"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-19">
+        <addForeignKeyConstraint baseColumnNames="document_metadata_id" baseTableName="document_metadata_authors" constraintName="FKdvdi6jbv4y3tf01pc0o1c3b9d" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="document_metadata"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-20">
+        <addForeignKeyConstraint baseColumnNames="metadata_id" baseTableName="document" constraintName="FKhpfum6oa6frt0jgu5g0j21u85" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="document_metadata"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-21">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="user_categories" constraintName="FKjkgs8j660t63yccvvyus2opmf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="category"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-22">
+        <addForeignKeyConstraint baseColumnNames="assignee_id" baseTableName="document" constraintName="FKns4pb0qoqpgl8kl9jsgopbgv9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-23">
+        <addForeignKeyConstraint baseColumnNames="document_metadata_id" baseTableName="document_metadata_form_keywords" constraintName="FKpgisxvxb2qn7bfwyotm0f5f4o" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="document_metadata"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-24">
+        <addForeignKeyConstraint baseColumnNames="document_metadata_id" baseTableName="document_metadata_ddcs" constraintName="FKpi4lxm68ckoosya1uc3qoqdbt" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="document_metadata"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-25">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_categories" constraintName="FKqhdol0ia96a31f8ir2g928ems" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+</databaseChangeLog>

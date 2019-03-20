@@ -10,9 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name = DocumentMetadata.ENTITY_NAME)
 public class DocumentMetadata {
 
+  public static final String ENTITY_NAME = "document_metadata";
   private static final String TABLE_NAME_AUTHORS = "document_metadata_authors";
   private static final String TABLE_NAME_ISBNS = "document_metadata_isbns";
   private static final String TABLE_NAME_DDC_CLASSES = "document_metadata_ddcs";
@@ -74,7 +75,7 @@ public class DocumentMetadata {
    * 
    * @param id the id to set
    */
-  public void setId(Long id) {
+  public void setId(final Long id) {
     this.id = id;
   }
 
@@ -92,7 +93,7 @@ public class DocumentMetadata {
    * 
    * @param title the title to set
    */
-  public void setTitle(String title) {
+  public void setTitle(final String title) {
     this.title = title;
   }
 
@@ -110,7 +111,7 @@ public class DocumentMetadata {
    * 
    * @param remainderOfTitle the remainderOfTitle to set
    */
-  public void setRemainderOfTitle(String remainderOfTitle) {
+  public void setRemainderOfTitle(final String remainderOfTitle) {
     this.remainderOfTitle = remainderOfTitle;
   }
 
@@ -128,7 +129,7 @@ public class DocumentMetadata {
    * 
    * @param isbns the isbns to set
    */
-  public void setIsbns(List<String> isbns) {
+  public void setIsbns(final List<String> isbns) {
     this.isbns = isbns;
   }
 
@@ -146,7 +147,7 @@ public class DocumentMetadata {
    * 
    * @param deweyDecimalClassifications the deweyDecimalClassifications to set
    */
-  public void setDeweyDecimalClassifications(Set<String> deweyDecimalClassifications) {
+  public void setDeweyDecimalClassifications(final Set<String> deweyDecimalClassifications) {
     this.deweyDecimalClassifications = deweyDecimalClassifications;
   }
 
@@ -164,7 +165,7 @@ public class DocumentMetadata {
    * 
    * @param publisher the publisher to set
    */
-  public void setPublisher(String publisher) {
+  public void setPublisher(final String publisher) {
     this.publisher = publisher;
   }
 
@@ -182,7 +183,7 @@ public class DocumentMetadata {
    * 
    * @param termsOfAvailability the termsOfAvailability to set
    */
-  public void setTermsOfAvailability(String termsOfAvailability) {
+  public void setTermsOfAvailability(final String termsOfAvailability) {
     this.termsOfAvailability = termsOfAvailability;
   }
 
@@ -191,7 +192,7 @@ public class DocumentMetadata {
    * 
    * @param authors the authors to set
    */
-  public void setAuthors(List<String> authors) {
+  public void setAuthors(final List<String> authors) {
     this.authors = authors;
   }
 
@@ -218,7 +219,7 @@ public class DocumentMetadata {
    * 
    * @param placeOfPublication the placeOfPublication to set
    */
-  public void setPlaceOfPublication(String placeOfPublication) {
+  public void setPlaceOfPublication(final String placeOfPublication) {
     this.placeOfPublication = placeOfPublication;
   }
 
@@ -236,7 +237,7 @@ public class DocumentMetadata {
    * 
    * @param dateOfPublication the dateOfPublication to set
    */
-  public void setDateOfPublication(String dateOfPublication) {
+  public void setDateOfPublication(final String dateOfPublication) {
     this.dateOfPublication = dateOfPublication;
   }
 
@@ -254,7 +255,7 @@ public class DocumentMetadata {
    * 
    * @param edition the edition to set
    */
-  public void setEdition(String edition) {
+  public void setEdition(final String edition) {
     this.edition = edition;
   }
 
@@ -272,7 +273,7 @@ public class DocumentMetadata {
    * 
    * @param physicalDescription the physicalDescription to set
    */
-  public void setPhysicalDescription(String physicalDescription) {
+  public void setPhysicalDescription(final String physicalDescription) {
     this.physicalDescription = physicalDescription;
   }
 
@@ -290,7 +291,7 @@ public class DocumentMetadata {
    * 
    * @param series the series to set
    */
-  public void setSeries(String series) {
+  public void setSeries(final String series) {
     this.series = series;
   }
 
@@ -308,7 +309,7 @@ public class DocumentMetadata {
    * 
    * @param formOfProduct the formOfProduct to set
    */
-  public void setFormOfProduct(String formOfProduct) {
+  public void setFormOfProduct(final String formOfProduct) {
     this.formOfProduct = formOfProduct;
   }
 
@@ -326,7 +327,7 @@ public class DocumentMetadata {
    * 
    * @param formKeywords the formKeywords to set
    */
-  public void setFormKeywords(List<String> formKeywords) {
+  public void setFormKeywords(final List<String> formKeywords) {
     this.formKeywords = formKeywords;
   }
 

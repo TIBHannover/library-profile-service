@@ -19,7 +19,7 @@ public class Category {
     DDC
   }
 
-  public static final String ENTITY_NAME = "Category";
+  public static final String ENTITY_NAME = "category";
   public static final String COLUMN_NAME_CATEGORY = "category";
   public static final String COLUMN_NAME_TYPE = "type";
 
@@ -62,7 +62,7 @@ public class Category {
    * 
    * @param id the id to set
    */
-  public void setId(Long id) {
+  public void setId(final Long id) {
     this.id = id;
   }
 
@@ -80,7 +80,7 @@ public class Category {
    * 
    * @param category the category to set
    */
-  public void setCategory(String category) {
+  public void setCategory(final String category) {
     this.category = category;
   }
 
@@ -98,7 +98,7 @@ public class Category {
    * 
    * @param type the type to set
    */
-  public void setType(Type type) {
+  public void setType(final Type type) {
     this.type = type;
   }
 
@@ -116,7 +116,7 @@ public class Category {
    * 
    * @param description the description to set
    */
-  public void setDescription(String description) {
+  public void setDescription(final String description) {
     this.description = description;
   }
 
