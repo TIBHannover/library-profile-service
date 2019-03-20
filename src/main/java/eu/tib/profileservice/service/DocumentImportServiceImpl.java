@@ -131,7 +131,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   private boolean containedInInventory(final DocumentMetadata documentMetadata) {
     // check local inventory
     for (String isbn : documentMetadata.getIsbns()) {
-      Document existingDocument = documentRepository.findByMetadataIsbns(isbn);
+      Document existingDocument = documentRepository.findByMetadataIsbnsContains(isbn);
       if (existingDocument != null) {
         LOG.debug("document already exists in local inventory: {}", buildDocumentMetadataString(
             documentMetadata));

@@ -8,6 +8,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   public User findByName(final String name);
 
-  public User findByCategories(final Category category);
+  public User findByCategoriesContains(final Category category);
 
 }

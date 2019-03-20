@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,22 @@ public class DocumentRepositoryTest {
     document.setMetadata(documentMeta);
     document.setCreationDateUtc(OffsetDateTime.now(ZoneOffset.UTC).toLocalDateTime());
     return document;
+  }
+
+  /**
+   * Before.
+   */
+  @Before
+  public void before() {
+    entityManager.flush();
+    entityManager.getEntityManager().createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE")
+        .executeUpdate();
+    entityManager.getEntityManager().createNativeQuery("TRUNCATE TABLE " + Category.ENTITY_NAME)
+        .executeUpdate();
+    entityManager.getEntityManager().createNativeQuery("TRUNCATE TABLE " + Document.ENTITY_NAME)
+        .executeUpdate();
+    entityManager.getEntityManager().createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE")
+        .executeUpdate();
   }
 
   @Test

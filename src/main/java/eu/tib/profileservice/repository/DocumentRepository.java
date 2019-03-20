@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DocumentRepository extends JpaRepository<Document, Long> {
-  public Document findByMetadataIsbns(final String isbn);
+  public Document findByMetadataIsbnsContains(final String isbn);
 
   public Page<Document> findAllByAssignee(final User assignee, final Pageable pageable);
 

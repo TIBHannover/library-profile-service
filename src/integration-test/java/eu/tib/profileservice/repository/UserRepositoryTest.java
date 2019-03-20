@@ -8,6 +8,7 @@ import eu.tib.profileservice.domain.User;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,22 @@ public class UserRepositoryTest {
     return user;
   }
 
+  /**
+   * Before.
+   */
+  @Before
+  public void before() {
+    entityManager.flush();
+    entityManager.getEntityManager().createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE")
+        .executeUpdate();
+    entityManager.getEntityManager().createNativeQuery("TRUNCATE TABLE " + Category.ENTITY_NAME)
+        .executeUpdate();
+    entityManager.getEntityManager().createNativeQuery("TRUNCATE TABLE " + User.ENTITY_NAME)
+        .executeUpdate();
+    entityManager.getEntityManager().createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE")
+        .executeUpdate();
+  }
+
   @Test
   public void testUserRepository() {
     Category category1 = newCategory(Category.Type.DDC, "CAT1");
@@ -56,7 +73,7 @@ public class UserRepositoryTest {
         category3})));
     entityManager.persist(newUser("name2", "pw", "np2", Arrays.asList(new Category[] {category2})));
 
-    User user = userRepository.findByCategories(category1);
+    User user = userRepository.findByCategoriesContains(category1);
     assertThat(user).isNotNull();
     assertThat(user.getName()).isEqualTo("name");
     assertThat(user.getCategories()).isNotNull();
