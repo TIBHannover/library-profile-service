@@ -7,8 +7,10 @@ import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType
 import eu.tib.profileservice.connector.InventoryConnector;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
+import eu.tib.profileservice.domain.DocumentImportStatistics;
 import eu.tib.profileservice.domain.DocumentMetadata;
 import eu.tib.profileservice.domain.ImportFilter;
+import eu.tib.profileservice.repository.DocumentImportStatisticsRepository;
 import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.util.DocumentAssignmentFinder;
 import eu.tib.profileservice.util.ImportFilterProcessor;
@@ -40,6 +42,9 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   private DocumentRepository documentRepository;
 
   @Autowired
+  private DocumentImportStatisticsRepository importStatisticsRepository;
+
+  @Autowired
   private ImportFilterService importFilterService;
 
   @Transactional
@@ -47,6 +52,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   public void importDocuments(final LocalDate from, final LocalDate to,
       final ConnectorType connectorType) {
     LOG.info("Import documents from {} (from: {}, to: {})", connectorType, from, to);
+    DocumentImportStatistics statistics = initStatistics(from, to, connectorType);
     if (inventoryConnector == null) {
       LOG.debug("no inventory connector");
     }
@@ -55,28 +61,24 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     DocumentAssignmentFinder documentAssignmentFinder = new DocumentAssignmentFinder(userService
         .findAll());
 
-    ImportStatistics statistics = new ImportStatistics();
     InstitutionConnector connector = connectorFactory.createConnector(connectorType, from, to);
     while (connector.hasNext()) {
-      LOG.debug("going for next request (retrieved {} documents yet)", statistics.retrieved);
+      LOG.debug("going for next request (retrieved {} documents yet)", statistics.getNrRetrieved());
       List<DocumentMetadata> documents = connector.retrieveNextDocuments();
       if (documents == null) {
         LOG.error("Cannot retrieve documents from {}", connectorType);
         break;
       } else {
-        statistics.retrieved += documents.size();
+        statistics.addNrRetrieved(documents.size());
         documents.forEach(doc -> createNewDocument(doc, documentAssignmentFinder, filterProcessor,
             statistics));
       }
     }
     if (connector.hasErrors()) {
       LOG.error("There was an error while retrieving documents from {}", connectorType);
+      statistics.setErrorInInstitutionConnector(true);
     }
-    LOG.info(
-        "Import documents from {} done."
-            + " (retrieved: {}, imported: {}, alreadyExists: {}, invalid: {}, ignored: {}",
-        connectorType, statistics.retrieved, statistics.imported, statistics.alreadyExists,
-        statistics.invalid, statistics.ignored);
+    finishStatistics(statistics);
   }
 
   /**
@@ -84,15 +86,22 @@ public class DocumentImportServiceImpl implements DocumentImportService {
    */
   private void createNewDocument(final DocumentMetadata documentMetadata,
       final DocumentAssignmentFinder documentAssignmentFinder,
-      final ImportFilterProcessor filterProcessor, final ImportStatistics statistics) {
+      final ImportFilterProcessor filterProcessor, final DocumentImportStatistics statistics) {
     if (!isValid(documentMetadata)) {
       LOG.debug("invalid document: {}", buildDocumentMetadataString(documentMetadata));
-      statistics.invalid++;
+      statistics.addNrInvalid(1);
       return;
     }
-    boolean documentExists = containedInInventory(documentMetadata);
+    boolean documentExists = false;
+    try {
+      documentExists = containedInInventory(documentMetadata);
+    } catch (ConnectorException e) {
+      LOG.error("error in inventory connector while checking " + buildDocumentMetadataString(
+          documentMetadata), e);
+      statistics.setErrorInInventoryConnector(true);
+    }
     if (documentExists) {
-      statistics.alreadyExists++;
+      statistics.addNrExists(1);
     } else {
       Document document = new Document();
       OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -102,11 +111,11 @@ public class DocumentImportServiceImpl implements DocumentImportService {
       filterProcessor.process(document);
 
       if (Status.IGNORED.equals(document.getStatus())) {
-        statistics.ignored++;
+        statistics.addNrIgnored(1);
       } else { // currently only IGNORED is possible for FilterProcessor
         document.setStatus(Status.IN_PROGRESS);
         document.setAssignee(documentAssignmentFinder.determineAssignee(documentMetadata));
-        statistics.imported++;
+        statistics.addNrImported(1);
       }
       documentRepository.save(document);
       //LOG.debug("document imported: {}", buildDocumentMetadataString(documentMetadata));
@@ -119,8 +128,10 @@ public class DocumentImportServiceImpl implements DocumentImportService {
    *
    * @param documentMetadata has to match this document
    * @return true, if the document is contained in the inventory; false, otherwise
+   * @throws ConnectorException thrown when the {@link InventoryConnector} has an error
    */
-  private boolean containedInInventory(final DocumentMetadata documentMetadata) {
+  private boolean containedInInventory(final DocumentMetadata documentMetadata)
+      throws ConnectorException {
     // check local inventory
     for (String isbn : documentMetadata.getIsbns()) {
       Document existingDocument = documentRepository.findByMetadataIsbnsContains(isbn);
@@ -133,15 +144,11 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 
     // check remote inventory
     if (inventoryConnector != null) {
-      try {
-        boolean exists = inventoryConnector.contains(documentMetadata);
-        if (exists) {
-          LOG.debug("document already exists in remote inventory: {}", buildDocumentMetadataString(
-              documentMetadata));
-          return true;
-        }
-      } catch (ConnectorException e) {
-        LOG.error("error in inventory connector", e);
+      boolean exists = inventoryConnector.contains(documentMetadata);
+      if (exists) {
+        LOG.debug("document already exists in remote inventory: {}", buildDocumentMetadataString(
+            documentMetadata));
+        return true;
       }
     }
     return false;
@@ -162,6 +169,37 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     return valid;
   }
 
+  private DocumentImportStatistics initStatistics(final LocalDate from, final LocalDate to,
+      final ConnectorType connectorType) {
+    DocumentImportStatistics statistics = new DocumentImportStatistics();
+    statistics.setStart(OffsetDateTime.now(ZoneOffset.UTC).toLocalDateTime());
+    statistics.setFromDate(from);
+    statistics.setToDate(to);
+    statistics.setSource(connectorType.toString());
+
+    statistics.setErrorInInstitutionConnector(false);
+    statistics.setErrorInInventoryConnector(false);
+    statistics.setNrExists(0);
+    statistics.setNrIgnored(0);
+    statistics.setNrImported(0);
+    statistics.setNrInvalid(0);
+    statistics.setNrRetrieved(0);
+    return statistics;
+  }
+
+  private void finishStatistics(final DocumentImportStatistics statistics) {
+    statistics.setEnd(OffsetDateTime.now(ZoneOffset.UTC).toLocalDateTime());
+    importStatisticsRepository.save(statistics);
+    LOG.info("Import documents from {} done, range from {} to {}."
+        + " Connector: {}, InventoryConnector: {}."
+        + " (retrieved: {}, imported: {}, alreadyExists: {}, invalid: {}, ignored: {})",
+        statistics.getSource(), statistics.getFromDate(), statistics.getToDate(),
+        statistics.isErrorInInstitutionConnector() ? "ERROR" : "OK",
+        statistics.isErrorInInventoryConnector() ? "ERROR" : "OK",
+        statistics.getNrRetrieved(), statistics.getNrImported(), statistics
+            .getNrExists(), statistics.getNrInvalid(), statistics.getNrIgnored());
+  }
+
   /**
    * getter: inventoryConnector.
    *
@@ -178,14 +216,6 @@ public class DocumentImportServiceImpl implements DocumentImportService {
    */
   public void setInventoryConnector(final InventoryConnector inventoryConnector) {
     this.inventoryConnector = inventoryConnector;
-  }
-
-  private class ImportStatistics {
-    private int retrieved = 0;
-    private int alreadyExists = 0;
-    private int invalid = 0;
-    private int ignored = 0;
-    private int imported = 0;
   }
 
 }

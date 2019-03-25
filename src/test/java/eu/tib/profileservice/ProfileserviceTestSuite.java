@@ -11,6 +11,7 @@ import eu.tib.profileservice.controller.HomeControllerTest;
 import eu.tib.profileservice.controller.ImportControllerTest;
 import eu.tib.profileservice.controller.UserControllerTest;
 import eu.tib.profileservice.repository.CategoryRepositoryTest;
+import eu.tib.profileservice.repository.DocumentImportStatisticsRepositoryTest;
 import eu.tib.profileservice.repository.DocumentRepositoryTest;
 import eu.tib.profileservice.repository.ImportFilterRepositoryTest;
 import eu.tib.profileservice.repository.UserRepositoryTest;
@@ -44,7 +45,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
     // Integration Tests
     CategoryRepositoryTest.class, DocumentRepositoryTest.class,
-    ImportFilterRepositoryTest.class, UserRepositoryTest.class
+    ImportFilterRepositoryTest.class, UserRepositoryTest.class,
+    DocumentImportStatisticsRepositoryTest.class
 })
 public class ProfileserviceTestSuite {
 

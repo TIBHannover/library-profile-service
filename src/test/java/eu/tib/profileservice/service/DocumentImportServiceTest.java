@@ -16,6 +16,7 @@ import eu.tib.profileservice.domain.DocumentMetadata;
 import eu.tib.profileservice.domain.ImportFilter;
 import eu.tib.profileservice.domain.ImportFilter.Action;
 import eu.tib.profileservice.domain.ImportFilter.ConditionType;
+import eu.tib.profileservice.repository.DocumentImportStatisticsRepository;
 import eu.tib.profileservice.repository.DocumentRepository;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -52,6 +53,8 @@ public class DocumentImportServiceTest {
   private DocumentImportService documentImportService;
   @MockBean
   private DocumentRepository documentRepository;
+  @MockBean
+  private DocumentImportStatisticsRepository documentImportStatisticsRepository;
   @MockBean
   private InstitutionConnectorFactory connectorFactory;
   @MockBean
@@ -112,6 +115,7 @@ public class DocumentImportServiceTest {
   @Test
   public void testImportDocumentsWithNullResult() {
     when(connector.retrieveNextDocuments()).thenReturn(null);
+    when(connector.hasErrors()).thenReturn(true);
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);

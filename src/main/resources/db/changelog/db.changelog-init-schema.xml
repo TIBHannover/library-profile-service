@@ -165,4 +165,37 @@
     <changeSet author="hoffmann (generated)" id="1553078288428-25">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_categories" constraintName="FKqhdol0ia96a31f8ir2g928ems" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="user"/>
     </changeSet>
+    <changeSet author="hoffmann (generated)" id="1553078288428-26">
+        <createTable tableName="document_import_statistics">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="document_import_statisticsPK"/>
+            </column>
+            <column name="end" type="TIMESTAMP"/>
+            <column name="error_in_institution_connector" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="error_in_inventory_connector" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_date" type="date"/>
+            <column name="nr_exists" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nr_ignored" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nr_imported" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nr_invalid" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nr_retrieved" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source" type="VARCHAR(255)"/>
+            <column name="start" type="TIMESTAMP"/>
+            <column name="to_date" type="date"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
