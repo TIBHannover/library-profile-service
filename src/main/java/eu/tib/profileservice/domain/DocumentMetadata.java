@@ -63,7 +63,7 @@ public class DocumentMetadata {
 
   /**
    * getter: id.
-   * 
+   *
    * @return the id
    */
   public Long getId() {
@@ -72,7 +72,7 @@ public class DocumentMetadata {
 
   /**
    * setter: id.
-   * 
+   *
    * @param id the id to set
    */
   public void setId(final Long id) {
@@ -81,7 +81,7 @@ public class DocumentMetadata {
 
   /**
    * getter: title.
-   * 
+   *
    * @return the title
    */
   public String getTitle() {
@@ -90,7 +90,7 @@ public class DocumentMetadata {
 
   /**
    * setter: title.
-   * 
+   *
    * @param title the title to set
    */
   public void setTitle(final String title) {
@@ -99,7 +99,7 @@ public class DocumentMetadata {
 
   /**
    * getter: remainderOfTitle.
-   * 
+   *
    * @return the remainderOfTitle
    */
   public String getRemainderOfTitle() {
@@ -108,7 +108,7 @@ public class DocumentMetadata {
 
   /**
    * setter: remainderOfTitle.
-   * 
+   *
    * @param remainderOfTitle the remainderOfTitle to set
    */
   public void setRemainderOfTitle(final String remainderOfTitle) {
@@ -117,7 +117,7 @@ public class DocumentMetadata {
 
   /**
    * getter: isbns.
-   * 
+   *
    * @return the isbns
    */
   public List<String> getIsbns() {
@@ -126,7 +126,7 @@ public class DocumentMetadata {
 
   /**
    * setter: isbns.
-   * 
+   *
    * @param isbns the isbns to set
    */
   public void setIsbns(final List<String> isbns) {
@@ -135,7 +135,7 @@ public class DocumentMetadata {
 
   /**
    * getter: deweyDecimalClassifications.
-   * 
+   *
    * @return the deweyDecimalClassifications
    */
   public Set<String> getDeweyDecimalClassifications() {
@@ -144,7 +144,7 @@ public class DocumentMetadata {
 
   /**
    * setter: deweyDecimalClassifications.
-   * 
+   *
    * @param deweyDecimalClassifications the deweyDecimalClassifications to set
    */
   public void setDeweyDecimalClassifications(final Set<String> deweyDecimalClassifications) {
@@ -153,7 +153,7 @@ public class DocumentMetadata {
 
   /**
    * getter: publisher.
-   * 
+   *
    * @return the publisher
    */
   public String getPublisher() {
@@ -162,7 +162,7 @@ public class DocumentMetadata {
 
   /**
    * setter: publisher.
-   * 
+   *
    * @param publisher the publisher to set
    */
   public void setPublisher(final String publisher) {
@@ -171,7 +171,7 @@ public class DocumentMetadata {
 
   /**
    * getter: termsOfAvailability.
-   * 
+   *
    * @return the termsOfAvailability
    */
   public String getTermsOfAvailability() {
@@ -180,7 +180,7 @@ public class DocumentMetadata {
 
   /**
    * setter: termsOfAvailability.
-   * 
+   *
    * @param termsOfAvailability the termsOfAvailability to set
    */
   public void setTermsOfAvailability(final String termsOfAvailability) {
@@ -189,7 +189,7 @@ public class DocumentMetadata {
 
   /**
    * setter: authors.
-   * 
+   *
    * @param authors the authors to set
    */
   public void setAuthors(final List<String> authors) {
@@ -198,7 +198,7 @@ public class DocumentMetadata {
 
   /**
    * getter: authors.
-   * 
+   *
    * @return the authors
    */
   public List<String> getAuthors() {
@@ -207,7 +207,7 @@ public class DocumentMetadata {
 
   /**
    * getter: placeOfPublication.
-   * 
+   *
    * @return the placeOfPublication
    */
   public String getPlaceOfPublication() {
@@ -216,7 +216,7 @@ public class DocumentMetadata {
 
   /**
    * setter: placeOfPublication.
-   * 
+   *
    * @param placeOfPublication the placeOfPublication to set
    */
   public void setPlaceOfPublication(final String placeOfPublication) {
@@ -225,7 +225,7 @@ public class DocumentMetadata {
 
   /**
    * getter: dateOfPublication.
-   * 
+   *
    * @return the dateOfPublication
    */
   public String getDateOfPublication() {
@@ -234,7 +234,7 @@ public class DocumentMetadata {
 
   /**
    * setter: dateOfPublication.
-   * 
+   *
    * @param dateOfPublication the dateOfPublication to set
    */
   public void setDateOfPublication(final String dateOfPublication) {
@@ -243,7 +243,7 @@ public class DocumentMetadata {
 
   /**
    * getter: edition.
-   * 
+   *
    * @return the edition
    */
   public String getEdition() {
@@ -252,7 +252,7 @@ public class DocumentMetadata {
 
   /**
    * setter: edition.
-   * 
+   *
    * @param edition the edition to set
    */
   public void setEdition(final String edition) {
@@ -261,7 +261,7 @@ public class DocumentMetadata {
 
   /**
    * getter: physicalDescription.
-   * 
+   *
    * @return the physicalDescription
    */
   public String getPhysicalDescription() {
@@ -270,7 +270,7 @@ public class DocumentMetadata {
 
   /**
    * setter: physicalDescription.
-   * 
+   *
    * @param physicalDescription the physicalDescription to set
    */
   public void setPhysicalDescription(final String physicalDescription) {
@@ -279,7 +279,7 @@ public class DocumentMetadata {
 
   /**
    * getter: series.
-   * 
+   *
    * @return the series
    */
   public String getSeries() {
@@ -288,7 +288,7 @@ public class DocumentMetadata {
 
   /**
    * setter: series.
-   * 
+   *
    * @param series the series to set
    */
   public void setSeries(final String series) {
@@ -297,7 +297,7 @@ public class DocumentMetadata {
 
   /**
    * getter: formOfProduct.
-   * 
+   *
    * @return the formOfProduct
    */
   public String getFormOfProduct() {
@@ -306,7 +306,7 @@ public class DocumentMetadata {
 
   /**
    * setter: formOfProduct.
-   * 
+   *
    * @param formOfProduct the formOfProduct to set
    */
   public void setFormOfProduct(final String formOfProduct) {
@@ -315,7 +315,7 @@ public class DocumentMetadata {
 
   /**
    * getter: formKeywords.
-   * 
+   *
    * @return the formKeywords
    */
   public List<String> getFormKeywords() {
@@ -324,7 +324,7 @@ public class DocumentMetadata {
 
   /**
    * setter: formKeywords.
-   * 
+   *
    * @param formKeywords the formKeywords to set
    */
   public void setFormKeywords(final List<String> formKeywords) {

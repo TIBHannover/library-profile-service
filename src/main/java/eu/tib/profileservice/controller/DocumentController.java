@@ -1,7 +1,6 @@
 package eu.tib.profileservice.controller;
 
 import static eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MESSAGE;
-import static eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MESSAGE_PARAMETER;
 import static eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE;
 import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_ERROR;
 import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_SUCCESS;
@@ -187,8 +186,9 @@ public class DocumentController {
     } else {
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_SUCCESS);
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENT_ASSIGNED);
-      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_PARAMETER, result.getAssignee()
-          .getName());
+      redirectAttrs.addFlashAttribute(
+          eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MESSAGE_PARAMETER,
+          result.getAssignee().getName());
     }
     return "redirect:" + redirectUri;
   }

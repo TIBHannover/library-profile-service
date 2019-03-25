@@ -25,10 +25,10 @@ public class DocumentAssignmentFinder {
 
   /**
    * Constructor of {@link DocumentAssignmentFinder}.
-   * 
+   *
    * @param users all users who may become assignee
    */
-  public DocumentAssignmentFinder(List<User> users) {
+  public DocumentAssignmentFinder(final List<User> users) {
     this.usersByDdcCategory = new HashMap<Category, User>();
     for (User user : users) {
       List<Category> categories = user.getCategories();
@@ -45,7 +45,7 @@ public class DocumentAssignmentFinder {
     // sort by length of the dewey-classification => longer classification has priority
     Collections.sort(this.ddcCategories, new Comparator<Category>() {
       @Override
-      public int compare(Category cat0, Category cat1) {
+      public int compare(final Category cat0, final Category cat1) {
         String arg0 = cat0.getCategory();
         String arg1 = cat1.getCategory();
         int result = 0;
@@ -60,7 +60,7 @@ public class DocumentAssignmentFinder {
 
   /**
    * Determine the {@link User} the given {@link DocumentMetadata} should be assigned to.
-   * 
+   *
    * @param documentMetadata document
    * @return the assignee; null, if no assignee could be determined
    */
@@ -75,7 +75,7 @@ public class DocumentAssignmentFinder {
   /**
    * Determine the {@link User} the given {@link DocumentMetadata} should be assigned to. Use
    * Dewey-Classification to determine the user.
-   * 
+   *
    * @param documentMetadata document
    * @return the assignee; null, if no assignee could be determined
    */
@@ -83,7 +83,7 @@ public class DocumentAssignmentFinder {
     // sort by length of the dewey-classification => longer classification has priority
     SortedSet<String> ddcs = new TreeSet<String>(new Comparator<String>() {
       @Override
-      public int compare(String arg0, String arg1) {
+      public int compare(final String arg0, final String arg1) {
         int result = 0;
         result = arg1.length() - arg0.length();
         if (result == 0) {
@@ -124,7 +124,7 @@ public class DocumentAssignmentFinder {
   /**
    * Check if the given ddc-String is included in the given ddc-Category. Any trailing '0' of the
    * given {@link Category} may be truncated.
-   * 
+   *
    * @param ddcCategory ddc category
    * @param ddc ddc
    * @return
@@ -144,7 +144,7 @@ public class DocumentAssignmentFinder {
 
   /**
    * Get Accuracy of both classifications; this means: count matching chars at the beginning.
-   * 
+   *
    * @param s1 dewey decimal classification 1
    * @param s2 dewey decimal classification 2
    * @return

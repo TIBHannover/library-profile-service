@@ -55,7 +55,7 @@ public class Category {
 
   /**
    * getter: id.
-   * 
+   *
    * @return the id
    */
   public Long getId() {
@@ -64,7 +64,7 @@ public class Category {
 
   /**
    * setter: id.
-   * 
+   *
    * @param id the id to set
    */
   public void setId(final Long id) {
@@ -73,7 +73,7 @@ public class Category {
 
   /**
    * getter: category.
-   * 
+   *
    * @return the category
    */
   public String getCategory() {
@@ -82,7 +82,7 @@ public class Category {
 
   /**
    * setter: category.
-   * 
+   *
    * @param category the category to set
    */
   public void setCategory(final String category) {
@@ -91,7 +91,7 @@ public class Category {
 
   /**
    * getter: type.
-   * 
+   *
    * @return the type
    */
   public Type getType() {
@@ -100,7 +100,7 @@ public class Category {
 
   /**
    * setter: type.
-   * 
+   *
    * @param type the type to set
    */
   public void setType(final Type type) {
@@ -109,7 +109,7 @@ public class Category {
 
   /**
    * getter: description.
-   * 
+   *
    * @return the description
    */
   public String getDescription() {
@@ -118,7 +118,7 @@ public class Category {
 
   /**
    * setter: description.
-   * 
+   *
    * @param description the description to set
    */
   public void setDescription(final String description) {

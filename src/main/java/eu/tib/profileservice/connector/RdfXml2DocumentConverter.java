@@ -197,7 +197,7 @@ public class RdfXml2DocumentConverter {
 
   /**
    * Get texts from the elements.
-   * 
+   *
    * @param elements elements to get text from (directly)
    * @return all texts
    */
@@ -207,7 +207,7 @@ public class RdfXml2DocumentConverter {
 
   /**
    * Get texts from the elements. May consider sub-elements.
-   * 
+   *
    * @param elements elements to get text from (directly or via sub-element)
    * @param subElementTagName if not null, get text from the sub-elements matching this tag;
    *     otherwise, get text directly from the element;
@@ -248,7 +248,7 @@ public class RdfXml2DocumentConverter {
 
   /**
    * Check, if there was an error during conversion.
-   * 
+   *
    * @return true, if there was an error during conversion; false, otherwise
    */
   public boolean hasErrors() {

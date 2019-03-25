@@ -10,32 +10,32 @@ public interface ImportFilterService {
 
   /**
    * Create or update the given {@link ImportFilter}.
-   * 
+   *
    * @param filter filter
    * @return updated filter
    */
-  ImportFilter createOrUpdate(final ImportFilter filter);
+  ImportFilter createOrUpdate(ImportFilter filter);
 
   /**
    * Delete the given {@link ImportFilter}.
-   * 
+   *
    * @param filter filter
    */
-  void delete(final ImportFilter filter);
+  void delete(ImportFilter filter);
 
   /**
    * Retrieve all {@link ImportFilter}s.
-   * 
+   *
    * @return all filters
    */
   List<ImportFilter> findAll();
 
   /**
    * Retrieve {@link ImportFilter} for the given id.
-   * 
+   *
    * @param id id
    * @return filter
    */
-  ImportFilter findById(final Long id);
+  ImportFilter findById(Long id);
 
 }

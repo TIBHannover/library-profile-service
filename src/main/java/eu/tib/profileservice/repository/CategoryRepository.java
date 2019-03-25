@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-  List<Category> findByType(final Category.Type type);
+  List<Category> findByType(Category.Type type);
 
-  Category findByTypeAndCategory(final Category.Type type, final String category);
+  Category findByTypeAndCategory(Category.Type type, String category);
 }

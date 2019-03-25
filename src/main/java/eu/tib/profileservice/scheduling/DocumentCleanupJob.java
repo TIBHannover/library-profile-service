@@ -26,7 +26,7 @@ public class DocumentCleanupJob implements Job {
   private DocumentService documentService;
 
   @Override
-  public void execute(JobExecutionContext context) throws JobExecutionException {
+  public void execute(final JobExecutionContext context) throws JobExecutionException {
     LOG.info("Start DocumentCleanupJob");
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);

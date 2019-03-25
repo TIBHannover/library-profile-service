@@ -24,7 +24,7 @@ public class WebConfig {
   /**
    * Register the {@link InventoryConnector}-bean, if configured. If not configured, no
    * {@link InventoryConnector} will be used.
-   * 
+   *
    * @return inventoryConnector
    */
   @Bean

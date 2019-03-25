@@ -22,11 +22,11 @@ public interface DocumentImportService {
    * If the document matches any {@link ImportFilter}, then the action of the filter will be
    * processed (set status to {@link Status#IGNORED},...).
    * </p>
-   * 
+   *
    * @param from from date
    * @param to to date
    * @param connectorType type of the external system the docs should be imported from
    */
-  void importDocuments(final LocalDate from, final LocalDate to, final ConnectorType connectorType);
+  void importDocuments(LocalDate from, LocalDate to, ConnectorType connectorType);
 
 }

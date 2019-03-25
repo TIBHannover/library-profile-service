@@ -8,16 +8,16 @@ import org.springframework.data.domain.Pageable;
 
 public interface DocumentService {
 
-  Page<Document> findAllByExample(final Document example, final Pageable pageable);
+  Page<Document> findAllByExample(Document example, Pageable pageable);
 
-  Document findById(final Long id);
+  Document findById(Long id);
 
-  Document assignToUser(final Document document, final User user);
+  Document assignToUser(Document document, User user);
 
-  Document acceptDocument(final Long id);
+  Document acceptDocument(Long id);
 
-  Document rejectDocument(final Long id);
+  Document rejectDocument(Long id);
 
-  void deleteDocumentCreatedBefore(final LocalDateTime expiryDateUtc);
+  void deleteDocumentCreatedBefore(LocalDateTime expiryDateUtc);
 
 }

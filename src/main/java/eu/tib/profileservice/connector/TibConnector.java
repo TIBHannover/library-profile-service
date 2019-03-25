@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Implementation of {@link InventoryConnector} for sru api of <i>tib.eu</i>.
- * 
+ *
  * <p>
  * The connector just checks if the numberOfRecords in the response is gt 0.
  * </p>

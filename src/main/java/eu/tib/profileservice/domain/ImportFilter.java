@@ -48,7 +48,7 @@ public class ImportFilter {
 
   /**
    * getter: id.
-   * 
+   *
    * @return the id
    */
   public Long getId() {
@@ -57,7 +57,7 @@ public class ImportFilter {
 
   /**
    * setter: id.
-   * 
+   *
    * @param id the id to set
    */
   public void setId(final Long id) {
@@ -66,7 +66,7 @@ public class ImportFilter {
 
   /**
    * getter: conditionType.
-   * 
+   *
    * @return the conditionType
    */
   public ConditionType getConditionType() {
@@ -75,7 +75,7 @@ public class ImportFilter {
 
   /**
    * setter: conditionType.
-   * 
+   *
    * @param conditionType the conditionType to set
    */
   public void setConditionType(final ConditionType conditionType) {
@@ -84,7 +84,7 @@ public class ImportFilter {
 
   /**
    * getter: condition.
-   * 
+   *
    * @return the condition
    */
   public String getCondition() {
@@ -93,7 +93,7 @@ public class ImportFilter {
 
   /**
    * setter: condition.
-   * 
+   *
    * @param condition the condition to set
    */
   public void setCondition(final String condition) {
@@ -102,7 +102,7 @@ public class ImportFilter {
 
   /**
    * getter: action.
-   * 
+   *
    * @return the action
    */
   public Action getAction() {
@@ -111,7 +111,7 @@ public class ImportFilter {
 
   /**
    * setter: action.
-   * 
+   *
    * @param action the action to set
    */
   public void setAction(final Action action) {

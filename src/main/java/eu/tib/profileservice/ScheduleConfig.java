@@ -36,7 +36,7 @@ public class ScheduleConfig {
 
   /**
    * Initializing document-import-jobs.
-   * 
+   *
    * @throws SchedulerException if the Job cannot be added to the Scheduler
    */
   @PostConstruct
@@ -68,7 +68,7 @@ public class ScheduleConfig {
 
   /**
    * Standard Job Detail for the {@link DocumentCleanupJob}.
-   * 
+   *
    * @return job detail
    */
   @Bean(name = "jobDetailDocumentCleanup")
@@ -81,7 +81,7 @@ public class ScheduleConfig {
 
   /**
    * Standard Trigger for the {@link DocumentCleanupJob}.
-   * 
+   *
    * @param job job detail
    * @return trigger
    */

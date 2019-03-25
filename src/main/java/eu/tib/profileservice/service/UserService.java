@@ -7,13 +7,13 @@ public interface UserService {
 
   List<User> findAll();
 
-  User findByName(final String name);
+  User findByName(String name);
 
-  User findById(final Long id);
+  User findById(Long id);
 
-  User create(final User user);
+  User create(User user);
 
-  User update(final User user);
+  User update(User user);
 
-  void delete(final User user);
+  void delete(User user);
 }

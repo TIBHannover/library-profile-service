@@ -22,7 +22,7 @@ public class ImportFilterProcessor {
 
   /**
    * Constructor of {@link ImportFilterProcessor}.
-   * 
+   *
    * @param filterRules filter to use
    */
   public ImportFilterProcessor(final List<ImportFilter> filterRules) {
@@ -35,7 +35,7 @@ public class ImportFilterProcessor {
    * If there is a {@link ImportFilter} matching the given document, then the action of the filter
    * will be processed (for example: set the document-status to {@link Status#IGNORED}).
    * </p>
-   * 
+   *
    * @param document document to process
    */
   public void process(final Document document) {
@@ -64,7 +64,7 @@ public class ImportFilterProcessor {
 
   /**
    * Test if the given filter matches the given document.
-   * 
+   *
    * @param filter filter
    * @param metadata document
    * @return true, if matches; false, otherwise

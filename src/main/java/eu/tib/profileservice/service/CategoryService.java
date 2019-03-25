@@ -7,10 +7,10 @@ public interface CategoryService {
 
   List<Category> findAll();
 
-  List<Category> findByType(final Category.Type type);
+  List<Category> findByType(Category.Type type);
 
-  Category findByTypeAndCategory(final Category.Type type, final String category);
+  Category findByTypeAndCategory(Category.Type type, String category);
 
-  Category save(final Category category);
+  Category save(Category category);
 
 }

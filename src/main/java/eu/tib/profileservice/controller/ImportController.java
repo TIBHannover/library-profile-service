@@ -93,7 +93,7 @@ public class ImportController {
 
   /**
    * List.
-   * 
+   *
    * @param model model
    * @return template
    */
@@ -106,7 +106,7 @@ public class ImportController {
 
   /**
    * Show filter.
-   * 
+   *
    * @param filterId id of the filter to show
    * @param model model
    * @param redirectAttrs redirectAttrs
@@ -127,7 +127,7 @@ public class ImportController {
 
   /**
    * Create new filter template.
-   * 
+   *
    * @param filter filter
    * @param model model
    * @return template
@@ -140,7 +140,7 @@ public class ImportController {
 
   /**
    * Edit existing filter template.
-   * 
+   *
    * @param filterId id of the {@link ImportFilter}
    * @param model model
    * @param redirectAttrs redirectAttrs
@@ -162,7 +162,7 @@ public class ImportController {
 
   /**
    * Save method for {@link ImportFilter} (create or edit).
-   * 
+   *
    * @param filter filter
    * @param model model
    * @param redirectAttrs redirectAttrs
@@ -184,7 +184,7 @@ public class ImportController {
 
   /**
    * Delete method for {@link ImportFilter}.
-   * 
+   *
    * @param filter filter
    * @param model model
    * @param redirectAttrs redirectAttrs
@@ -201,7 +201,7 @@ public class ImportController {
 
   /**
    * Just to test the import via browser.
-   * 
+   *
    * @param model model
    * @return template
    */
@@ -216,7 +216,7 @@ public class ImportController {
 
   /**
    * Just to test the import via browser.
-   * 
+   *
    * @param fromDate fromDate
    * @param toDate toDate
    * @return template

@@ -116,7 +116,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   /**
    * Check if the given {@link DocumentMetadata} already exists in the inventory (local and
    * external).
-   * 
+   *
    * @param documentMetadata has to match this document
    * @return true, if the document is contained in the inventory; false, otherwise
    */
@@ -164,7 +164,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 
   /**
    * getter: inventoryConnector.
-   * 
+   *
    * @return the inventoryConnector
    */
   public InventoryConnector getInventoryConnector() {
@@ -173,7 +173,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 
   /**
    * setter: inventoryConnector.
-   * 
+   *
    * @param inventoryConnector the inventoryConnector to set
    */
   public void setInventoryConnector(final InventoryConnector inventoryConnector) {

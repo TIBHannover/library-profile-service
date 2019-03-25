@@ -46,7 +46,7 @@ public class DnbConnector implements InstitutionConnector {
 
   /**
    * New instance of {@link DnbConnector}.
-   * 
+   *
    * @param restTemplate restTemplate
    * @param baseUrl baseUrl
    * @param accessToken accessToken

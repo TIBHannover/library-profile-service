@@ -40,7 +40,7 @@ public class BlConnector implements InstitutionConnector {
 
   /**
    * Constructor of {@link BlConnector}.
-   * 
+   *
    * @param restTemplate restTemplate
    * @param baseUrl baseUrl
    * @param from from
@@ -67,7 +67,7 @@ public class BlConnector implements InstitutionConnector {
 
   /**
    * Determine filenames for the given date range.
-   * 
+   *
    * @param fromDate from date
    * @param toDate to date
    * @return filenames

@@ -6,20 +6,20 @@ public class ConnectorException extends Exception {
 
   /**
    * Constructor of {@link ConnectorException}.
-   * 
+   *
    * @param msg message
    * @param e exception
    */
-  public ConnectorException(String msg, Exception e) {
+  public ConnectorException(final String msg, final Exception e) {
     super(msg, e);
   }
 
   /**
    * Constructor of {@link ConnectorException}.
-   * 
+   *
    * @param msg message
    */
-  public ConnectorException(String msg) {
+  public ConnectorException(final String msg) {
     super(msg);
   }
 

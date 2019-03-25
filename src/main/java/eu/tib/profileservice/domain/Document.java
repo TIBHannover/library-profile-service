@@ -51,7 +51,7 @@ public class Document {
 
   /**
    * getter: id.
-   * 
+   *
    * @return the id
    */
   public Long getId() {
@@ -60,7 +60,7 @@ public class Document {
 
   /**
    * setter: id.
-   * 
+   *
    * @param id the id to set
    */
   public void setId(final Long id) {
@@ -69,7 +69,7 @@ public class Document {
 
   /**
    * getter: metadata.
-   * 
+   *
    * @return the metadata
    */
   public DocumentMetadata getMetadata() {
@@ -78,7 +78,7 @@ public class Document {
 
   /**
    * setter: metadata.
-   * 
+   *
    * @param metadata the metadata to set
    */
   public void setMetadata(final DocumentMetadata metadata) {
@@ -87,7 +87,7 @@ public class Document {
 
   /**
    * getter: status.
-   * 
+   *
    * @return the status
    */
   public Status getStatus() {
@@ -96,7 +96,7 @@ public class Document {
 
   /**
    * setter: status.
-   * 
+   *
    * @param status the status to set
    */
   public void setStatus(final Status status) {
@@ -105,7 +105,7 @@ public class Document {
 
   /**
    * getter: assignee.
-   * 
+   *
    * @return the assignee
    */
   public User getAssignee() {
@@ -114,7 +114,7 @@ public class Document {
 
   /**
    * setter: assignee.
-   * 
+   *
    * @param assignee the assignee to set
    */
   public void setAssignee(final User assignee) {
@@ -123,7 +123,7 @@ public class Document {
 
   /**
    * getter: creationDateUtc.
-   * 
+   *
    * @return the creationDateUtc
    */
   public LocalDateTime getCreationDateUtc() {
@@ -132,7 +132,7 @@ public class Document {
 
   /**
    * setter: creationDateUtc.
-   * 
+   *
    * @param creationDateUtc the creationDateUtc to set
    */
   public void setCreationDateUtc(final LocalDateTime creationDateUtc) {

@@ -61,7 +61,7 @@ public class MarcXml2DocumentConverter {
    * <p>
    * Errors that occur during conversion will be collected
    * </p>
-   * 
+   *
    * @param xpathExpression the xpathExpression of the marcxml-records
    * @param xmlInput xml-document as {@link String}
    * @return converted records; null, if the given xml-document cannot be parsed
@@ -84,7 +84,7 @@ public class MarcXml2DocumentConverter {
    * <p>
    * Errors that occur during conversion will be collected
    * </p>
-   * 
+   *
    * @param xpathExpression the xpathExpression of the marcxml-records
    * @param xmlInputStream xml-document as {@link InputStream}
    * @return converted records; null, if the given xml-document cannot be parsed
@@ -107,11 +107,11 @@ public class MarcXml2DocumentConverter {
     final List<DocumentMetadata> documents = new ArrayList<>();
     for (int i = 0; i < nodes.getLength(); i++) {
       final Node node = nodes.item(i);
-      try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+      try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
         final Transformer xform = TransformerFactory.newInstance().newTransformer();
         xform.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         xform.transform(new DOMSource(node), new StreamResult(outputStream));
-        try (final InputStream recordInputStream = new ByteArrayInputStream(outputStream
+        try (InputStream recordInputStream = new ByteArrayInputStream(outputStream
             .toByteArray())) {
           documents.addAll(convertMarcXmlRecords(recordInputStream));
         }
@@ -125,7 +125,7 @@ public class MarcXml2DocumentConverter {
 
   /**
    * Call {@link MarcXml2DocumentConverter#convertMarcXmlRecords(InputStream)}.
-   * 
+   *
    * @param records marcxml records as {@link String}
    * @return converted records
    */
@@ -145,7 +145,7 @@ public class MarcXml2DocumentConverter {
    * <p>
    * Errors that occur during conversion will be collected.
    * </p>
-   * 
+   *
    * @param recordsInputStream marcxml records as xml-document as {@link InputStream}
    * @return converted records
    */
@@ -283,7 +283,7 @@ public class MarcXml2DocumentConverter {
    * <li>code = <i>b</i> => publisher name</li>
    * <li>code = <i>c</i> => data</li>
    * </ul>
-   * 
+   *
    * @param record the record
    * @param code the code
    * @return
@@ -314,7 +314,7 @@ public class MarcXml2DocumentConverter {
 
   /**
    * Determine data matching the given criteria.
-   * 
+   *
    * @param record record to extract the data from
    * @param tag tag of the datafield
    * @param code code of the subfield
@@ -353,7 +353,7 @@ public class MarcXml2DocumentConverter {
 
   /**
    * Get all errors that occurred during conversion.
-   * 
+   *
    * @return the errors that occurred during conversion
    */
   public List<ConversionError> getErrors() {
@@ -362,7 +362,7 @@ public class MarcXml2DocumentConverter {
 
   /**
    * Check, if there was an error during conversion.
-   * 
+   *
    * @return true, if there was an error during conversion; false, otherwise
    */
   public boolean hasErrors() {

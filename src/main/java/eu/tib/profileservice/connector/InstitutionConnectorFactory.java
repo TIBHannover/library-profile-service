@@ -11,8 +11,11 @@ import org.springframework.web.client.RestTemplate;
 @PropertySource("classpath:application.properties")
 public class InstitutionConnectorFactory {
 
+  /** type of the institution connector. */
   public enum ConnectorType {
+    /** type for british library. */
     BL,
+    /** deutsche nationalbibliothek. */
     DNB
   }
 
@@ -25,7 +28,7 @@ public class InstitutionConnectorFactory {
   /**
    * Create a new {@link InstitutionConnector} for the given date range and of the given
    * {@link ConnectorType}.
-   * 
+   *
    * @param connectorType type
    * @param from from date
    * @param to to date

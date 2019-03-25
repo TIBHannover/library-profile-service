@@ -65,7 +65,7 @@ public class User {
 
   /**
    * getter: id.
-   * 
+   *
    * @return the id
    */
   public Long getId() {
@@ -74,7 +74,7 @@ public class User {
 
   /**
    * setter: id.
-   * 
+   *
    * @param id the id to set
    */
   public void setId(final Long id) {
@@ -83,7 +83,7 @@ public class User {
 
   /**
    * getter: name.
-   * 
+   *
    * @return the name
    */
   public String getName() {
@@ -92,7 +92,7 @@ public class User {
 
   /**
    * setter: name.
-   * 
+   *
    * @param name the name to set
    */
   public void setName(final String name) {
@@ -101,7 +101,7 @@ public class User {
 
   /**
    * getter: password.
-   * 
+   *
    * @return the password
    */
   public String getPassword() {
@@ -110,7 +110,7 @@ public class User {
 
   /**
    * setter: password.
-   * 
+   *
    * @param password the password to set
    */
   public void setPassword(final String password) {
@@ -119,7 +119,7 @@ public class User {
 
   /**
    * getter: initials.
-   * 
+   *
    * @return the initials
    */
   public String getInitials() {
@@ -128,7 +128,7 @@ public class User {
 
   /**
    * setter: initials.
-   * 
+   *
    * @param initials the initials to set
    */
   public void setInitials(final String initials) {
@@ -137,7 +137,7 @@ public class User {
 
   /**
    * getter: email.
-   * 
+   *
    * @return the email
    */
   public String getEmail() {
@@ -146,7 +146,7 @@ public class User {
 
   /**
    * setter: email.
-   * 
+   *
    * @param email the email to set
    */
   public void setEmail(final String email) {
@@ -155,7 +155,7 @@ public class User {
 
   /**
    * getter: roles.
-   * 
+   *
    * @return the roles
    */
   public List<Role> getRoles() {
@@ -164,7 +164,7 @@ public class User {
 
   /**
    * setter: roles.
-   * 
+   *
    * @param roles the roles to set
    */
   public void setRoles(final List<Role> roles) {
@@ -173,7 +173,7 @@ public class User {
 
   /**
    * getter: categories.
-   * 
+   *
    * @return the categories
    */
   public List<Category> getCategories() {
@@ -182,7 +182,7 @@ public class User {
 
   /**
    * setter: categories.
-   * 
+   *
    * @param categories the categories to set
    */
   public void setCategories(final List<Category> categories) {

@@ -8,9 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DocumentRepository extends JpaRepository<Document, Long> {
-  Document findByMetadataIsbnsContains(final String isbn);
+  Document findByMetadataIsbnsContains(String isbn);
 
-  Page<Document> findAllByAssignee(final User assignee, final Pageable pageable);
+  Page<Document> findAllByAssignee(User assignee, Pageable pageable);
 
-  void deleteByCreationDateUtcBefore(final LocalDateTime expiryDate);
+  void deleteByCreationDateUtcBefore(LocalDateTime expiryDate);
 }
