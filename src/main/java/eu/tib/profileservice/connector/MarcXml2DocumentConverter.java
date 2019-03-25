@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
@@ -67,7 +68,8 @@ public class MarcXml2DocumentConverter {
    */
   public List<DocumentMetadata> extractMarcXmlRecordsAndConvert(final String xpathExpression,
       final String xmlInput) {
-    try (ByteArrayInputStream xmlInputStream = new ByteArrayInputStream(xmlInput.getBytes())) {
+    try (ByteArrayInputStream xmlInputStream = new ByteArrayInputStream(xmlInput.getBytes(Charset
+        .forName("UTF-8")))) {
       return extractMarcXmlRecordsAndConvert(xpathExpression, xmlInputStream);
     } catch (IOException e) {
       LOG.warn("Error closing ByteArrayInputStream", e);
@@ -128,7 +130,8 @@ public class MarcXml2DocumentConverter {
    * @return converted records
    */
   public List<DocumentMetadata> convertMarcXmlRecords(final String records) {
-    try (ByteArrayInputStream recordInputStream = new ByteArrayInputStream(records.getBytes())) {
+    try (ByteArrayInputStream recordInputStream = new ByteArrayInputStream(records.getBytes(Charset
+        .forName("UTF-8")))) {
       return convertMarcXmlRecords(recordInputStream);
     } catch (IOException e) {
       LOG.warn("Error closing ByteArrayInputStream", e);
@@ -285,7 +288,7 @@ public class MarcXml2DocumentConverter {
    * @param code the code
    * @return
    */
-  private String getPublicationInfo(final Record record, char code) {
+  private String getPublicationInfo(final Record record, final char code) {
     String publicationInfo = null;
     List<String> publicationInfos = getAllData(record, "264", code, null, null, '1');
     if (publicationInfos.size() > 0) {
@@ -336,7 +339,7 @@ public class MarcXml2DocumentConverter {
         .collect(Collectors.toList());
   }
 
-  private String getDataIfExists(final Record record, final String tag, char code) {
+  private String getDataIfExists(final Record record, final String tag, final char code) {
     List<String> data = getAllData(record, tag, code);
     if (data.size() > 0) {
       return data.get(0);

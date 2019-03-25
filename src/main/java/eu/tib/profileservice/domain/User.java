@@ -17,9 +17,13 @@ import javax.persistence.OneToMany;
 @Entity(name = User.ENTITY_NAME)
 public class User {
 
+  /** user management roles. */
   public enum Role {
+    /** role for user management. */
     MANAGE_USERS,
+    /** role for document management. */
     PROCESS_DOCUMENTS,
+    /** role for manually document-import. */
     IMPORT_DOCUMENTS
   }
 
@@ -184,6 +188,5 @@ public class User {
   public void setCategories(final List<Category> categories) {
     this.categories = categories;
   }
-
 
 }

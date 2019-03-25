@@ -70,7 +70,7 @@ public class TibConnector implements InventoryConnector {
     try {
       final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       final Document xml = builder.parse(new InputSource(new StringReader(responseDcxXml)));
-      return Integer.valueOf(xpath.evaluate(pathNumberOfRecords, xml));
+      return Integer.parseInt(xpath.evaluate(pathNumberOfRecords, xml));
     } catch (XPathExpressionException | ParserConfigurationException | SAXException
         | IOException e) {
       throw new ConnectorException("error while parsing reply", e);

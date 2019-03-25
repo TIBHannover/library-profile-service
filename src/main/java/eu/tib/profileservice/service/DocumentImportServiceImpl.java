@@ -27,14 +27,6 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 
   private static final Logger LOG = LoggerFactory.getLogger(DocumentImportServiceImpl.class);
 
-  private class ImportStatistics {
-    private int retrieved = 0;
-    private int alreadyExists = 0;
-    private int invalid = 0;
-    private int ignored = 0;
-    private int imported = 0;
-  }
-
   @Autowired
   private InstitutionConnectorFactory connectorFactory;
 
@@ -116,7 +108,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
         document.setAssignee(documentAssignmentFinder.determineAssignee(documentMetadata));
         statistics.imported++;
       }
-      document = documentRepository.save(document);
+      documentRepository.save(document);
       //LOG.debug("document imported: {}", buildDocumentMetadataString(documentMetadata));
     }
   }
@@ -186,6 +178,14 @@ public class DocumentImportServiceImpl implements DocumentImportService {
    */
   public void setInventoryConnector(final InventoryConnector inventoryConnector) {
     this.inventoryConnector = inventoryConnector;
+  }
+
+  private class ImportStatistics {
+    private int retrieved = 0;
+    private int alreadyExists = 0;
+    private int invalid = 0;
+    private int ignored = 0;
+    private int imported = 0;
   }
 
 }

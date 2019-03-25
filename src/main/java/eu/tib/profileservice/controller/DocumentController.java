@@ -168,12 +168,12 @@ public class DocumentController {
       final RedirectAttributes redirectAttrs, final String sourceUri, final String sourceQuery) {
     String redirectUri = getRedirectUri(sourceUri, sourceQuery);
     LOG.debug("redirectUri: {}", redirectUri);
-    if (document.getAssignee() == null || document.getAssignee().getId() == null) {
+    if (document == null || document.getId() == null) {
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
       return "redirect:" + redirectUri;
     }
-    if (document == null || document.getId() == null) {
+    if (document.getAssignee() == null || document.getAssignee().getId() == null) {
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
       return "redirect:" + redirectUri;

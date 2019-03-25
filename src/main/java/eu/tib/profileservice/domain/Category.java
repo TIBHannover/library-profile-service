@@ -15,12 +15,17 @@ import javax.persistence.UniqueConstraint;
     @UniqueConstraint(columnNames = {Category.COLUMN_NAME_CATEGORY, Category.COLUMN_NAME_TYPE})})
 public class Category {
 
+  /** Type of the category. */
   public enum Type {
+    /** Dewey decimal classification. */
     DDC
   }
 
+  /** Name of this entity. */
   public static final String ENTITY_NAME = "category";
+  /** column name category. */
   public static final String COLUMN_NAME_CATEGORY = "category";
+  /** column name type. */
   public static final String COLUMN_NAME_TYPE = "type";
 
   @Id

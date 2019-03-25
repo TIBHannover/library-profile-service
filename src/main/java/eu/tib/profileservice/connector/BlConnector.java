@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -67,12 +68,13 @@ public class BlConnector implements InstitutionConnector {
   /**
    * Determine filenames for the given date range.
    * 
-   * @param from from date
-   * @param to to date
+   * @param fromDate from date
+   * @param toDate to date
    * @return filenames
    */
-  protected List<String> determineRdfFilesForDateRange(final LocalDate from, final LocalDate to) {
-    if (from.isAfter(to)) {
+  protected List<String> determineRdfFilesForDateRange(final LocalDate fromDate,
+      final LocalDate toDate) {
+    if (fromDate.isAfter(toDate)) {
       return new ArrayList<String>();
     }
 
@@ -97,9 +99,10 @@ public class BlConnector implements InstitutionConnector {
           }
         }
         LOG.debug("available files: {}", availableFiles);
-        for (LocalDate date : availableFiles.keySet()) {
-          if (date.compareTo(from) >= 0 && date.compareTo(to) <= 0) {
-            resultFiles.add(availableFiles.get(date));
+        for (Entry<LocalDate, String> entry : availableFiles.entrySet()) {
+          LocalDate date = entry.getKey();
+          if (date.compareTo(fromDate) >= 0 && date.compareTo(toDate) <= 0) {
+            resultFiles.add(entry.getValue());
           }
         }
         Collections.sort(resultFiles);

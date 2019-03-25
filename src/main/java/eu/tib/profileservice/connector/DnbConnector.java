@@ -140,7 +140,6 @@ public class DnbConnector implements InstitutionConnector {
     return isFirstRequest || resumptionToken != null && resumptionToken.length() > 0;
   }
 
-
   @Override
   public boolean hasErrors() {
     return errorOccurred;
