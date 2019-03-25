@@ -160,7 +160,7 @@ public class BlConnector implements InstitutionConnector {
       initialize();
     }
 
-    rdfFileIdx = rdfFileIdx == null ? 0 : (rdfFileIdx + 1);
+    rdfFileIdx = rdfFileIdx == null ? 0 : rdfFileIdx + 1;
     String rdfFile = rdfFileNames.get(rdfFileIdx);
     String request = buildRequest(rdfFile);
     LOG.debug("retrieveDocuments with request: {}", request);

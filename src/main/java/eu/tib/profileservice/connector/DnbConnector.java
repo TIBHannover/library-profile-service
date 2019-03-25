@@ -137,7 +137,7 @@ public class DnbConnector implements InstitutionConnector {
 
   @Override
   public boolean hasNext() {
-    return isFirstRequest || (resumptionToken != null && resumptionToken.length() > 0);
+    return isFirstRequest || resumptionToken != null && resumptionToken.length() > 0;
   }
 
 

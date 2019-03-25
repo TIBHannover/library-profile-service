@@ -14,21 +14,21 @@ public interface ImportFilterService {
    * @param filter filter
    * @return updated filter
    */
-  public ImportFilter createOrUpdate(final ImportFilter filter);
+  ImportFilter createOrUpdate(final ImportFilter filter);
 
   /**
    * Delete the given {@link ImportFilter}.
    * 
    * @param filter filter
    */
-  public void delete(final ImportFilter filter);
+  void delete(final ImportFilter filter);
 
   /**
    * Retrieve all {@link ImportFilter}s.
    * 
    * @return all filters
    */
-  public List<ImportFilter> findAll();
+  List<ImportFilter> findAll();
 
   /**
    * Retrieve {@link ImportFilter} for the given id.
@@ -36,6 +36,6 @@ public interface ImportFilterService {
    * @param id id
    * @return filter
    */
-  public ImportFilter findById(final Long id);
+  ImportFilter findById(final Long id);
 
 }

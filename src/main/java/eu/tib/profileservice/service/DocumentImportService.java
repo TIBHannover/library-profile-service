@@ -27,7 +27,6 @@ public interface DocumentImportService {
    * @param to to date
    * @param connectorType type of the external system the docs should be imported from
    */
-  public void importDocuments(final LocalDate from, final LocalDate to,
-      final ConnectorType connectorType);
+  void importDocuments(final LocalDate from, final LocalDate to, final ConnectorType connectorType);
 
 }
