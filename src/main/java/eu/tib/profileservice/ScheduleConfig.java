@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource(value = "file:${envConfigDir:envConf/default/}profileservice.properties")
 public class ScheduleConfig {
 
   private static final Logger LOG = LoggerFactory.getLogger(ScheduleConfig.class);

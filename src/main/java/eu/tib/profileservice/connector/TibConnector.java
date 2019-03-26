@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
  * The connector just checks if the numberOfRecords in the response is gt 0.
  * </p>
  */
-@PropertySource("classpath:application.properties")
+@PropertySource(value = "file:${envConfigDir:envConf/default/}profileservice.properties")
 public class TibConnector implements InventoryConnector {
 
   private static final Logger LOG = LoggerFactory.getLogger(TibConnector.class);

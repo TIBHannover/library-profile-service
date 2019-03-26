@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component()
-@PropertySource("classpath:application.properties")
+@PropertySource(value = "file:${envConfigDir:envConf/default/}profileservice.properties")
 public class InstitutionConnectorFactory {
 
   /** type of the institution connector. */

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource(value = "file:${envConfigDir:envConf/default/}profileservice.properties")
 public class WebConfig {
 
   private static final Logger LOG = LoggerFactory.getLogger(WebConfig.class);
