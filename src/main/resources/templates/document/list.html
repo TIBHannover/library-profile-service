@@ -98,7 +98,7 @@
 							<div class="card-footer">
 								<div class="col-lg-3">
 									<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocument}" method="post">
-										<input class="form-control" type="hidden" th:name="sourceUri" th:value="${#request.requestURI}" />
+										<input class="form-control" type="hidden" th:name="sourceUri" th:value="${#request.servletPath}" />
 										<input class="form-control" type="hidden" th:name="sourceQuery" th:value="${#request.queryString}" />
 										<input class="form-control" type="hidden" name="id" th:value="${document.id}" />
 										<button class="btn btn-sm btn-success" type="submit" th:name="${methodAccept}">
@@ -120,7 +120,7 @@
 								<div class="col-lg-9">
 									<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocument}" method="post">
 										<fieldset>
-											<input class="form-control" type="hidden" th:name="sourceUri" th:value="${#request.requestURI}" />
+											<input class="form-control" type="hidden" th:name="sourceUri" th:value="${#request.servletPath}" />
 											<input class="form-control" type="hidden" th:name="sourceQuery" th:value="${#request.queryString}" />
 											<input class="form-control" type="hidden" th:name="id" th:value="${documents[__${docStat.index}__].id}" />
 											<select required="required" th:field="*{assignee}" th:errorclass="fieldError">
@@ -172,7 +172,7 @@
 			</tbody>
 		</table>
 		
-		<div class="text-center" id="pagination" th:with="url=${#request.requestURI},
+		<div class="text-center" id="pagination" th:with="url=${#request.servletPath},
 			searchQuery=${T(eu.tib.profileservice.controller.DocumentController).buildSearchQuery(search)},			
 			searchQuery=${(searchQuery==null || searchQuery.length()==0)?'':'&' + searchQuery},
 			maxpages=7,
