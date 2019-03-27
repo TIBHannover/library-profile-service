@@ -13,10 +13,12 @@
         * Einrichten des Bestandsabgleiches: [s.u.](#bestandsabgleich)
         * Datenbank
 
-                spring.datasource.url=url
-                spring.datasource.driverClassName=driver
+                spring.datasource.url=jdbc:mariadb://localhost:3306/profildienst
+                spring.datasource.driverClassName=org.mariadb.jdbc.Driver
                 spring.datasource.username=user
                 spring.datasource.password=pw
+                spring.datasource.testWhileIdle=true
+                spring.datasource.validationQuery=SELECT 1
 
     * siehe Beispiel unter _envConf/sample_
 
