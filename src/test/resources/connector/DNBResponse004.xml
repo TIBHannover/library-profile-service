@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<responseDate>2019-02-18T15:47:41Z</responseDate>
+	<request metadataPrefix="MARC21-xml" set="dnb-all:reiheN" verb="ListRecords" from="2019-02-18" until="2019-02-18">https://services.dnb.de/oai/accessToken~2294feca9242763df8edc225e62f3c6/repository</request>
+	<ListRecords xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
+		<record>
+			<header>
+				<identifier>oai:dnb.de/dnb-all:reiheN/1173927557</identifier>
+				<datestamp>2019-02-18T12:00:19Z</datestamp>
+				<setSpec>dnb-all:reiheN</setSpec>
+			</header>
+			<metadata>
+				<record type="Bibliographic" xmlns="http://www.loc.gov/MARC21/slim">
+					<leader>00000nam a22000008c 4500</leader>
+					<controlfield tag="001">1173927557</controlfield>
+					<controlfield tag="003">DE-101</controlfield>
+					<controlfield tag="005">20190218130019.0</controlfield>
+					<controlfield tag="007">tu</controlfield>
+					<controlfield tag="008">181220s2020 gw ||||| |||| 00||||ger  </controlfield>
+					<datafield tag="015" ind1=" " ind2=" ">
+						<subfield code="a">19,N01</subfield>
+						<subfield code="2">dnb</subfield>
+					</datafield>
+					<datafield tag="016" ind1="7" ind2=" ">
+						<subfield code="2">DE-101</subfield>
+						<subfield code="a">1173927557</subfield>
+					</datafield>
+					<datafield tag="020" ind1=" " ind2=" ">
+						<subfield code="a">9783658161262 (Duncker &amp; Humblot)</subfield>
+						<subfield code="c">Festeinband : circa EUR 29.99 (DE), circa EUR 30.83 (AT), circa CHF 33.50 (freier Preis)</subfield>
+						<subfield code="9">978-3-658-16126-2</subfield>
+					</datafield>
+					<datafield tag="020" ind1=" " ind2=" ">
+						<subfield code="a">3658161264 (Max-Planck-Institut)</subfield>
+						<subfield code="9">3-658-16126-4</subfield>
+					</datafield>
+					<datafield tag="020" ind1=" " ind2=" ">
+						<subfield code="a">invalid</subfield>
+					</datafield>
+					<datafield tag="024" ind1="3" ind2=" ">
+						<subfield code="a">9783658161262</subfield>
+					</datafield>
+					<datafield tag="028" ind1="5" ind2="2">
+						<subfield code="a">Bestellnummer: 978-3-658-16126-2</subfield>
+					</datafield>
+					<datafield tag="028" ind1="5" ind2="2">
+						<subfield code="a">Bestellnummer: 86885031</subfield>
+					</datafield>
+					<datafield tag="035" ind1=" " ind2=" ">
+						<subfield code="a">(DE-599)DNB1173927557</subfield>
+					</datafield>
+					<datafield tag="040" ind1=" " ind2=" ">
+						<subfield code="a">1245</subfield>
+						<subfield code="b">ger</subfield>
+						<subfield code="c">DE-101</subfield>
+						<subfield code="d">9999</subfield>
+					</datafield>
+					<datafield tag="041" ind1=" " ind2=" ">
+						<subfield code="a">ger</subfield>
+					</datafield>
+					<datafield tag="044" ind1=" " ind2=" ">
+						<subfield code="c">XA-DE-HE</subfield>
+					</datafield>
+					<datafield tag="082" ind1="7" ind2="4">
+						<subfield code="8">1\p</subfield>
+						<subfield code="a">004</subfield>
+						<subfield code="q">DE-101</subfield>
+						<subfield code="2">23sdnb</subfield>
+					</datafield>
+					<datafield tag="100" ind1="1" ind2=" ">
+						<subfield code="a">Kappes, Martin</subfield>
+						<subfield code="4">aut</subfield>
+					</datafield>
+					<datafield tag="245" ind1="0" ind2="0">
+						<subfield code="a">Netzwerk- und Datensicherheit</subfield>
+						<subfield code="b">Eine praktische Einführung</subfield>
+						<subfield code="c">Martin Kappes</subfield>
+					</datafield>
+					<datafield tag="250" ind1=" " ind2=" ">
+						<subfield code="a">3., akt. u. erw. Auflage 2020</subfield>
+					</datafield>
+					<datafield tag="263" ind1=" " ind2=" ">
+						<subfield code="a">202008</subfield>
+					</datafield>
+					<datafield tag="264" ind1=" " ind2="1">
+						<subfield code="a">Wiesbaden</subfield>
+						<subfield code="b">Springer Fachmedien Wiesbaden GmbH</subfield>
+						<subfield code="b">Springer Vieweg</subfield>
+						<subfield code="c">2020</subfield>
+					</datafield>
+					<datafield tag="300" ind1=" " ind2=" ">
+						<subfield code="c">24 cm x 16.8 cm</subfield>
+					</datafield>
+					<datafield tag="336" ind1=" " ind2=" ">
+						<subfield code="a">Text</subfield>
+						<subfield code="b">txt</subfield>
+						<subfield code="2">rdacontent</subfield>
+					</datafield>
+					<datafield tag="337" ind1=" " ind2=" ">
+						<subfield code="a">ohne Hilfsmittel zu benutzen</subfield>
+						<subfield code="b">n</subfield>
+						<subfield code="2">rdamedia</subfield>
+					</datafield>
+					<datafield tag="338" ind1=" " ind2=" ">
+						<subfield code="a">Band</subfield>
+						<subfield code="b">nc</subfield>
+						<subfield code="2">rdacarrier</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(Produktform)Paperback / softback</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(BISAC Subject Heading)COM053000</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(BISAC Subject Heading)UR</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Authentifikation</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Authentifizierung</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Cloud Computing</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Datensicherheit</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Firewall</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">IT-Sicherheit</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Intrusion Detection</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Kryptografie</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Kryptographie</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Malware</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Mobile Anwendungen</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Mobile Geräte</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Protokolle</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Schadprogramme</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">VPN</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Verfügbarkeit</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Viren</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">Virtual Private Networks</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(BISAC Subject Heading)COM053000</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(BISAC Subject Heading)COM031000</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(BISAC Subject Heading)COM067000</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(BIC subject category)UR</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(BIC subject category)UMB</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(BIC subject category)UT</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(Springer Nature Subject Code)SCI28060: Systems and Data Security</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(Springer Nature Subject Collection)SUCO11645: Computer Science</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(Springer Nature Marketing Classification)A</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(Springer Nature Subject Code)SCI28000: Security</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(Springer Nature Subject Code)SCI15009: Data Structures and Information Theory</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(Springer Nature Subject Code)SCI13006: Computer Systems Organization and Communication Networks</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(BISAC Subject Heading)COM053000</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(BIC subject category)UR</subfield>
+					</datafield>
+					<datafield tag="653" ind1=" " ind2=" ">
+						<subfield code="a">(VLB-WN)1632: Hardcover, Softcover / Informatik, EDV/Informatik</subfield>
+					</datafield>
+					<datafield tag="710" ind1="2" ind2=" ">
+						<subfield code="0">(DE-588)1043386068</subfield>
+						<subfield code="0">http://d-nb.info/gnd/1043386068</subfield>
+						<subfield code="0">(DE-101)1043386068</subfield>
+						<subfield code="a">Springer Fachmedien Wiesbaden GmbH</subfield>
+						<subfield code="e">Verlag</subfield>
+						<subfield code="4">pbl</subfield>
+					</datafield>
+					<datafield tag="776" ind1="0" ind2="8">
+						<subfield code="i">Erscheint auch als</subfield>
+						<subfield code="n">Online-Ausgabe</subfield>
+						<subfield code="z">9783658161279</subfield>
+					</datafield>
+					<datafield tag="780" ind1="0" ind2="0">
+						<subfield code="i">Vorangegangen ist</subfield>
+						<subfield code="z">9783834806369</subfield>
+					</datafield>
+					<datafield tag="856" ind1="4" ind2="2">
+						<subfield code="m">X:MVB</subfield>
+						<subfield code="q">text/html</subfield>
+						<subfield code="u">http://deposit.dnb.de/cgi-bin/dokserv?id=fea57a8db45a4d9b9f7469d947c4b160&amp;prov=M&amp;dok_var=1&amp;dok_ext=htm</subfield>
+						<subfield code="3">Inhaltstext</subfield>
+					</datafield>
+					<datafield tag="856" ind1="4" ind2="2">
+						<subfield code="m">X:MVB</subfield>
+						<subfield code="u">http://www.springer.com/</subfield>
+					</datafield>
+					<datafield tag="883" ind1="1" ind2=" ">
+						<subfield code="8">1\p</subfield>
+						<subfield code="a">maschinell gebildet</subfield>
+						<subfield code="d">20181220</subfield>
+						<subfield code="q">DE-101</subfield>
+					</datafield>
+					<datafield tag="926" ind1="2" ind2=" ">
+						<subfield code="a">UTN</subfield>
+						<subfield code="o">93</subfield>
+						<subfield code="q">Publisher</subfield>
+						<subfield code="v">1.2</subfield>
+						<subfield code="x">Netzwerksicherheit</subfield>
+					</datafield>
+					<datafield tag="926" ind1="2" ind2=" ">
+						<subfield code="a">UR</subfield>
+						<subfield code="o">93</subfield>
+						<subfield code="q">Publisher</subfield>
+						<subfield code="v">1.2</subfield>
+						<subfield code="x">Computersicherheit</subfield>
+					</datafield>
+					<datafield tag="926" ind1="2" ind2=" ">
+						<subfield code="a">UMB</subfield>
+						<subfield code="o">93</subfield>
+						<subfield code="q">Publisher</subfield>
+						<subfield code="v">1.2</subfield>
+						<subfield code="x">Algorithmen und Datenstrukturen</subfield>
+					</datafield>
+					<datafield tag="926" ind1="2" ind2=" ">
+						<subfield code="a">URY</subfield>
+						<subfield code="o">93</subfield>
+						<subfield code="q">Publisher</subfield>
+						<subfield code="v">1.2</subfield>
+						<subfield code="x">Kryptografie, Verschlüsselungstechnologie</subfield>
+					</datafield>
+					<datafield tag="926" ind1="2" ind2=" ">
+						<subfield code="a">UT</subfield>
+						<subfield code="o">93</subfield>
+						<subfield code="q">Publisher</subfield>
+						<subfield code="v">1.2</subfield>
+						<subfield code="x">Computernetzwerke und maschinelle Kommunikation</subfield>
+					</datafield>
+					<datafield tag="926" ind1="2" ind2=" ">
+						<subfield code="a">UR</subfield>
+						<subfield code="o">93</subfield>
+						<subfield code="q">Publisher</subfield>
+						<subfield code="v">1.2</subfield>
+						<subfield code="x">Computersicherheit</subfield>
+					</datafield>
+				</record>
+			</metadata>
+		</record>
+	</ListRecords>
+</OAI-PMH>

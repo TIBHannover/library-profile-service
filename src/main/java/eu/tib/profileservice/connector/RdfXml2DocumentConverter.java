@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 /**
  * Converter that converts rdf-xml-document into {@link DocumentMetadata}s.
  */
-public class RdfXml2DocumentConverter {
+public class RdfXml2DocumentConverter extends Converter {
 
   private static final Logger LOG = LoggerFactory.getLogger(RdfXml2DocumentConverter.class);
 
@@ -89,7 +89,7 @@ public class RdfXml2DocumentConverter {
         isbns.add(matcher.group(1));
       }
     }
-    return new ArrayList<String>(isbns);
+    return cleanupIsbns(isbns);
   }
 
   private String getPublisher(final Element element) {

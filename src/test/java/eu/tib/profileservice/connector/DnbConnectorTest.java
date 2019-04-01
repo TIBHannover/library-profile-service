@@ -1,5 +1,6 @@
 package eu.tib.profileservice.connector;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -96,6 +97,16 @@ public class DnbConnectorTest {
     assertNotNull(result);
     assertEquals(2, result.size());
     assertFalse(conn.hasNext());
+  }
+
+  @Test
+  public void testRetrieveDocumentsWithIsbnContainingText() throws IOException {
+    expectResourceAsRestTemplateRespone("connector/DNBResponse004.xml");
+
+    List<DocumentMetadata> result = conn.retrieveNextDocuments();
+    assertNotNull(result);
+    assertEquals(1, result.size());
+    assertThat(result.get(0).getIsbns()).contains("9783658161262", "3658161264", "invalid");
   }
 
 }

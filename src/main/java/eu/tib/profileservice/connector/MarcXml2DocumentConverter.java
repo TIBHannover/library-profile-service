@@ -38,7 +38,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class MarcXml2DocumentConverter {
+public class MarcXml2DocumentConverter extends Converter {
 
   private static final Logger LOG = LoggerFactory.getLogger(MarcXml2DocumentConverter.class);
 
@@ -169,7 +169,7 @@ public class MarcXml2DocumentConverter {
 
     document.setTitle(getDataIfExists(record, "245", 'a'));
     document.setRemainderOfTitle(getDataIfExists(record, "245", 'b'));
-    document.setIsbns(getAllData(record, "020", 'a'));
+    document.setIsbns(getIsbns(record));
     document.setPublisher(getPublisher(record));
     document.setPlaceOfPublication(getPublicationPlace(record));
     document.setDateOfPublication(getPublicationDate(record));
@@ -182,6 +182,10 @@ public class MarcXml2DocumentConverter {
     document.setDeweyDecimalClassifications(getDeweyDecimalClassifications(record));
     document.setFormKeywords(getAllData(record, "655", 'a'));
     return document;
+  }
+
+  private List<String> getIsbns(final Record record) {
+    return cleanupIsbns(getAllData(record, "020", 'a'));
   }
 
   private String getFormOfProduct(final Record record) {
