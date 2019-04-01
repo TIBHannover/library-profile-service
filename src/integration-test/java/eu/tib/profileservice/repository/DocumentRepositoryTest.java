@@ -83,6 +83,29 @@ public class DocumentRepositoryTest {
   }
 
   @Test
+  public void testIsbnContains() {
+    Document document = newDocument("testtitle", new HashSet<String>(Arrays.asList(new String[] {
+        "104"})));
+    document.getMetadata().setIsbns(Arrays.asList("1234567890", "0987654321"));
+    entityManager.persist(document);
+    Document document2 = newDocument("testtitle2", new HashSet<String>(Arrays.asList(new String[] {
+        "104"})));
+    document2.getMetadata().setIsbns(Arrays.asList("5678901234", "5432109876"));
+    entityManager.persist(document2);
+
+    List<Document> documents = repository.findAll();
+    for (Document document3 : documents) {
+      System.out.println(document3.getMetadata().getTitle());
+      System.out.println(document3.getMetadata().getIsbns());
+    }
+
+    Document result = repository.findByMetadataIsbnsContains("1234567890");
+    assertThat(result).isNotNull();
+    assertThat(result.getMetadata()).isNotNull();
+    assertThat(result.getMetadata().getTitle()).isEqualTo("testtitle");
+  }
+
+  @Test
   public void testDeleteByCreationDateUtcBefore() {
     Document document1 = newDocument("title1", new HashSet<String>(Arrays.asList(new String[] {
         "300"})));
