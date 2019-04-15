@@ -10,7 +10,6 @@ import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.domain.User.Role;
 import eu.tib.profileservice.service.CategoryService;
 import eu.tib.profileservice.service.UserService;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -114,8 +113,8 @@ public class UserController {
   @ModelAttribute("availableGroupedCategories")
   public Map<Category, List<Category>> populateAvailableGroupedCategories() {
     List<Category> all = categoryService.findAll();
-    List<Category> main = new ArrayList<>();
-    main = all.stream().filter(c -> all.stream().allMatch(a -> !includes(a, c))).collect(Collectors
+    List<Category> main = all.stream().filter(c -> all.stream().allMatch(a -> !includes(a, c)))
+        .collect(Collectors
         .toList());
     Map<Category, List<Category>> result = new TreeMap<Category, List<Category>>(
         new Comparator<Category>() {
