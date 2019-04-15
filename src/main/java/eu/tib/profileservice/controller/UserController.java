@@ -10,8 +10,13 @@ import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.domain.User.Role;
 import eu.tib.profileservice.service.CategoryService;
 import eu.tib.profileservice.service.UserService;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +56,8 @@ public class UserController {
 
   public static final String METHOD_CREATE = "create";
   public static final String METHOD_EDIT = "edit";
+  public static final String METHOD_REFRESH_CREATE = "refreshCreate";
+  public static final String METHOD_REFRESH_EDIT = "refreshEdit";
 
   public static final String BASE_URL_TEMPLATE = "user";
 
@@ -75,6 +82,16 @@ public class UserController {
     return METHOD_EDIT;
   }
 
+  @ModelAttribute("methodRefreshCreate")
+  public String populateMethodRefreshCreate() {
+    return METHOD_REFRESH_CREATE;
+  }
+
+  @ModelAttribute("methodRefreshEdit")
+  public String populateMethodRefreshEdit() {
+    return METHOD_REFRESH_EDIT;
+  }
+
   @ModelAttribute("availableRoles")
   public User.Role[] populateAvailableRoles() {
     return User.Role.values();
@@ -83,6 +100,76 @@ public class UserController {
   @ModelAttribute("availableCategories")
   public List<Category> populateAvailableCategories() {
     return categoryService.findAll();
+  }
+
+  /**
+   * Populate the grouped categories. (parent group and associated child categories)
+   * @return parent group and associated child categories
+   */
+  @ModelAttribute("availableGroupedCategories")
+  public Map<Category, List<Category>> populateAvailableGroupedCategories() {
+    List<Category> all = categoryService.findAll();
+    List<Category> main = new ArrayList<>();
+    main = all.stream().filter(c -> all.stream().allMatch(a -> !includes(a, c))).collect(Collectors
+        .toList());
+    Map<Category, List<Category>> result = new TreeMap<Category, List<Category>>(
+        new Comparator<Category>() {
+          @Override
+          public int compare(final Category arg0, final Category arg1) {
+            return arg0.getCategory().compareTo(arg1.getCategory());
+          }
+        });
+    for (Category category : main) {
+      List<Category> children = all.stream().filter(c -> includes(category, c)).collect(Collectors
+          .toList());
+      result.put(category, children);
+    }
+    return result;
+  }
+
+  private String removeTrailingZeros(final String category) {
+    String result = category;
+    while (result.length() > 1 && result.charAt(result.length() - 1) == '0') {
+      result = result.substring(0, result.length() - 1);
+    }
+    return result;
+  }
+
+  /**
+   * Check if the given parent-category is a parent of the given child-category.
+   * @param parent parent-category
+   * @param child child-category
+   * @return true, if parent is parent of child
+   */
+  private boolean includes(final Category parent, final Category child) {
+    if (Category.Type.DDC.equals(parent.getType()) && Category.Type.DDC.equals(child.getType())) {
+      String parentCategory = removeTrailingZeros(parent.getCategory());
+      String childCategory = removeTrailingZeros(child.getCategory());
+      if (childCategory.length() > parentCategory.length()) {
+        String adjustedCategory = childCategory.substring(0, parentCategory.length());
+        return parentCategory.equals(adjustedCategory);
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Check, if any of the given categories is assigned to the given user.
+   * @param user user
+   * @param categories categories
+   * @return true, if at least one of the categories is assigned to the user
+   */
+  public static boolean hasAnyCategory(final User user, final List<Category> categories) {
+    if (user != null && user.getCategories() != null && categories != null) {
+      for (Category category : user.getCategories()) {
+        for (Category category2 : categories) {
+          if (category.getId().equals(category2.getId())) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   @GetMapping("**")
@@ -95,6 +182,31 @@ public class UserController {
     final List<User> users = userService.findAll();
     model.addAttribute("users", users);
     return BASE_URL_TEMPLATE + TEMPLATE_LIST;
+  }
+
+  /**
+   * Refresh 'edit user' with the given user.
+   * @param user user
+   * @param model model
+   * @return template
+   */
+  @RequestMapping(value = PATH_SAVE, params = {METHOD_REFRESH_EDIT})
+  public String refreshEditUser(final User user, final Model model) {
+    model.addAttribute("edit", true);
+    model.addAttribute("user", user);
+    return BASE_URL_TEMPLATE + TEMPLATE_CREATE_OR_EDIT;
+  }
+
+  /**
+   * Refresh 'add user' with the given user.
+   * @param user user
+   * @param model model
+   * @return template
+   */
+  @RequestMapping(value = PATH_SAVE, params = {METHOD_REFRESH_CREATE})
+  public String refreshAddUser(final User user, final Model model) {
+    model.addAttribute("user", user);
+    return BASE_URL_TEMPLATE + TEMPLATE_CREATE_OR_EDIT;
   }
 
   @GetMapping(PATH_ADD)

@@ -20,6 +20,7 @@ import eu.tib.profileservice.service.UserService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -43,8 +44,9 @@ public class UserControllerTest {
   @MockBean
   private CategoryService categoryService;
 
-  private Category newCategory(final Category.Type type, final String title) {
+  private Category newCategory(final Long id, final Category.Type type, final String title) {
     Category category = new Category();
+    category.setId(id);
     category.setType(type);
     category.setCategory(title);
     return category;
@@ -58,9 +60,19 @@ public class UserControllerTest {
     user.setPassword(password);
     user.setInitials(initials);
     List<Category> categories = new ArrayList<>();
-    categories.add(newCategory(Type.DDC, "500"));
+    categories.add(newCategory(2L, Type.DDC, "510"));
     user.setCategories(categories);
     return user;
+  }
+
+  /**
+   * setup.
+   */
+  @Before
+  public void setUp() {
+    when(categoryService.findAll()).thenReturn(Arrays.asList(new Category[] {
+        newCategory(1L, Type.DDC, "500"), newCategory(2L, Type.DDC, "510"),
+        newCategory(3L, Type.DDC, "600"), newCategory(4L, Type.DDC, "640")}));
   }
 
   @Test
@@ -150,6 +162,29 @@ public class UserControllerTest {
         .andExpect(redirectedUrl(UserController.BASE_PATH + UserController.PATH_LIST));
 
     verify(userService, times(1)).delete(Mockito.any(User.class));
+  }
+
+  @Test
+  public void testRefreshEditUser() throws Exception {
+    String name = "Username Test ABCD";
+
+    mvc.perform(post(UserController.BASE_PATH + UserController.PATH_SAVE)
+        .param("name", name)
+        .param(UserController.METHOD_REFRESH_EDIT, UserController.METHOD_REFRESH_EDIT).with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString(name)));
+  }
+
+  @Test
+  public void testRefreshCreateUser() throws Exception {
+    String name = "Username Test ABCD";
+
+    mvc.perform(post(UserController.BASE_PATH + UserController.PATH_SAVE)
+        .param("name", name)
+        .param(UserController.METHOD_REFRESH_CREATE, UserController.METHOD_REFRESH_CREATE).with(
+            csrf()))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString(name)));
   }
 
 }

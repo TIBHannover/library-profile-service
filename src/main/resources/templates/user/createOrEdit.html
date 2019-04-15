@@ -4,6 +4,14 @@
  	layout:decorate="~{layout}">
 <head>
 <title th:text="#{title.user.list}">Users</title>
+<style>
+a[aria-expanded=true] .glyphicon-plus {
+   display: none;
+}
+a[aria-expanded=false] .glyphicon-minus {
+   display: none;
+}
+</style>
 </head>
 <body>
 	<div layout:fragment="page_content">
@@ -18,15 +26,16 @@
 				</ul>
 			</div>
 		</div>
-		<form action="#" th:action="@{${actionSave}}" th:object="${user}" method="post" th:with="saveMethod=${(edit != null && edit)?methodEdit:methodCreate}">
+		<form action="#" th:action="@{${actionSave}}" th:object="${user}" method="post" th:with="saveMethod=${(edit != null && edit)?methodEdit:methodCreate},
+			refreshMethod=${(edit != null && edit)?methodRefreshEdit:methodRefreshCreate}">
 			<fieldset>
 
 				<!-- <legend th:text="#{user.create}">Add new user</legend> -->
-
 				<ul th:if="${#fields.hasErrors('*')}" class="errorlist">
 					<li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input
 						is incorrect</li>	
 				</ul>
+
 				<input class="form-control" type="hidden" th:name="id" th:value="*{id}" />
 				<div class="form-group">
 					<label for="name" th:text="#{name}">user name</label>
@@ -60,17 +69,64 @@
 						</div>
 					</div>
 				</div>
- 				<div class="form-group">
+				<div class="form-group">
 					<!-- <input type="hidden" th:field="*{categories}" th:value="${category}"> -->
 					<label for="categories" th:text="#{categories}">categories</label>
 					<div id=roles>
-						<div th:each="category : ${availableCategories}" class="checkbox">
-							<label>
-								<input type="checkbox" th:field="*{categories}" th:value="${category.id}"><span th:text="${category}"></span>
-							</label>
+						<div th:each="category : *{categories}" class="checkbox">
+							<ul>
+								<li th:value="${category.id}"><span th:text="${category}"></span>
+							</ul>
 						</div>
 					</div>
+					<div class="modal fade" id="categoriesModal" tabindex="-1" role="dialog" aria-labelledby="categoriesModalTitle">
+						<div class="modal-dialog modal-lg" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title" id="categoriesModalTitle" th:text="#{categories}">categories</h4>
+								</div>
+								<div class="modal-body">
+									<div class="form-group">
+										<div class="row" th:each="entry : ${availableGroupedCategories}" th:with="category=${entry.key},
+											subcategories=${entry.value},
+											subcategorySelected=${T(eu.tib.profileservice.controller.UserController).hasAnyCategory(user,subcategories)}">
+
+											<div class="col-md-1">
+												<a th:unless="${subcategories.isEmpty()}" class="btn btn-secondary" data-toggle="collapse" th:href="${'#collapseCategories' + category.id}" role="button" th:attr="aria-expanded=${subcategorySelected ? 'true' : 'false'}" aria-controls="collapseCategory">
+													<span class="glyphicon glyphicon-plus"></span>
+													<span class="glyphicon glyphicon-minus"></span>
+												</a>
+											</div>
+											<div class="col-md-11">
+												<input type="checkbox" th:field="*{categories}" th:value="${category.id}">
+												<span th:text="${category}"></span>
+												<div th:if="${subcategorySelected}" class="collapse in" th:id="${'collapseCategories' + category.id}">
+													<ul>
+														<li th:each="subcategory: ${subcategories}">
+															<input type="checkbox" th:field="*{categories}" th:value="${subcategory.id}"><span th:text="${subcategory}"></span>
+														</li>
+													</ul>
+												</div>
+												<div th:unless="${subcategorySelected}" class="collapse" th:id="${'collapseCategories' + category.id}">
+													<ul>
+														<li th:each="subcategory: ${subcategories}">
+															<input type="checkbox" th:field="*{categories}" th:value="${subcategory.id}"><span th:text="${subcategory}"></span>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button formnovalidate="formnovalidate" type="submit" th:name="${refreshMethod}" class="btn btn-primary" th:text="#{close}">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<button type="button" class="btn btn-default" data-toggle="modal" data-target="#categoriesModal" data-backdrop="static" data-keyboard="false" th:text="#{categories.edit}">edit categories</button>
 				</div>
+
 				<button type="submit" class="btn btn-primary" th:name="${saveMethod}" th:text="#{save}">Save</button>
 			</fieldset>
 		</form>
