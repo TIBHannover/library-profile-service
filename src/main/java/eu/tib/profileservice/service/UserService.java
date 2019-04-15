@@ -2,6 +2,7 @@ package eu.tib.profileservice.service;
 
 import eu.tib.profileservice.domain.User;
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -16,4 +17,6 @@ public interface UserService {
   User update(User user);
 
   void delete(User user);
+
+  Map<Long, User> determineCategoryIdsAssignedToUsers();
 }

@@ -102,6 +102,11 @@ public class UserController {
     return categoryService.findAll();
   }
 
+  @ModelAttribute("categoryIdsAssignedToUsers")
+  public Map<Long, User> populateCategoryIdsAssignedToUsers() {
+    return userService.determineCategoryIdsAssignedToUsers();
+  }
+
   /**
    * Populate the grouped categories. (parent group and associated child categories)
    * @return parent group and associated child categories

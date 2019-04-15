@@ -89,7 +89,8 @@ a[aria-expanded=false] .glyphicon-minus {
 									<div class="form-group">
 										<div class="row" th:each="entry : ${availableGroupedCategories}" th:with="category=${entry.key},
 											subcategories=${entry.value},
-											subcategorySelected=${T(eu.tib.profileservice.controller.UserController).hasAnyCategory(user,subcategories)}">
+											subcategorySelected=${T(eu.tib.profileservice.controller.UserController).hasAnyCategory(user,subcategories)},
+											otherUser=${categoryIdsAssignedToUsers.get(category.id)}">
 
 											<div class="col-md-1">
 												<a th:unless="${subcategories.isEmpty()}" class="btn btn-secondary" data-toggle="collapse" th:href="${'#collapseCategories' + category.id}" role="button" th:attr="aria-expanded=${subcategorySelected ? 'true' : 'false'}" aria-controls="collapseCategory">
@@ -99,18 +100,14 @@ a[aria-expanded=false] .glyphicon-minus {
 											</div>
 											<div class="col-md-11">
 												<input type="checkbox" th:field="*{categories}" th:value="${category.id}">
-												<span th:text="${category}"></span>
-												<div th:if="${subcategorySelected}" class="collapse in" th:id="${'collapseCategories' + category.id}">
+												<span th:if="${otherUser == null}" th:text="${category}"></span>															
+												<span th:if="${otherUser != null}" th:classappend="${otherUser.id == user.id} ? '' : text-warning" th:title="${otherUser.name}" th:text="${category}"></span>															
+												<div class="collapse" th:classappend="${subcategorySelected} ? in : ''" th:id="${'collapseCategories' + category.id}">
 													<ul>
-														<li th:each="subcategory: ${subcategories}">
-															<input type="checkbox" th:field="*{categories}" th:value="${subcategory.id}"><span th:text="${subcategory}"></span>
-														</li>
-													</ul>
-												</div>
-												<div th:unless="${subcategorySelected}" class="collapse" th:id="${'collapseCategories' + category.id}">
-													<ul>
-														<li th:each="subcategory: ${subcategories}">
-															<input type="checkbox" th:field="*{categories}" th:value="${subcategory.id}"><span th:text="${subcategory}"></span>
+														<li th:each="subcategory: ${subcategories}" th:with="otherUser2=${categoryIdsAssignedToUsers.get(subcategory.id)}" >
+															<input type="checkbox" th:field="*{categories}" th:value="${subcategory.id}">
+															<span th:if="${otherUser2 == null}" th:text="${subcategory}"></span>															
+															<span th:if="${otherUser2 != null}" th:classappend="${otherUser2.id == user.id} ? '' : text-warning" th:title="${otherUser2.name}" th:text="${subcategory}"></span>															
 														</li>
 													</ul>
 												</div>

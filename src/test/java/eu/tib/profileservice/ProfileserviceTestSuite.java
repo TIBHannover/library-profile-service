@@ -22,6 +22,7 @@ import eu.tib.profileservice.service.DocumentImportServiceTest;
 import eu.tib.profileservice.service.DocumentServiceTest;
 import eu.tib.profileservice.service.ImportFilterServiceTest;
 import eu.tib.profileservice.service.UserDetailsServiceTest;
+import eu.tib.profileservice.service.UserServiceIntegrationTest;
 import eu.tib.profileservice.service.UserServiceTest;
 import eu.tib.profileservice.util.DocumentAssignmentFinderTest;
 import eu.tib.profileservice.util.ImportFilterProcessorTest;
@@ -46,7 +47,8 @@ import org.junit.runners.Suite.SuiteClasses;
     // Integration Tests
     CategoryRepositoryTest.class, DocumentRepositoryTest.class,
     ImportFilterRepositoryTest.class, UserRepositoryTest.class,
-    DocumentImportStatisticsRepositoryTest.class
+    DocumentImportStatisticsRepositoryTest.class,
+    UserServiceIntegrationTest.class
 })
 public class ProfileserviceTestSuite {
 
