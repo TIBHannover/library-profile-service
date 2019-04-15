@@ -73,9 +73,9 @@ a[aria-expanded=false] .glyphicon-minus {
 					<!-- <input type="hidden" th:field="*{categories}" th:value="${category}"> -->
 					<label for="categories" th:text="#{categories}">categories</label>
 					<div id=roles>
-						<div th:each="category : *{categories}" class="checkbox">
+						<div th:each="category : *{categories}" class="checkbox" th:with="otherUser=${categoryIdsAssignedToUsers.get(category.id)}">
 							<ul>
-								<li th:value="${category.id}"><span th:text="${category}"></span>
+								<li th:value="${category.id}"><span th:text="${category}"></span> <span th:if="${otherUser != null && otherUser.id != user.id}" class="text-danger" th:text="#{category.taken.over.from(${otherUser.name})}"> (übernommen von)</span>
 							</ul>
 						</div>
 					</div>
