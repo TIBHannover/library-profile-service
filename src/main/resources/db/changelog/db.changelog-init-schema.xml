@@ -245,4 +245,7 @@
 			<append value=" ROW_FORMAT DYNAMIC" />
 		</modifySql>
 	</changeSet>
+    <changeSet author="hoffmann (generated)" id="1555327242102-1">
+        <addUniqueConstraint columnNames="isbns" constraintName="UK3ju9khw5q0ql6n0dowh8q8lfg" tableName="document_metadata_isbns"/>
+    </changeSet>
 </databaseChangeLog>

@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.UniqueConstraint;
 
 @Entity(name = DocumentMetadata.ENTITY_NAME)
 public class DocumentMetadata {
@@ -18,6 +19,8 @@ public class DocumentMetadata {
   private static final String TABLE_NAME_ISBNS = "document_metadata_isbns";
   private static final String TABLE_NAME_DDC_CLASSES = "document_metadata_ddcs";
   private static final String TABLE_NAME_FORM_KEYWORDS = "document_metadata_form_keywords";
+  /** column name isbns. */
+  public static final String COLUMN_NAME_ISBNS = "isbns";
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -54,7 +57,8 @@ public class DocumentMetadata {
   private List<String> formKeywords;
 
   @ElementCollection
-  @CollectionTable(name = TABLE_NAME_ISBNS)
+  @CollectionTable(name = TABLE_NAME_ISBNS, uniqueConstraints = {@UniqueConstraint(columnNames = {
+      COLUMN_NAME_ISBNS})})
   private List<String> isbns;
 
   @ElementCollection
