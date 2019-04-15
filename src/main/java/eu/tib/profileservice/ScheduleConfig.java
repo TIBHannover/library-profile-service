@@ -1,10 +1,12 @@
 package eu.tib.profileservice;
 
+import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType;
 import eu.tib.profileservice.scheduling.DocumentCleanupJob;
 import eu.tib.profileservice.scheduling.DocumentImportJob;
 import javax.annotation.PostConstruct;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -42,21 +44,25 @@ public class ScheduleConfig {
   @PostConstruct
   public void initDocumentImportJobs() throws SchedulerException {
     LOG.debug("init document import jobs");
-    scheduleDocumentImportJob("BL", blSchedule);
-    scheduleDocumentImportJob("DNB", dnbSchedule);
+    scheduleDocumentImportJob(ConnectorType.BL.toString(), blSchedule);
+    scheduleDocumentImportJob(ConnectorType.DNB.toString(), dnbSchedule);
   }
 
-  private void scheduleDocumentImportJob(final String identityPrefix, final String cronExpression)
+  private void scheduleDocumentImportJob(final String connectorType, final String cronExpression)
       throws SchedulerException {
+    final String identityPrefix = connectorType;
     if (cronExpression == null || cronExpression.length() == 0) {
       LOG.info("{} schedule not configured", identityPrefix);
       return;
     }
     LOG.info("init {} job with schedule {}", identityPrefix, cronExpression);
+    JobDataMap jobDataMap = new JobDataMap();
+    jobDataMap.put(DocumentImportJob.JOB_DATA_CONNECTOR_TYPE, connectorType);
     JobDetail jobDetail = JobBuilder.newJob().ofType(DocumentImportJob.class)
         .storeDurably()
         .withIdentity(identityPrefix + "_Standard_Document_Import_Job_Detail",
             "document-import-jobs")
+        .usingJobData(jobDataMap)
         .build();
     Trigger trigger = TriggerBuilder.newTrigger().forJob(jobDetail)
         .withIdentity(identityPrefix + "_Standard_Document_Import_Trigger",
