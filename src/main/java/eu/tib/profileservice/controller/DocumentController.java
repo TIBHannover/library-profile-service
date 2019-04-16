@@ -6,6 +6,7 @@ import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_
 import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_SUCCESS;
 
 import eu.tib.profileservice.domain.Document;
+import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.service.DocumentService;
 import eu.tib.profileservice.service.UserService;
@@ -66,9 +67,19 @@ public class DocumentController {
     return userService.findAll();
   }
 
+  @ModelAttribute("availableDocumentStatus")
+  public Status[] populateStatus() {
+    return Status.values();
+  }
+
   @ModelAttribute("actionUpdate")
   public String populateActionUpdate() {
     return BASE_PATH + PATH_UPDATE;
+  }
+
+  @ModelAttribute("actionList")
+  public String populateActionList() {
+    return BASE_PATH + PATH_LIST;
   }
 
   @ModelAttribute("methodAccept")

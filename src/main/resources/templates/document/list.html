@@ -10,6 +10,31 @@
 </head>
 <body>
 	<div layout:fragment="page_content">
+		<div class="container col-lg-12">
+			<form class="form-inline" th:action="@{${actionList}}" th:object="${search}" method="get">
+				<div class="form-group">
+					<select class="form-control" onchange="this.form.submit()" th:field="*{assignee}">
+						<option th:selected="${search.assignee == null}" value="" th:text="#{assignee} + ': ' + #{value.any}" />
+						<option th:each="u : ${users}" th:value="${u.id}" th:text="#{assignee} + ': ' + ${u.name}" />
+					</select>
+				</div>
+				<div class="form-group">
+					<select class="form-control" onchange="this.form.submit()" th:field="*{status}">
+						<option th:selected="${search.status == null}" value="" th:text="#{status} + ': ' + #{value.any}" />
+						<option th:each="status : ${availableDocumentStatus}" th:value="${status}" th:text="#{status} + ': ' + #{document.status.+${status}}" />
+					</select>
+				</div>
+				<!-- <div class="form-group">
+					<label th:text="#{initials}">initials</label>
+					<input type="date" th:value="${#dates.format(#dates.createToday(),'yyyy-MM-dd')}" />
+				</div>
+				<div class="form-group">
+					<label th:text="#{initials}">initials</label>
+					<input type="date" th:value="${#dates.format(#dates.createToday(),'yyyy-MM-dd')}" />
+				</div> -->
+			</form>
+			<hr/>
+		</div>
 		<div th:if="${documents.empty}" class="container col-lg-12">
 			<i th:text="#{documents.noentries}">Keine Eintr&auml;ge</i>
 		</div>
