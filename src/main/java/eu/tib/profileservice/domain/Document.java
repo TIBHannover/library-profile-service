@@ -17,6 +17,12 @@ public class Document {
 
   public static final String ENTITY_NAME = "document";
   public static final String COLUMN_NAME_CREATION_DATE = "creation_date";
+  /** attribute name assignee. */
+  public static final String ATTRIBUTE_NAME_ASSIGNEE = "assignee";
+  /** attribute name status. */
+  public static final String ATTRIBUTE_NAME_STATUS = "status";
+  /** attribute name creationDateUtc. */
+  public static final String ATTRIBUTE_NAME_CREATION_DATE = "creationDateUtc";
 
   public enum Status {
     ACCEPTED, REJECTED, IN_PROGRESS, IGNORED

@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import eu.tib.profileservice.domain.Category;
 import eu.tib.profileservice.domain.Document;
+import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.DocumentMetadata;
+import eu.tib.profileservice.domain.DocumentSearch;
+import eu.tib.profileservice.domain.User;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -18,6 +22,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -121,5 +127,42 @@ public class DocumentRepositoryTest {
     List<Document> documents = repository.findAll();
     assertThat(documents).isNotNull();
     assertThat(documents.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void testFindAllByDocumentSearch() {
+    Document document1 = newDocument("title1", new HashSet<String>(Arrays.asList(new String[] {
+        "300"})));
+    document1.setCreationDateUtc(LocalDateTime.parse("2019-01-01T10:00:00"));
+    document1.setStatus(Status.ACCEPTED);
+    User assignee = new User();
+    assignee.setName("test");
+    assignee.setPassword("xxx");
+    entityManager.persist(assignee);
+    document1.setAssignee(assignee);
+    Document document2 = newDocument("title2", new HashSet<String>(Arrays.asList(new String[] {
+        "300"})));
+    document2.setCreationDateUtc(LocalDateTime.parse("2019-04-01T10:00:00"));
+    document2.setStatus(Status.IN_PROGRESS);
+    entityManager.persist(document1);
+    entityManager.persist(document2);
+
+    DocumentSearch search = new DocumentSearch();
+    search.setCreationDateFrom(LocalDate.parse("2019-03-01"));
+    Page<Document> result = repository.findAllByDocumentSearch(search, Pageable.unpaged());
+    assertThat(result).isNotNull();
+    assertThat(result.getTotalElements()).isEqualTo(1);
+
+    search.setCreationDateFrom(null);
+    result = repository.findAllByDocumentSearch(search, Pageable.unpaged());
+    assertThat(result).isNotNull();
+    assertThat(result.getTotalElements()).isEqualTo(2);
+
+    search.setStatus(Status.ACCEPTED);
+    search.setCreationDateTo(LocalDate.parse("2019-03-01"));
+    search.setAssignee(assignee);
+    result = repository.findAllByDocumentSearch(search, Pageable.unpaged());
+    assertThat(result).isNotNull();
+    assertThat(result.getTotalElements()).isEqualTo(1);
   }
 }

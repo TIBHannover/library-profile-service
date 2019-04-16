@@ -7,9 +7,13 @@ import static eu.tib.profileservice.controller.HomeController.INFO_MESSAGE_TYPE_
 
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
+import eu.tib.profileservice.domain.DocumentSearch;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.service.DocumentService;
 import eu.tib.profileservice.service.UserService;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,17 +106,16 @@ public class DocumentController {
     return "redirect:" + BASE_PATH + PATH_MY;
   }
 
-  public static String buildSearchQuery(final Document search) {
+  /**
+   * Build the query string for the given {@link DocumentSearch}.
+   * @param search search
+   * @return query string
+   */
+  public static String buildSearchQuery(final DocumentSearch search) {
     final StringBuilder sb = new StringBuilder();
     if (search != null) {
       if (search.getAssignee() != null && search.getAssignee().getId() != null) {
         sb.append("assignee=").append(search.getAssignee().getId());
-      }
-      if (search.getId() != null) {
-        if (sb.length() > 0) {
-          sb.append("&");
-        }
-        sb.append("id=").append(search.getId());
       }
       if (search.getStatus() != null) {
         if (sb.length() > 0) {
@@ -120,32 +123,63 @@ public class DocumentController {
         }
         sb.append("status=").append(search.getStatus().toString());
       }
+      if (search.getCreationDateFrom() != null) {
+        if (sb.length() > 0) {
+          sb.append("&");
+        }
+        sb.append("creationDateFrom=").append(search.getCreationDateFrom().toString());
+      }
+      if (search.getCreationDateTo() != null) {
+        if (sb.length() > 0) {
+          sb.append("&");
+        }
+        sb.append("creationDateTo=").append(search.getCreationDateTo().toString());
+      }
     }
     return sb.toString();
   }
 
+  /**
+   * List all {@link Document}s matching the given search.
+   * @param search search
+   * @param model model
+   * @param pageable pageable
+   * @return template
+   */
   @GetMapping(PATH_LIST)
-  public String list(final Document search, final Model model,
+  public String list(final DocumentSearch search, final Model model,
       @SortDefaults({@SortDefault(sort = "creationDateUtc",
           direction = Sort.Direction.DESC)}) final Pageable pageable) {
     LOG.debug("pageable: {}", pageable);
     LOG.debug("search: {}", search);
     LOG.debug("sort: {}", pageable.getSort());
-    final Page<Document> documents = documentService.findAllByExample(search, pageable);
+    final Page<Document> documents = documentService.findAllByDocumentSearch(search, pageable);
     model.addAttribute("documents", documents.getContent());
     model.addAttribute("page", documents);
     model.addAttribute("search", search);
     return BASE_URL_TEMPLATE + TEMPLATE_LIST;
   }
 
+  /**
+   * List all {@link Document}s assigned to the current user.
+   * @param model model
+   * @param pageable pageable
+   * @return template
+   */
   @GetMapping(PATH_MY)
   public String myDocuments(final Model model, final Pageable pageable) {
     final User user = getCurrentUser();
     String searchQuery = "";
     if (user != null) {
-      Document exampleSearch = new Document();
+      DocumentSearch exampleSearch = new DocumentSearch();
       exampleSearch.setAssignee(user);
       exampleSearch.setStatus(Document.Status.IN_PROGRESS);
+
+      OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
+      LocalDate now = utc.toLocalDate();
+      exampleSearch.setCreationDateFrom(utc.minusDays(7).toLocalDate());
+      exampleSearch.setCreationDateTo(now);
+
       searchQuery = buildSearchQuery(exampleSearch);
     }
     return "redirect:" + BASE_PATH + PATH_LIST + (searchQuery.length() > 0 ? ("?" + searchQuery)

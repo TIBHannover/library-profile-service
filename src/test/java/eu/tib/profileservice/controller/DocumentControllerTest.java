@@ -5,10 +5,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.DocumentMetadata;
+import eu.tib.profileservice.domain.DocumentSearch;
+import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.service.DocumentService;
 import eu.tib.profileservice.service.UserService;
 import java.time.OffsetDateTime;
@@ -61,13 +64,29 @@ public class DocumentControllerTest {
   @Test
   public void testList() throws Exception {
     Document document = newDocumentDummy();
-    when(documentService.findAllByExample(Mockito.any(Document.class), Mockito.any(Pageable.class)))
+    when(documentService.findAllByDocumentSearch(Mockito.any(DocumentSearch.class), Mockito.any(
+        Pageable.class)))
         .thenReturn(new PageImpl<Document>(Arrays.asList(new Document[] {document})));
     mvc.perform(get(DocumentController.BASE_PATH + DocumentController.PATH_LIST))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString(document.getMetadata().getTitle())));
   }
 
+  @Test
+  public void testMyList() throws Exception {
+    User user = new User();
+    user.setId(1L);
+    user.setName("name");
+    when(userService.findByName(Mockito.anyString())).thenReturn(user);
+    mvc.perform(get(DocumentController.BASE_PATH + DocumentController.PATH_MY))
+        .andExpect(redirectedUrlPattern(DocumentController.BASE_PATH + DocumentController.PATH_LIST
+            + "*"));
+
+    when(userService.findByName(Mockito.anyString())).thenReturn(null);
+    mvc.perform(get(DocumentController.BASE_PATH + DocumentController.PATH_MY))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+
+  }
   // TODO vervollständigen
 
 }

@@ -13,6 +13,14 @@
 		<div class="container col-lg-12">
 			<form class="form-inline" th:action="@{${actionList}}" th:object="${search}" method="get">
 				<div class="form-group">
+					<label th:text="#{date.from}">from</label>
+					<input type="date" th:field="*{creationDateFrom}" th:value="*{creationDateFrom}" oninput="this.form.submit()" />
+				</div>
+				<div class="form-group">
+					<label th:text="#{date.to}">to</label>
+					<input type="date" th:field="*{creationDateTo}" th:value="*{creationDateTo}" oninput="this.form.submit()" />
+				</div>
+				<div class="form-group">
 					<select class="form-control" onchange="this.form.submit()" th:field="*{assignee}">
 						<option th:selected="${search.assignee == null}" value="" th:text="#{assignee} + ': ' + #{value.any}" />
 						<option th:each="u : ${users}" th:value="${u.id}" th:text="#{assignee} + ': ' + ${u.name}" />
@@ -24,14 +32,6 @@
 						<option th:each="status : ${availableDocumentStatus}" th:value="${status}" th:text="#{status} + ': ' + #{document.status.+${status}}" />
 					</select>
 				</div>
-				<!-- <div class="form-group">
-					<label th:text="#{initials}">initials</label>
-					<input type="date" th:value="${#dates.format(#dates.createToday(),'yyyy-MM-dd')}" />
-				</div>
-				<div class="form-group">
-					<label th:text="#{initials}">initials</label>
-					<input type="date" th:value="${#dates.format(#dates.createToday(),'yyyy-MM-dd')}" />
-				</div> -->
 			</form>
 			<hr/>
 		</div>

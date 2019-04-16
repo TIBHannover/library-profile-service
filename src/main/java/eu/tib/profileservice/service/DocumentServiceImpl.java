@@ -2,6 +2,7 @@ package eu.tib.profileservice.service;
 
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
+import eu.tib.profileservice.domain.DocumentSearch;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.repository.UserRepository;
@@ -28,8 +29,15 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Transactional(readOnly = true)
   @Override
-  public Page<Document> findAllByExample(Document example, Pageable pageable) {
+  public Page<Document> findAllByExample(final Document example, final Pageable pageable) {
     return documentRepository.findAll(Example.of(example), pageable);
+  }
+
+  @Transactional(readOnly = true)
+  @Override
+  public Page<Document> findAllByDocumentSearch(final DocumentSearch search,
+      final Pageable pageable) {
+    return documentRepository.findAllByDocumentSearch(search, pageable);
   }
 
   @Transactional(readOnly = true)
@@ -64,7 +72,7 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Transactional
   @Override
-  public Document acceptDocument(Long id) {
+  public Document acceptDocument(final Long id) {
     if (id == null) {
       return null;
     }
@@ -75,7 +83,7 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Transactional
   @Override
-  public Document rejectDocument(Long id) {
+  public Document rejectDocument(final Long id) {
     if (id == null) {
       return null;
     }
@@ -85,7 +93,7 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public void deleteDocumentCreatedBefore(LocalDateTime expiryDateUtc) {
+  public void deleteDocumentCreatedBefore(final LocalDateTime expiryDateUtc) {
     documentRepository.deleteByCreationDateUtcBefore(expiryDateUtc);
   }
 

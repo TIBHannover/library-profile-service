@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.DocumentMetadata;
+import eu.tib.profileservice.domain.DocumentSearch;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.repository.UserRepository;
@@ -77,6 +78,14 @@ public class DocumentServiceTest {
         Pageable.class)))
             .thenReturn(new PageImpl<Document>(Arrays.asList(new Document[] {newDocumentDummy()})));
     documentService.findAllByExample(new Document(), null);
+  }
+
+  @Test
+  public void testFindAllByDocumentSearch() {
+    when(documentRepository.findAllByDocumentSearch(Mockito.any(DocumentSearch.class), Mockito.any(
+        Pageable.class)))
+            .thenReturn(new PageImpl<Document>(Arrays.asList(new Document[] {newDocumentDummy()})));
+    documentService.findAllByDocumentSearch(new DocumentSearch(), null);
   }
 
   @Test
