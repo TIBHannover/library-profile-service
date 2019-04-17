@@ -207,6 +207,16 @@ public class DocumentController {
     return sb.toString();
   }
 
+  /**
+   * Change the assignment of the given {@link Document}.
+   * The document will be assigned to document.assignee.
+   * @param document document to assign
+   * @param model model
+   * @param redirectAttrs redirectAttrs
+   * @param sourceUri source uri of the request
+   * @param sourceQuery query of the request
+   * @return
+   */
   @RequestMapping(value = PATH_UPDATE, params = {METHOD_ASSIGN}, method = RequestMethod.POST)
   public String assignDocument(final Document document, final Model model,
       final RedirectAttributes redirectAttrs, final String sourceUri, final String sourceQuery) {
