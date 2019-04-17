@@ -114,6 +114,10 @@
 											<span class="text-muted" th:text="#{document.creation.date} + ':'" ></span>
 											<span th:text="${#temporals.format(document.creationDateUtc, 'yyyy-MM-dd HH:mm:ss')}" ></span>
 										</p>
+										<p>
+											<span class="text-muted" th:text="#{document.expiry.date} + ':'" ></span>
+											<span th:text="${#temporals.format(document.expiryDateUtc, 'yyyy-MM-dd HH:mm:ss')}" ></span>
+										</p>
 									</div>
 								</div>
 							</div>

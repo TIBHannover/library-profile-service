@@ -29,6 +29,9 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 
   private static final Logger LOG = LoggerFactory.getLogger(DocumentImportServiceImpl.class);
 
+  /** Cleanup documents with creation date older than this amount of days. */
+  private static final int DEFAULT_EXPIRY_DAYS = 60;
+
   @Autowired
   private InstitutionConnectorFactory connectorFactory;
 
@@ -106,6 +109,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
       Document document = new Document();
       OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
       document.setCreationDateUtc(utc.toLocalDateTime());
+      document.setExpiryDateUtc(utc.plusDays(DEFAULT_EXPIRY_DAYS).toLocalDateTime());
       document.setMetadata(documentMetadata);
 
       filterProcessor.process(document);

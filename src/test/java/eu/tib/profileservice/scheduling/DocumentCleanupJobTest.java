@@ -36,7 +36,8 @@ public class DocumentCleanupJobTest {
   @Test
   public void test() throws SchedulerException {
     cleanupJob.execute(null);
-    verify(documentService, times(1)).deleteDocumentCreatedBefore(Mockito.any(LocalDateTime.class));
+    verify(documentService, times(1)).deleteDocumentExpiryDateBefore(Mockito.any(
+        LocalDateTime.class));
   }
 
 }

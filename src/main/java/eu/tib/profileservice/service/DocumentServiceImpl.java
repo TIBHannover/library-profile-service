@@ -93,8 +93,8 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public void deleteDocumentCreatedBefore(final LocalDateTime expiryDateUtc) {
-    documentRepository.deleteByCreationDateUtcBefore(expiryDateUtc);
+  public void deleteDocumentExpiryDateBefore(final LocalDateTime expiryDateUtc) {
+    documentRepository.deleteByExpiryDateUtcBefore(expiryDateUtc);
   }
 
 }

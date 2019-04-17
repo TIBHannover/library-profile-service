@@ -50,6 +50,7 @@ public class DocumentRepositoryTest {
     documentMeta.setDeweyDecimalClassifications(ddcCategories);
     document.setMetadata(documentMeta);
     document.setCreationDateUtc(OffsetDateTime.now(ZoneOffset.UTC).toLocalDateTime());
+    document.setExpiryDateUtc(document.getCreationDateUtc());
     return document;
   }
 
@@ -112,18 +113,18 @@ public class DocumentRepositoryTest {
   }
 
   @Test
-  public void testDeleteByCreationDateUtcBefore() {
+  public void testDeleteByExpiryDateUtcBefore() {
     Document document1 = newDocument("title1", new HashSet<String>(Arrays.asList(new String[] {
         "300"})));
-    document1.setCreationDateUtc(LocalDateTime.parse("2019-01-01T10:00:00"));
+    document1.setExpiryDateUtc(LocalDateTime.parse("2019-01-01T10:00:00"));
     Document document2 = newDocument("title2", new HashSet<String>(Arrays.asList(new String[] {
         "300"})));
-    document2.setCreationDateUtc(LocalDateTime.parse("2019-04-01T10:00:00"));
+    document2.setExpiryDateUtc(LocalDateTime.parse("2019-04-01T10:00:00"));
     entityManager.persist(document1);
     entityManager.persist(document2);
 
     LocalDateTime expiryDate = LocalDateTime.parse("2019-02-01T00:00:00");
-    repository.deleteByCreationDateUtcBefore(expiryDate);
+    repository.deleteByExpiryDateUtcBefore(expiryDate);
     List<Document> documents = repository.findAll();
     assertThat(documents).isNotNull();
     assertThat(documents.size()).isEqualTo(1);

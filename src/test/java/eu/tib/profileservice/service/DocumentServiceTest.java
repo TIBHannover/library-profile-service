@@ -167,9 +167,9 @@ public class DocumentServiceTest {
 
   @Test
   public void testDeleteDocumentsBeforeExpiryDate() {
-    documentService.deleteDocumentCreatedBefore(OffsetDateTime.now(ZoneOffset.UTC)
+    documentService.deleteDocumentExpiryDateBefore(OffsetDateTime.now(ZoneOffset.UTC)
         .toLocalDateTime());
-    verify(documentRepository, times(1)).deleteByCreationDateUtcBefore(Mockito.any(
+    verify(documentRepository, times(1)).deleteByExpiryDateUtcBefore(Mockito.any(
         LocalDateTime.class));
   }
 

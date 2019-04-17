@@ -1,5 +1,6 @@
 package eu.tib.profileservice.scheduling;
 
+import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.service.DocumentService;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -13,14 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Job that cleans up expired {@link Document}s.
+ */
 @Component
 @DisallowConcurrentExecution
 public class DocumentCleanupJob implements Job {
 
   private static final Logger LOG = LoggerFactory.getLogger(DocumentCleanupJob.class);
-
-  /** Cleanup documents with creation date older than this amount of days. */
-  private static final int CLEANUP_DAYS = 60;
 
   @Autowired
   private DocumentService documentService;
@@ -30,9 +31,9 @@ public class DocumentCleanupJob implements Job {
     LOG.info("Start DocumentCleanupJob");
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
-    LocalDateTime cleanupDate = utc.minusDays(CLEANUP_DAYS).toLocalDateTime();
-    LOG.info("Cleanup documents created before {}", cleanupDate);
-    documentService.deleteDocumentCreatedBefore(cleanupDate);
+    LocalDateTime now = utc.toLocalDateTime();
+    LOG.info("Cleanup documents with expiry date before {}", now);
+    documentService.deleteDocumentExpiryDateBefore(now);
 
     LOG.info("DocumentCleanupJob finished");
   }

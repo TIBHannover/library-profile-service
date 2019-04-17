@@ -28,6 +28,10 @@ public interface DocumentService {
 
   Document rejectDocument(Long id);
 
-  void deleteDocumentCreatedBefore(LocalDateTime expiryDateUtc);
+  /**
+   * Delete documents with expiry date before the given date.
+   * @param expiryDateUtc expiry date
+   */
+  void deleteDocumentExpiryDateBefore(LocalDateTime expiryDateUtc);
 
 }

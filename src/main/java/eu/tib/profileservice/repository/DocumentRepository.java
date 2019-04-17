@@ -21,7 +21,11 @@ public interface DocumentRepository extends JpaRepository<Document, Long>,
 
   Page<Document> findAllByAssignee(User assignee, Pageable pageable);
 
-  void deleteByCreationDateUtcBefore(LocalDateTime expiryDate);
+  /**
+   * Delete documents with expiry date before the given date.
+   * @param expiryDate expiry date
+   */
+  void deleteByExpiryDateUtcBefore(LocalDateTime expiryDate);
 
   /**
    * Find all {@link Document}s by the given {@link DocumentSearch}.

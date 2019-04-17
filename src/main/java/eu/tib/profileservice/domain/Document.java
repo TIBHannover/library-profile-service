@@ -16,7 +16,10 @@ import javax.persistence.OneToOne;
 public class Document {
 
   public static final String ENTITY_NAME = "document";
+  /** name of column creationDateUtc. */
   public static final String COLUMN_NAME_CREATION_DATE = "creation_date";
+  /** name of column expiryDateUtc. */
+  public static final String COLUMN_NAME_EXPIRY_DATE = "expiry_date";
   /** attribute name assignee. */
   public static final String ATTRIBUTE_NAME_ASSIGNEE = "assignee";
   /** attribute name status. */
@@ -43,6 +46,9 @@ public class Document {
 
   @Column(name = COLUMN_NAME_CREATION_DATE, nullable = false)
   private LocalDateTime creationDateUtc;
+
+  @Column(name = COLUMN_NAME_EXPIRY_DATE)
+  private LocalDateTime expiryDateUtc;
 
   @Override
   public String toString() {
@@ -143,5 +149,19 @@ public class Document {
    */
   public void setCreationDateUtc(final LocalDateTime creationDateUtc) {
     this.creationDateUtc = creationDateUtc;
+  }
+
+  /** getter: expiryDateUtc.
+   * @return the expiryDateUtc
+   */
+  public LocalDateTime getExpiryDateUtc() {
+    return expiryDateUtc;
+  }
+
+  /** setter: expiryDateUtc.
+   * @param expiryDateUtc the expiryDateUtc to set
+   */
+  public void setExpiryDateUtc(final LocalDateTime expiryDateUtc) {
+    this.expiryDateUtc = expiryDateUtc;
   }
 }
