@@ -73,28 +73,32 @@ public class DocumentServiceImpl implements DocumentService {
   @Transactional
   @Override
   public Document acceptDocument(final Long id) {
-    if (id == null) {
-      return null;
-    }
-    final Document document = documentRepository.getOne(id);
-    document.setStatus(Status.ACCEPTED);
-    return documentRepository.save(document);
+    return updateDocumentStatus(id, Status.ACCEPTED);
   }
 
   @Transactional
   @Override
   public Document rejectDocument(final Long id) {
+    return updateDocumentStatus(id, Status.REJECTED);
+  }
+
+  private Document updateDocumentStatus(final Long id, final Status status) {
     if (id == null) {
       return null;
     }
     final Document document = documentRepository.getOne(id);
-    document.setStatus(Status.REJECTED);
+    document.setStatus(status);
     return documentRepository.save(document);
   }
 
   @Override
   public void deleteDocumentExpiryDateBefore(final LocalDateTime expiryDateUtc) {
     documentRepository.deleteByExpiryDateUtcBefore(expiryDateUtc);
+  }
+
+  @Override
+  public Document saveDocument(final Document document) {
+    return documentRepository.save(document);
   }
 
 }

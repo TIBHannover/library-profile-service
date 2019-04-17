@@ -104,7 +104,7 @@
 										</p>
 										<p>
 											<span class="text-muted" th:text="#{status} + ':'" ></span>
-											<span th:text="${document.status}" ></span>
+											<span th:text="#{document.status.+${document.status}}" ></span>
 										</p>
 										<p>
 											<span class="text-muted" th:text="#{assignee} + ':'" ></span>
@@ -156,6 +156,10 @@
 										<button class="btn btn-sm btn-danger" type="submit" th:name="${methodReject}">
 												<span class="glyphicon glyphicon-remove"></span>
 												<span th:text="#{reject}">reject</span>
+										</button>
+										<button class="btn btn-sm btn-warning" type="submit" th:name="${methodPending}">
+												<span class="glyphicon glyphicon-time"></span>
+												<span th:text="#{pending}">set to pending</span>
 										</button>
 										<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" th:data-target="${'#assignToUserModal' + document.id}">
 											<span class="glyphicon glyphicon-user"></span>

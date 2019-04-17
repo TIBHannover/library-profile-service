@@ -134,3 +134,7 @@ Es können folgende Bedingungen konfiguriert werden:
 ### Cleanup
 
 Die Daten werden nach einem bestimmten Zeitraum wieder aus dem System gelöscht über den _eu.tib.profileservice.scheduling.DocumentCleanupJob_. Dazu hat jedes Dokument ein "expiryDate", das angibt wann das Dokument gelöscht werden soll. Wird dieses Datum erreicht, dann wird das Dokument bei der nächsten Ausführung des Jobs gelöscht.
+
+### Zurückstellen
+
+Kann nicht sofort entschieden werden was mit einem Titel geschehen soll, dann kann der Titel zurückgestellt werden. Der Titel erhält den Status "zurückgestellt" und das Verfallsdatum (an dem der Titel gelöscht wird) kann angepasst werden.

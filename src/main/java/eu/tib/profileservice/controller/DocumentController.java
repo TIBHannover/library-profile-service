@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -42,6 +43,7 @@ public class DocumentController {
   public static final String CODE_MESSAGE_DOCUMENT_ACCEPTED = "message.document.accepted";
   public static final String CODE_MESSAGE_DOCUMENT_REJECTED = "message.document.rejected";
   public static final String CODE_MESSAGE_DOCUMENT_ASSIGNED = "message.document.assigned";
+  public static final String CODE_MESSAGE_DOCUMENT_PENDING = "message.document.pending";
   public static final String CODE_MESSAGE_ERROR_UPDATE_DOCUMENT = "message.error.update.document";
 
   public static final String BASE_PATH = "/document";
@@ -52,6 +54,7 @@ public class DocumentController {
   public static final String METHOD_ACCEPT = "accept";
   public static final String METHOD_REJECT = "reject";
   public static final String METHOD_ASSIGN = "assign";
+  public static final String METHOD_PENDING = "pending";
 
   public static final String BASE_URL_TEMPLATE = "document";
   public static final String TEMPLATE_LIST = "/list";
@@ -99,6 +102,11 @@ public class DocumentController {
   @ModelAttribute("methodAssign")
   public String populateMethodAssign() {
     return METHOD_ASSIGN;
+  }
+
+  @ModelAttribute("methodPending")
+  public String populateMethodPending() {
+    return METHOD_PENDING;
   }
 
   @GetMapping("**")
@@ -302,6 +310,38 @@ public class DocumentController {
         redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_SUCCESS);
         redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENT_REJECTED);
       }
+    }
+    return "redirect:" + redirectUri;
+  }
+
+  /**
+   * Set the {@link Status} of the given {@link Document} to {@link Status#PENDING}
+   * and adjust the expiry date.
+   * @param documentId id of the document to update
+   * @param expiryDateUtc expiryDateUtc new expiry date
+   * @param model model
+   * @param redirectAttrs redirectAttrs
+   * @param sourceUri source uri of the request
+   * @param sourceQuery query of the request
+   * @return template
+   */
+  @RequestMapping(value = PATH_UPDATE, params = {METHOD_PENDING}, method = RequestMethod.POST)
+  public String setDocumentToPending(@RequestParam(name = "id") final Long documentId,
+      final String expiryDateUtc, final Model model, final RedirectAttributes redirectAttrs,
+      final String sourceUri, final String sourceQuery) {
+    String redirectUri = getRedirectUri(sourceUri, sourceQuery);
+    Document origDocument = documentService.findById(documentId);
+    if (origDocument == null) {
+      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
+      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
+    } else {
+      origDocument.setStatus(Status.PENDING);
+      if (expiryDateUtc != null) {
+        origDocument.setExpiryDateUtc(LocalDate.parse(expiryDateUtc).atStartOfDay());
+      }
+      documentService.saveDocument(origDocument);
+      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_SUCCESS);
+      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENT_PENDING);
     }
     return "redirect:" + redirectUri;
   }

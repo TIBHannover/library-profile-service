@@ -58,6 +58,7 @@ public class DocumentControllerTest {
         "300"})));
     document.setMetadata(documentMeta);
     document.setCreationDateUtc(OffsetDateTime.now(ZoneOffset.UTC).toLocalDateTime());
+    document.setExpiryDateUtc(document.getCreationDateUtc());
     return document;
   }
 
@@ -234,5 +235,51 @@ public class DocumentControllerTest {
         .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
     verify(documentService, times(0)).assignToUser(Mockito.any(Document.class), Mockito.any(
         User.class));
+  }
+
+  @Test
+  public void testSetDocumentToPending() throws Exception {
+    when(documentService.findById(Mockito.anyLong())).thenReturn(newDocumentDummy());
+    when(documentService.saveDocument(Mockito.any(Document.class))).thenReturn(newDocumentDummy());
+
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_PENDING, DocumentController.METHOD_PENDING)
+        .param("id", "1")
+        .param("expiryDateUtc", "2019-04-17")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_SUCCESS))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(1)).saveDocument(Mockito.any(Document.class));
+
+    reset(documentService);
+    when(documentService.findById(Mockito.anyLong())).thenReturn(newDocumentDummy());
+    when(documentService.saveDocument(Mockito.any(Document.class))).thenReturn(newDocumentDummy());
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_PENDING, DocumentController.METHOD_PENDING)
+        .param("id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_SUCCESS))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(1)).saveDocument(Mockito.any(Document.class));
+
+    reset(documentService);
+    when(documentService.findById(Mockito.anyLong())).thenReturn(null);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_PENDING, DocumentController.METHOD_PENDING)
+        .param("id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "assignee=1")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST
+            + "?assignee=1"));
+    verify(documentService, times(0)).saveDocument(Mockito.any(Document.class));
   }
 }

@@ -29,6 +29,13 @@ public interface DocumentService {
   Document rejectDocument(Long id);
 
   /**
+   * Persist the given {@link Document}.
+   * @param document document to persist
+   * @return updated document
+   */
+  Document saveDocument(Document document);
+
+  /**
    * Delete documents with expiry date before the given date.
    * @param expiryDateUtc expiry date
    */

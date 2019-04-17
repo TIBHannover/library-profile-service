@@ -166,6 +166,17 @@ public class DocumentServiceTest {
   }
 
   @Test
+  public void testUpdateDocument() {
+    Document document = newDocumentDummy();
+    when(documentRepository.save(document)).thenReturn(document);
+
+    Document result = documentService.saveDocument(document);
+    assertThat(result).isNotNull();
+
+    verify(documentRepository, times(1)).save(Mockito.any(Document.class));
+  }
+
+  @Test
   public void testDeleteDocumentsBeforeExpiryDate() {
     documentService.deleteDocumentExpiryDateBefore(OffsetDateTime.now(ZoneOffset.UTC)
         .toLocalDateTime());

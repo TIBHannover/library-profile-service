@@ -28,7 +28,12 @@ public class Document {
   public static final String ATTRIBUTE_NAME_CREATION_DATE = "creationDateUtc";
 
   public enum Status {
-    ACCEPTED, REJECTED, IN_PROGRESS, IGNORED
+    ACCEPTED,
+    REJECTED,
+    IN_PROGRESS,
+    IGNORED,
+    /** document with status pending. the document will be processed later. */
+    PENDING
   }
 
   @Id
