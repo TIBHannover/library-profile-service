@@ -15,7 +15,7 @@
 							<a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false"><span th:text="#{import.title}"></span><span class="caret"></span></a>
 							<ul class="dropdown-menu">
 					          <li><a class="dropdown-item" th:href="@{/import/listfilters}" th:text="#{import.filters}">Filter</a></li>
-					          <li sec:authorize="hasAuthority('PROCESS_DOCUMENTS')"><a class="dropdown-item" th:href="@{/import/import}" th:text="#{import.document.schedule.title}">Import</a></li>
+					          <li sec:authorize="hasAuthority('IMPORT_DOCUMENTS')"><a class="dropdown-item" th:href="@{/import/import}" th:text="#{import.document.schedule.title}">Import</a></li>
 					        </ul>					
 						</li>
 						<li class="nav-item dropdown" sec:authorize="isAuthenticated()">
