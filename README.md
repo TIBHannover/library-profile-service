@@ -81,7 +81,7 @@ Der Import findet regelmäßig statt über den _eu.tib.profileservice.scheduling
 
 * Über die Sachgruppen wird ermittelt wem eine Neuerscheingung zugeordnet werden soll.
      * Jedem Nutzer ist eine Menge von Sachgruppen zugeordnet.
-     * Eine Sachgruppe kann nicht mehrfach verteilt werden.
+     * Eine Sachgruppe kann nicht mehrfach verteilt werden. Wird eine Sachgruppe einem Nutzer zugeordnet, obwohl sie bereits einem anderen Nutzer zugeordnet war, so wird die Zuordnung beim alten Nutzer entfernt.
 * Hat eine Neuerscheinung mehrere Sachgruppen, die verschiedenen Nutzern zugeordnet sind, so findet die Zuordnung zum passenden Nutzer zufällig statt.
 
 Vorhandene Sachgruppen
