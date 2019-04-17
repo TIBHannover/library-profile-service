@@ -1,9 +1,15 @@
 package eu.tib.profileservice.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -85,8 +91,148 @@ public class DocumentControllerTest {
     when(userService.findByName(Mockito.anyString())).thenReturn(null);
     mvc.perform(get(DocumentController.BASE_PATH + DocumentController.PATH_MY))
         .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
-
   }
-  // TODO vervollständigen
 
+  @Test
+  public void testAcceptDocument() throws Exception {
+    when(documentService.acceptDocument(Mockito.anyLong())).thenReturn(null);
+
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_ACCEPT, DocumentController.METHOD_ACCEPT)
+        .param("id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(1)).acceptDocument(1L);
+
+    reset(documentService);
+    when(documentService.acceptDocument(Mockito.anyLong())).thenReturn(newDocumentDummy());
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_ACCEPT, DocumentController.METHOD_ACCEPT)
+        .param("id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_SUCCESS))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(1)).acceptDocument(1L);
+
+    reset(documentService);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_ACCEPT, DocumentController.METHOD_ACCEPT)
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "assignee=1")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST
+            + "?assignee=1"));
+    verify(documentService, times(0)).acceptDocument(Mockito.anyLong());
+  }
+
+  @Test
+  public void testRejectDocument() throws Exception {
+    when(documentService.rejectDocument(Mockito.anyLong())).thenReturn(null);
+
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_REJECT, DocumentController.METHOD_REJECT)
+        .param("id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(1)).rejectDocument(1L);
+
+    reset(documentService);
+    when(documentService.rejectDocument(Mockito.anyLong())).thenReturn(newDocumentDummy());
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_REJECT, DocumentController.METHOD_REJECT)
+        .param("id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_SUCCESS))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(1)).rejectDocument(1L);
+
+    reset(documentService);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_REJECT, DocumentController.METHOD_REJECT)
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "assignee=1")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST
+            + "?assignee=1"));
+    verify(documentService, times(0)).rejectDocument(Mockito.anyLong());
+  }
+
+  @Test
+  public void testAssignDocument() throws Exception {
+    when(documentService.assignToUser(Mockito.any(Document.class), Mockito.any(
+        User.class))).thenReturn(null);
+
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_ASSIGN, DocumentController.METHOD_ASSIGN)
+        .param("id", "1")
+        .param("assignee.id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(1)).assignToUser(Mockito.any(Document.class), Mockito.any(
+        User.class));
+
+    reset(documentService);
+    Document document = newDocumentDummy();
+    document.setAssignee(new User());
+    when(documentService.assignToUser(Mockito.any(Document.class), Mockito.any(
+        User.class))).thenReturn(document);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_ASSIGN, DocumentController.METHOD_ASSIGN)
+        .param("id", "1")
+        .param("assignee.id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_SUCCESS))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(1)).assignToUser(Mockito.any(Document.class), Mockito.any(
+        User.class));
+
+    reset(documentService);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_ASSIGN, DocumentController.METHOD_ASSIGN)
+        .param("assignee.id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(0)).assignToUser(Mockito.any(Document.class), Mockito.any(
+        User.class));
+
+    reset(documentService);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_ASSIGN, DocumentController.METHOD_ASSIGN)
+        .param("id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(0)).assignToUser(Mockito.any(Document.class), Mockito.any(
+        User.class));
+  }
 }

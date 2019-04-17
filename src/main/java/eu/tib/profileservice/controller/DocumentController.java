@@ -238,6 +238,15 @@ public class DocumentController {
     return "redirect:" + redirectUri;
   }
 
+  /**
+   * Accept the given {@link Document}. (set status to {@link Status#ACCEPTED})
+   * @param document document to accept
+   * @param model model
+   * @param redirectAttrs redirectAttrs
+   * @param sourceUri source uri of the request
+   * @param sourceQuery query of the request
+   * @return template
+   */
   @RequestMapping(value = PATH_UPDATE, params = {METHOD_ACCEPT}, method = RequestMethod.POST)
   public String acceptDocument(final Document document, final Model model,
       final RedirectAttributes redirectAttrs, final String sourceUri, final String sourceQuery) {
@@ -258,6 +267,15 @@ public class DocumentController {
     return "redirect:" + redirectUri;
   }
 
+  /**
+   * Reject the given {@link Document}. (set status to {@link Status#REJECTED})
+   * @param document document to reject
+   * @param model model
+   * @param redirectAttrs redirectAttrs
+   * @param sourceUri source uri of the request
+   * @param sourceQuery query of the request
+   * @return template
+   */
   @RequestMapping(value = PATH_UPDATE, params = {METHOD_REJECT}, method = RequestMethod.POST)
   public String rejectDocument(final Document document, final Model model,
       final RedirectAttributes redirectAttrs, final String sourceUri, final String sourceQuery) {
