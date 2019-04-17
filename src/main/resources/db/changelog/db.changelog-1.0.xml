@@ -10,7 +10,8 @@
         <addColumn tableName="document">
             <column name="expiry_date" type="TIMESTAMP" />
         </addColumn>
-        <sql dbms="mysql, mariadb, h2">UPDATE document SET expiry_date = creation_date + 60</sql>
+        <sql dbms="h2">UPDATE document SET expiry_date = creation_date + 60</sql>
+        <sql dbms="mysql, mariadb">update document set expiry_date = DATE_ADD(creation_date, INTERVAL 60 DAY)</sql>
         <addNotNullConstraint tableName="document"
             columnName="expiry_date"
             columnDataType="TIMESTAMP"/>
