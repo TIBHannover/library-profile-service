@@ -40,9 +40,6 @@
 		</div>
 		<div th:unless="${documents.empty}" class="container col-lg-12">
 			<p th:text="#{documents.nroftotalelements(${page.totalElements},${page.totalPages})}">0 Eintr&auml;ge</p>
-			<!-- <a th:href="@{/document/list(page=0,id=${search.id})}">Test</a> -->
-			<!-- <span th:text="${searchQuery}"></span> -->
-			<!-- <span th:text="${T(eu.tib.profileservice.controller.DocumentController).buildSearchQuery(search)}"></span> -->
 		</div>
 		<table class="table">
 			<tbody>
@@ -121,11 +118,33 @@
 								</div>
 							</div>
 							<div class="card-footer">
-								<div class="col-lg-3">
+								<div class="col-lg-12">
 									<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocument}" method="post">
 										<input class="form-control" type="hidden" th:name="sourceUri" th:value="${#request.servletPath}" />
 										<input class="form-control" type="hidden" th:name="sourceQuery" th:value="${#request.queryString}" />
 										<input class="form-control" type="hidden" name="id" th:value="${document.id}" />
+
+										<div class="modal fade" th:id="${'assignToUserModal' + document.id}" tabindex="-1" role="dialog" aria-labelledby="assignToUserModalTitle">
+											<div class="modal-dialog" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+														<h4 class="modal-title" id="assignToUserModalTitle" th:text="${document.metadata.title}">title</h4>
+													</div>
+													<div class="modal-body">
+														<p><span th:text="#{assignto}"></span></p>
+														<select class="form-control" required="required" name="assignee" th:errorclass="fieldError">
+															<option th:each="u : ${users}" th:value="${u.id}" th:text="${u.name}" th:selected="${document.assignee == u}" />
+														</select>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}">Close</button>
+														<button class="btn btn-primary" th:text="#{assign}" type="submit" th:name="${methodAssign}">Save changes</button>
+													</div>
+												</div>
+											</div>
+										</div>
+
 										<button class="btn btn-sm btn-success" type="submit" th:name="${methodAccept}">
 												<span class="glyphicon glyphicon-ok"></span>
 												<span th:text="#{accept}">accept</span>
@@ -134,63 +153,13 @@
 												<span class="glyphicon glyphicon-remove"></span>
 												<span th:text="#{reject}">reject</span>
 										</button>
-										<!-- 
-										<button class="btn btn-sm btn-primary" type="submit" th:name="${methodAssign}" data-toggle="modal" data-target="#assignToUserModal">
-												<span class="glyphicon glyphicon-user"></span>
-												<span th:text="#{assign}">assign</span>
+										<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" th:data-target="${'#assignToUserModal' + document.id}">
+											<span class="glyphicon glyphicon-user"></span>
+											<span th:text="#{assign}">assign</span>
 										</button>
-										 -->
-									</form>
-								</div>
-								<div class="col-lg-9">
-									<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocument}" method="post">
-										<fieldset>
-											<input class="form-control" type="hidden" th:name="sourceUri" th:value="${#request.servletPath}" />
-											<input class="form-control" type="hidden" th:name="sourceQuery" th:value="${#request.queryString}" />
-											<input class="form-control" type="hidden" th:name="id" th:value="${documents[__${docStat.index}__].id}" />
-											<select required="required" th:field="*{assignee}" th:errorclass="fieldError">
-												<option th:each="u : ${users}" th:value="${u.id}" th:text="${u.name}" />
-											</select>
-											<button class="btn btn-sm btn-primary" type="submit" th:name="${methodAssign}">
-												<span class="glyphicon glyphicon-user"></span>
-												<span th:text="#{assign}">assign</span>
-											</button>
-										</fieldset>
 									</form>
 								</div>
 							</div>
-	
-	<!-- requires js -->							
-<!-- 								
-								<div class="modal fade" id="assignToUserModal" tabindex="-1" role="dialog" aria-labelledby="assignToUserModalTitle">
-									<div class="modal-dialog" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-												<h4 class="modal-title" id="assignToUserModalTitle" th:text="#{assign}">Assign</h4>
-											</div>
-											<div class="modal-body">
-												<p>
-													<b th:text="${document.id}"></b>
-													<span th:text="#{assignto}"></span>
-												</p>
-												<select class="form-control" required="required">
-													<option th:each="u : ${users}" th:value="${u.id}" th:text="${u.name}" />
-												</select>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}">Close</button>
-												<button type="button" class="btn btn-primary" th:text="#{assign}">Save changes</button>
-											</div>
-										</div>
-									</div>
-								</div>
-									
-									Button trigger modal
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#assignToUserModal">
-  Launch demo modal
-</button>
- -->								
 						</div>
 					</td>
 				</tr>
