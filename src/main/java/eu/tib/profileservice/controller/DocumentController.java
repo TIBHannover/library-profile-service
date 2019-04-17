@@ -327,8 +327,9 @@ public class DocumentController {
    */
   @RequestMapping(value = PATH_UPDATE, params = {METHOD_PENDING}, method = RequestMethod.POST)
   public String setDocumentToPending(@RequestParam(name = "id") final Long documentId,
-      final String expiryDateUtc, final Model model, final RedirectAttributes redirectAttrs,
-      final String sourceUri, final String sourceQuery) {
+      @RequestParam(name = "newExpiryDate", required = false) final String expiryDateUtc,
+      final Model model, final RedirectAttributes redirectAttrs, final String sourceUri,
+      final String sourceQuery) {
     String redirectUri = getRedirectUri(sourceUri, sourceQuery);
     Document origDocument = documentService.findById(documentId);
     if (origDocument == null) {

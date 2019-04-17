@@ -148,6 +148,34 @@
 												</div>
 											</div>
 										</div>
+										<div class="modal fade" th:id="${'setToPendingModal' + document.id}" tabindex="-1" role="dialog" aria-labelledby="setToPendingModalTitle">
+											<div class="modal-dialog" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+														<h4 class="modal-title" id="setToPendingModalTitle" th:text="${document.metadata.title}">title</h4>
+													</div>
+													<div class="modal-body">
+														<div class="form-row">
+														<div class="col-md-5 mb-3">
+															<label th:text="#{document.expiry.date.current}">date</label>
+															<input type="date" th:value="${#temporals.format(document.expiryDateUtc, 'yyyy-MM-dd')}" required="required" disabled="disabled" />
+														</div>
+														</div>
+														<div class="row">
+														<div class="col-md-5 mb-3">
+															<label th:text="#{document.expiry.date.new}">date</label>
+															<input type="date" name="newExpiryDate" th:value="${#temporals.format(document.expiryDateUtc.plusMonths(2), 'yyyy-MM-dd')}" required="required" />
+															</div>
+														</div>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}">Close</button>
+														<button class="btn btn-primary" th:text="#{pending}" type="submit" th:name="${methodPending}">Save changes</button>
+													</div>
+												</div>
+											</div>
+										</div>
 
 										<button class="btn btn-sm btn-success" type="submit" th:name="${methodAccept}">
 												<span class="glyphicon glyphicon-ok"></span>
@@ -157,7 +185,7 @@
 												<span class="glyphicon glyphicon-remove"></span>
 												<span th:text="#{reject}">reject</span>
 										</button>
-										<button class="btn btn-sm btn-warning" type="submit" th:name="${methodPending}">
+										<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" th:data-target="${'#setToPendingModal' + document.id}">
 												<span class="glyphicon glyphicon-time"></span>
 												<span th:text="#{pending}">set to pending</span>
 										</button>

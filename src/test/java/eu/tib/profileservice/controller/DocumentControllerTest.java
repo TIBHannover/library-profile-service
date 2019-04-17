@@ -245,7 +245,7 @@ public class DocumentControllerTest {
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_PENDING, DocumentController.METHOD_PENDING)
         .param("id", "1")
-        .param("expiryDateUtc", "2019-04-17")
+        .param("newExpiryDate", "2019-04-17")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "")
         .with(csrf()))
