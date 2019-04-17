@@ -8,12 +8,12 @@
 
     <changeSet author="mhoffmann" id="201904171032-1">
         <addColumn tableName="document">
-            <column name="expiry_date" type="datetime" />
+            <column name="expiry_date" type="TIMESTAMP" />
         </addColumn>
         <sql dbms="mysql, mariadb, h2">UPDATE document SET expiry_date = creation_date + 60</sql>
         <addNotNullConstraint tableName="document"
             columnName="expiry_date"
-            columnDataType="datetime"/>
+            columnDataType="TIMESTAMP"/>
     </changeSet>
 
 </databaseChangeLog>
