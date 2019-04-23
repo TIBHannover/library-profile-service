@@ -20,6 +20,7 @@ import eu.tib.profileservice.domain.DocumentSearch;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.service.DocumentService;
 import eu.tib.profileservice.service.UserService;
+import eu.tib.profileservice.util.FileExportProcessor;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
@@ -48,6 +49,8 @@ public class DocumentControllerTest {
   private DocumentService documentService;
   @MockBean
   private UserService userService;
+  @MockBean
+  private FileExportProcessor fileExportProcessor;
 
   private Document newDocumentDummy() {
     final Document document = new Document();
@@ -73,7 +76,7 @@ public class DocumentControllerTest {
     Document document = newDocumentDummy();
     when(documentService.findAllByDocumentSearch(Mockito.any(DocumentSearch.class), Mockito.any(
         Pageable.class)))
-        .thenReturn(new PageImpl<Document>(Arrays.asList(new Document[] {document})));
+            .thenReturn(new PageImpl<Document>(Arrays.asList(new Document[] {document})));
     mvc.perform(get(DocumentController.BASE_PATH + DocumentController.PATH_LIST))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString(document.getMetadata().getTitle())));
@@ -282,4 +285,52 @@ public class DocumentControllerTest {
             + "?assignee=1"));
     verify(documentService, times(0)).saveDocument(Mockito.any(Document.class));
   }
+
+  @Test
+  public void testExport() throws Exception {
+    long count = 1L;
+    when(documentService.countByExample(Mockito.any(Document.class))).thenReturn(count);
+    mvc.perform(get(DocumentController.BASE_PATH + DocumentController.PATH_EXPORT))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString(String.valueOf(count))));
+  }
+
+  @Test
+  public void testProcessExport() throws Exception {
+    when(documentService.export()).thenReturn(false);
+    mvc.perform(get(DocumentController.BASE_PATH + DocumentController.PATH_EXPORT)
+        .param(DocumentController.METHOD_EXPORT, DocumentController.METHOD_EXPORT)
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_EXPORT));
+
+    when(documentService.export()).thenReturn(true);
+    mvc.perform(get(DocumentController.BASE_PATH + DocumentController.PATH_EXPORT)
+        .param(DocumentController.METHOD_EXPORT, DocumentController.METHOD_EXPORT)
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_SUCCESS))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_EXPORT));
+  }
+
+  @Test
+  public void testDownload() throws Exception {
+    when(fileExportProcessor.getBytesOfExportFile(Mockito.anyString())).thenReturn(null);
+    mvc.perform(get(DocumentController.BASE_PATH + DocumentController.PATH_EXPORT)
+        .param(DocumentController.METHOD_DOWNLOAD, DocumentController.METHOD_DOWNLOAD)
+        .param("file", "xxxx")
+        .with(csrf()))
+        .andExpect(status().isNoContent());
+
+    byte[] dummy = new byte[] {0, 0, 0, 0, 0, 0, 0, 0};
+    when(fileExportProcessor.getBytesOfExportFile(Mockito.anyString())).thenReturn(dummy);
+    mvc.perform(get(DocumentController.BASE_PATH + DocumentController.PATH_EXPORT)
+        .param(DocumentController.METHOD_DOWNLOAD, DocumentController.METHOD_DOWNLOAD)
+        .param("file", "xxxx")
+        .with(csrf()))
+        .andExpect(status().isOk());
+
+  }
+
 }

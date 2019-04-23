@@ -1,6 +1,11 @@
 package eu.tib.profileservice.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,11 +17,14 @@ import eu.tib.profileservice.domain.DocumentSearch;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.repository.UserRepository;
+import eu.tib.profileservice.util.FileExportProcessor;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.Test;
@@ -50,6 +58,8 @@ public class DocumentServiceTest {
   private DocumentRepository documentRepository;
   @MockBean
   private UserRepository userRepository;
+  @MockBean
+  private FileExportProcessor fileExportProcessor;
 
   private Document newDocumentDummy() {
     final Document document = new Document();
@@ -182,6 +192,45 @@ public class DocumentServiceTest {
         .toLocalDateTime());
     verify(documentRepository, times(1)).deleteByExpiryDateUtcBefore(Mockito.any(
         LocalDateTime.class));
+  }
+
+  @Test
+  public void testCountByExample() {
+    when(documentRepository.count(ArgumentMatchers.<Example<Document>>any())).thenReturn(0L);
+    documentService.countByExample(new Document());
+    verify(documentRepository, times(1)).count(ArgumentMatchers.<Example<Document>>any());
+  }
+
+  @Test
+  public void testExport() throws IOException {
+    when(documentRepository.updateStatus(Mockito.any(Status.class), Mockito.any(Status.class)))
+        .thenReturn(0);
+    boolean result = documentService.export();
+    assertFalse(result);
+    verify(documentRepository, times(1)).updateStatus(Mockito.any(Status.class), Mockito.any(
+        Status.class));
+    verify(fileExportProcessor, times(0)).export(ArgumentMatchers.<List<Document>>any());
+
+    reset(documentRepository, fileExportProcessor);
+    when(documentRepository.updateStatus(Mockito.any(Status.class), Mockito.any(Status.class)))
+        .thenReturn(10);
+    doNothing().when(fileExportProcessor).export(ArgumentMatchers.<List<Document>>any());
+    result = documentService.export();
+    assertTrue(result);
+    verify(documentRepository, times(2)).updateStatus(Mockito.any(Status.class), Mockito.any(
+        Status.class));
+    verify(fileExportProcessor, times(1)).export(ArgumentMatchers.<List<Document>>any());
+
+    reset(documentRepository, fileExportProcessor);
+    when(documentRepository.updateStatus(Mockito.any(Status.class), Mockito.any(Status.class)))
+        .thenReturn(10);
+    doThrow(IOException.class).when(fileExportProcessor).export(ArgumentMatchers
+        .<List<Document>>any());
+    result = documentService.export();
+    assertFalse(result);
+    verify(documentRepository, times(2)).updateStatus(Mockito.any(Status.class), Mockito.any(
+        Status.class));
+    verify(fileExportProcessor, times(1)).export(ArgumentMatchers.<List<Document>>any());
   }
 
 }

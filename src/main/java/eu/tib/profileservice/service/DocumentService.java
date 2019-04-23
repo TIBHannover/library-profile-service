@@ -1,6 +1,7 @@
 package eu.tib.profileservice.service;
 
 import eu.tib.profileservice.domain.Document;
+import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.DocumentSearch;
 import eu.tib.profileservice.domain.User;
 import java.time.LocalDateTime;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 public interface DocumentService {
 
   Page<Document> findAllByExample(Document example, Pageable pageable);
+
+  long countByExample(Document example);
 
   /**
    * Find all {@link Document}s by the given {@link DocumentSearch}.
@@ -40,5 +43,11 @@ public interface DocumentService {
    * @param expiryDateUtc expiry date
    */
   void deleteDocumentExpiryDateBefore(LocalDateTime expiryDateUtc);
+
+  /**
+   * Process an export for all {@link Document}s with status {@link Status#ACCEPTED}.
+   * @return true, if the export was successful; false, otherwise
+   */
+  boolean export();
 
 }

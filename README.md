@@ -138,3 +138,12 @@ Die Daten werden nach einem bestimmten Zeitraum wieder aus dem System gelöscht 
 ### Zurückstellen
 
 Kann nicht sofort entschieden werden was mit einem Titel geschehen soll, dann kann der Titel zurückgestellt werden. Der Titel erhält den Status "zurückgestellt" und das Verfallsdatum (an dem der Titel gelöscht wird) kann angepasst werden.
+
+### Export
+
+* Die akzeptierten Dokumente können exportiert werden um sie an den Erwerb weiterzuleiten.
+* Die exportierten Dokumente werden zunächst in eine temporäre Datei geschrieben und zum Download angeboten.
+    * Der nächtliche Cleanup-Job löscht die Dateien wieder.
+* Exportierte Dokumente erhalten einen neuen Status, damit sie nur einmalig exportiert werden.
+    * Dokumente, die gerade exportiert werden, erhalten den Status EXPORTING.
+    * Dokumente, die bereits exportiert wurden, erhalten den Status EXPORTED.

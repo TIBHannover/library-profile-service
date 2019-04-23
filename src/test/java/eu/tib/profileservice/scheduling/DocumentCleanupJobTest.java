@@ -4,6 +4,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import eu.tib.profileservice.service.DocumentService;
+import eu.tib.profileservice.util.FileExportProcessor;
 import java.time.LocalDateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,8 @@ public class DocumentCleanupJobTest {
 
   @MockBean
   private DocumentService documentService;
+  @MockBean
+  private FileExportProcessor fileExportProcessor;
 
   @Test
   public void test() throws SchedulerException {

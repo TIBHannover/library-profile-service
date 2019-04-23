@@ -6,7 +6,10 @@ import eu.tib.profileservice.domain.DocumentSearch;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.repository.UserRepository;
+import eu.tib.profileservice.util.FileExportProcessor;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,8 @@ public class DocumentServiceImpl implements DocumentService {
   private UserRepository userRepository;
   @Autowired
   private DocumentRepository documentRepository;
+  @Autowired
+  private FileExportProcessor fileExportProcessor;
 
   @Transactional(readOnly = true)
   @Override
@@ -99,6 +104,34 @@ public class DocumentServiceImpl implements DocumentService {
   @Override
   public Document saveDocument(final Document document) {
     return documentRepository.save(document);
+  }
+
+  @Transactional
+  @Override
+  public boolean export() {
+    int count = documentRepository.updateStatus(Status.ACCEPTED, Status.EXPORTING);
+    if (count == 0) {
+      LOG.debug("no document ready for export");
+      return false;
+    }
+    LOG.debug("exporting {} documents", count);
+    List<Document> documents = documentRepository.findAllByStatus(Status.EXPORTING);
+    try {
+      LOG.debug("write {} documents to file", documents.size());
+      fileExportProcessor.export(documents);
+    } catch (IOException e) {
+      LOG.error("error while exporting documents", e);
+      documentRepository.updateStatus(Status.EXPORTING, Status.ACCEPTED);
+      return false;
+    }
+    count = documentRepository.updateStatus(Status.EXPORTING, Status.EXPORTED);
+    LOG.debug("exported {} documents", count);
+    return true;
+  }
+
+  @Override
+  public long countByExample(final Document example) {
+    return documentRepository.count(Example.of(example));
   }
 
 }

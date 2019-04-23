@@ -33,7 +33,11 @@ public class Document {
     IN_PROGRESS,
     IGNORED,
     /** document with status pending. the document will be processed later. */
-    PENDING
+    PENDING,
+    /** document currently in the export process. */
+    EXPORTING,
+    /** document exported. */
+    EXPORTED
   }
 
   @Id

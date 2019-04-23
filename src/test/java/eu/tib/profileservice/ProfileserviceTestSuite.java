@@ -25,6 +25,7 @@ import eu.tib.profileservice.service.UserDetailsServiceTest;
 import eu.tib.profileservice.service.UserServiceIntegrationTest;
 import eu.tib.profileservice.service.UserServiceTest;
 import eu.tib.profileservice.util.DocumentAssignmentFinderTest;
+import eu.tib.profileservice.util.FileExportProcessorTest;
 import eu.tib.profileservice.util.ImportFilterProcessorTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -43,6 +44,7 @@ import org.junit.runners.Suite.SuiteClasses;
     DocumentServiceTest.class, ImportFilterServiceTest.class,
     UserDetailsServiceTest.class, UserServiceTest.class,
     DocumentAssignmentFinderTest.class, ImportFilterProcessorTest.class,
+    FileExportProcessorTest.class,
 
     // Integration Tests
     CategoryRepositoryTest.class, DocumentRepositoryTest.class,

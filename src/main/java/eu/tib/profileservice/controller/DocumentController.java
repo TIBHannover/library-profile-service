@@ -11,6 +11,7 @@ import eu.tib.profileservice.domain.DocumentSearch;
 import eu.tib.profileservice.domain.User;
 import eu.tib.profileservice.service.DocumentService;
 import eu.tib.profileservice.service.UserService;
+import eu.tib.profileservice.util.FileExportProcessor;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -18,11 +19,16 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.data.web.SortDefault.SortDefaults;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -45,24 +51,36 @@ public class DocumentController {
   public static final String CODE_MESSAGE_DOCUMENT_ASSIGNED = "message.document.assigned";
   public static final String CODE_MESSAGE_DOCUMENT_PENDING = "message.document.pending";
   public static final String CODE_MESSAGE_ERROR_UPDATE_DOCUMENT = "message.error.update.document";
+  private static final String CODE_MESSAGE_DOCUMENTS_EXPORTED = "message.documents.exported";
+  private static final String CODE_MESSAGE_ERROR_EXPORT_DOCUMENTS =
+      "message.error.export.documents";
 
   public static final String BASE_PATH = "/document";
   public static final String PATH_LIST = "/list";
   public static final String PATH_MY = "/my";
   public static final String PATH_UPDATE = "/update";
+  /** path export. */
+  public static final String PATH_EXPORT = "/export";
 
   public static final String METHOD_ACCEPT = "accept";
   public static final String METHOD_REJECT = "reject";
   public static final String METHOD_ASSIGN = "assign";
   public static final String METHOD_PENDING = "pending";
+  /** method export. */
+  public static final String METHOD_EXPORT = "export";
+  /** method download. */
+  public static final String METHOD_DOWNLOAD = "download";
 
   public static final String BASE_URL_TEMPLATE = "document";
   public static final String TEMPLATE_LIST = "/list";
+  private static final String TEMPLATE_EXPORT = "/export";
 
   @Autowired
   private DocumentService documentService;
   @Autowired
   private UserService userService;
+  @Autowired
+  private FileExportProcessor fileExportProcessor;
 
   @ModelAttribute("updateDocument")
   public Document populateUpdateDocument() {
@@ -345,6 +363,55 @@ public class DocumentController {
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENT_PENDING);
     }
     return "redirect:" + redirectUri;
+  }
+
+  /**
+   * The export template.
+   * @param model model
+   * @return template
+   */
+  @RequestMapping(path = PATH_EXPORT, method = RequestMethod.GET)
+  public String export(final Model model) {
+    Document example = new Document();
+    example.setStatus(Status.ACCEPTED);
+    model.addAttribute("countReadyToExport", documentService.countByExample(example));
+    model.addAttribute("files", fileExportProcessor.listExportFiles());
+    return BASE_URL_TEMPLATE + TEMPLATE_EXPORT;
+  }
+
+  /**
+   * Process the document-export.
+   * @return template
+   */
+  @RequestMapping(path = PATH_EXPORT, params = {METHOD_EXPORT}, method = RequestMethod.GET)
+  public String processExport(final RedirectAttributes redirectAttrs) {
+    boolean success = documentService.export();
+    if (success) {
+      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_SUCCESS);
+      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENTS_EXPORTED);
+    } else {
+      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
+      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_EXPORT_DOCUMENTS);
+    }
+    return "redirect:" + BASE_PATH + PATH_EXPORT;
+  }
+
+  /**
+   * Download the export file.
+   * @param file filename
+   * @return download
+   */
+  @RequestMapping(path = PATH_EXPORT, params = {METHOD_DOWNLOAD}, method = RequestMethod.GET)
+  public ResponseEntity<Resource> download(@RequestParam("file") final String file) {
+    byte[] bytes = fileExportProcessor.getBytesOfExportFile(file);
+    if (bytes != null) {
+      return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file)
+          .contentLength(bytes.length)
+          .contentType(MediaType.parseMediaType("application/octet-stream"))
+          .body(new ByteArrayResource(bytes));
+    }
+    return ResponseEntity.noContent().build();
   }
 
 }

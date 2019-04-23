@@ -2,6 +2,7 @@ package eu.tib.profileservice.scheduling;
 
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.service.DocumentService;
+import eu.tib.profileservice.util.FileExportProcessor;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -25,6 +26,8 @@ public class DocumentCleanupJob implements Job {
 
   @Autowired
   private DocumentService documentService;
+  @Autowired
+  private FileExportProcessor fileExportProcessor;
 
   @Override
   public void execute(final JobExecutionContext context) throws JobExecutionException {
@@ -34,6 +37,8 @@ public class DocumentCleanupJob implements Job {
     LocalDateTime now = utc.toLocalDateTime();
     LOG.info("Cleanup documents with expiry date before {}", now);
     documentService.deleteDocumentExpiryDateBefore(now);
+
+    fileExportProcessor.cleanupExportFiles();
 
     LOG.info("DocumentCleanupJob finished");
   }

@@ -166,4 +166,41 @@ public class DocumentRepositoryTest {
     assertThat(result).isNotNull();
     assertThat(result.getTotalElements()).isEqualTo(1);
   }
+
+  @Test
+  public void testFindAllByStatus() {
+    Document document1 = newDocument("title1", new HashSet<String>(Arrays.asList(new String[] {
+        "300"})));
+    document1.setStatus(Status.ACCEPTED);
+    Document document2 = newDocument("title2", new HashSet<String>(Arrays.asList(new String[] {
+        "300"})));
+    document2.setStatus(Status.IN_PROGRESS);
+    entityManager.persist(document1);
+    entityManager.persist(document2);
+
+    List<Document> result = repository.findAllByStatus(Status.ACCEPTED);
+    assertThat(result).isNotNull();
+    assertThat(result.size()).isEqualTo(1);
+    assertThat(result.get(0).getMetadata().getTitle()).isEqualTo(document1.getMetadata()
+        .getTitle());
+  }
+
+  @Test
+  public void testUpdateStatus() {
+    Document document1 = newDocument("title1", new HashSet<String>(Arrays.asList(new String[] {
+        "300"})));
+    document1.setStatus(Status.ACCEPTED);
+    entityManager.persist(document1);
+
+    int count = repository.updateStatus(Status.IGNORED, Status.EXPORTING);
+    assertThat(count).isEqualTo(0);
+
+    count = repository.updateStatus(Status.ACCEPTED, Status.EXPORTING);
+    assertThat(count).isEqualTo(1);
+
+    List<Document> result = repository.findAll();
+    assertThat(result).isNotNull();
+    assertThat(result.size()).isEqualTo(1);
+    assertThat(result.get(0).getStatus()).isEqualTo(Status.EXPORTING);
+  }
 }
