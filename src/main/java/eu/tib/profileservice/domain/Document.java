@@ -56,7 +56,7 @@ public class Document {
   @Column(name = COLUMN_NAME_CREATION_DATE, nullable = false)
   private LocalDateTime creationDateUtc;
 
-  @Column(name = COLUMN_NAME_EXPIRY_DATE)
+  @Column(name = COLUMN_NAME_EXPIRY_DATE, nullable = false)
   private LocalDateTime expiryDateUtc;
 
   @Override
