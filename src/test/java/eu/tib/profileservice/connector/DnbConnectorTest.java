@@ -109,4 +109,12 @@ public class DnbConnectorTest {
     assertThat(result.get(0).getIsbns()).contains("9783658161262", "3658161264", "invalid");
   }
 
+  @Test
+  public void testRetrieveDocumentsWithoutMatchingBibNr() throws IOException {
+    expectResourceAsRestTemplateRespone("connector/DNBResponse005.xml");
+    List<DocumentMetadata> result = conn.retrieveNextDocuments();
+    assertNotNull(result);
+    assertEquals(1, result.size());
+  }
+
 }

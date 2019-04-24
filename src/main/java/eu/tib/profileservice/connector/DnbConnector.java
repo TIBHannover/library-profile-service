@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,6 +28,7 @@ public class DnbConnector implements InstitutionConnector {
 
   private static final Logger LOG = LoggerFactory.getLogger(DnbConnector.class);
 
+  private static final String REGEX_BIB_NR_REIHE_N = "([0-9]{2}),N([0-9]{2}).*";
   private static final String SET_NEW_PUBLICATIONS = "dnb-all:reiheN";
   private static final String REPOSITORY = "repository";
   private static final String RESULT_FORMAT = "MARC21-xml";
@@ -101,6 +103,14 @@ public class DnbConnector implements InstitutionConnector {
         MarcXml2DocumentConverter converter = new MarcXml2DocumentConverter();
         documents = converter.extractMarcXmlRecordsAndConvert(MARCXML_RECORD_PATH, response
             .getBody());
+        if (documents != null) {
+          for (Iterator<DocumentMetadata> iterator = documents.iterator(); iterator.hasNext();) {
+            DocumentMetadata document = iterator.next();
+            if (!matchesSearchCriteria(document)) {
+              iterator.remove();
+            }
+          }
+        }
         if (converter.hasErrors()) {
           LOG.warn("Errors occurred during data conversion");
           errorOccurred = true;
@@ -120,6 +130,17 @@ public class DnbConnector implements InstitutionConnector {
       resumptionToken = null;
     }
     return documents;
+  }
+
+  /**
+   * Check if the given document matches the search.
+   * There may be very old documents with changes that appear here (canceled from reihe N)
+   * @param document document to check
+   * @return true, if the document matches
+   */
+  private boolean matchesSearchCriteria(final DocumentMetadata document) {
+    return document.getBibliographyNumbers().stream().anyMatch(s -> s.matches(
+        REGEX_BIB_NR_REIHE_N));
   }
 
   private String getResumptionToken(final String oaiResponse) {
