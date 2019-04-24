@@ -58,10 +58,26 @@
 										publicationInfo='('+ ${document.metadata.publisher} + ${publicationPlace} + ${publicationDate} + ')'
 									" th:text="${publicationInfo}"></span>
 								</h5>
-								<p th:if="${document.metadata.termsOfAvailability} != null">
+								<div th:unless="${#strings.isEmpty(document.metadata.edition)}">
+									<span class="text-muted" th:text="#{edition} + ':'" ></span>
+									<span th:text="${document.metadata.edition}" ></span>
+								</div>
+								<div th:unless="${#strings.isEmpty(document.metadata.series)}">
+									<span class="text-muted" th:text="#{series} + ':'" ></span>
+									<span th:text="${document.metadata.series}" ></span>
+								</div>
+								<div th:unless="${#strings.isEmpty(document.metadata.physicalDescription)}">
+									<span class="text-muted" th:text="#{physical.description} + ':'" ></span>
+									<span th:text="${document.metadata.physicalDescription}" ></span>
+								</div>
+								<div>
+									<span class="text-muted" th:text="#{isbn} + ':'" ></span>
+									<span th:text="${#strings.listJoin(document.metadata.isbns, ', ')}" ></span>
+								</div>
+								<div th:unless="${#strings.isEmpty(document.metadata.termsOfAvailability)}">
 									<span class="text-muted" th:text="#{termsofavailability} + ':'" ></span>
 									<span th:text="${document.metadata.termsOfAvailability}" ></span>
-								</p>
+								</div>
 							</div>
 							<div class="row card-body">
 								<div class="col-md-1">
@@ -74,22 +90,6 @@
 								<div class="col-md-11">
 	  								<!-- <div class="collapse in" th:id="${'collapseDocumentInfo' + docStat.index}"> -->
 	  								<div class="collapse" th:id="${'collapseDocumentInfo' + docStat.index}">
-										<p>
-											<span class="text-muted" th:text="#{isbn} + ':'" ></span>
-											<span th:text="${#strings.listJoin(document.metadata.isbns, ', ')}" ></span>
-										</p>
-										<p>
-											<span class="text-muted" th:text="#{edition} + ':'" ></span>
-											<span th:text="${document.metadata.edition}" ></span>
-										</p>
-										<p>
-											<span class="text-muted" th:text="#{series} + ':'" ></span>
-											<span th:text="${document.metadata.series}" ></span>
-										</p>
-										<p>
-											<span class="text-muted" th:text="#{physical.description} + ':'" ></span>
-											<span th:text="${document.metadata.physicalDescription}" ></span>
-										</p>
 										<p>
 											<span class="text-muted" th:text="#{product.form} + ':'" ></span>
 											<span th:text="${document.metadata.formOfProduct}" ></span>
@@ -118,6 +118,10 @@
 											<span class="text-muted" th:text="#{document.expiry.date} + ':'" ></span>
 											<span th:text="${#temporals.format(document.expiryDateUtc, 'yyyy-MM-dd HH:mm:ss')}" ></span>
 										</p>
+<!-- 										<p>
+											<span class="text-muted">bibliographyNumbers</span>
+											<span th:text="${#strings.listJoin(document.metadata.bibliographyNumbers, ', ')}" ></span>
+										</p>-->
 									</div>
 								</div>
 							</div>
