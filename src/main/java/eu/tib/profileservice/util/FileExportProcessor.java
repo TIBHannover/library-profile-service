@@ -3,8 +3,10 @@ package eu.tib.profileservice.util;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.DocumentMetadata;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -110,7 +112,8 @@ public class FileExportProcessor {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
     String timestamp = LocalDateTime.now().format(formatter);
     File exportFile = File.createTempFile(TMP_FILE_PREFIX + timestamp + "_", ".txt");
-    try (FileWriter fw = new FileWriter(exportFile, Charset.forName("UTF-8"))) {
+    try (FileOutputStream fos = new FileOutputStream(exportFile);
+        Writer fw = new OutputStreamWriter(fos, Charset.forName("UTF-8"))) {
       for (Document document : documents) {
         fw.write(toExportString(document));
         fw.write(LINE_SEPARATOR);
