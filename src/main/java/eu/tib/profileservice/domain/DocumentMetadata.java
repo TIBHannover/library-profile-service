@@ -19,6 +19,8 @@ public class DocumentMetadata {
   private static final String TABLE_NAME_ISBNS = "document_metadata_isbns";
   private static final String TABLE_NAME_DDC_CLASSES = "document_metadata_ddcs";
   private static final String TABLE_NAME_FORM_KEYWORDS = "document_metadata_form_keywords";
+  private static final String TABLE_NAME_BIBLIOGRAPHY_NUMBER =
+      "document_metadata_bibliography_number";
   /** column name isbns. */
   public static final String COLUMN_NAME_ISBNS = "isbns";
 
@@ -51,6 +53,10 @@ public class DocumentMetadata {
   private String termsOfAvailability;
 
   private String formOfProduct;
+
+  @ElementCollection
+  @CollectionTable(name = TABLE_NAME_BIBLIOGRAPHY_NUMBER)
+  private List<String> bibliographyNumbers;
 
   @ElementCollection
   @CollectionTable(name = TABLE_NAME_FORM_KEYWORDS)
@@ -333,6 +339,20 @@ public class DocumentMetadata {
    */
   public void setFormKeywords(final List<String> formKeywords) {
     this.formKeywords = formKeywords;
+  }
+
+  /** getter: bibliographyNumbers.
+   * @return the bibliographyNumbers
+   */
+  public List<String> getBibliographyNumbers() {
+    return bibliographyNumbers;
+  }
+
+  /** setter: bibliographyNumbers.
+   * @param bibliographyNumbers the bibliographyNumbers to set
+   */
+  public void setBibliographyNumbers(final List<String> bibliographyNumbers) {
+    this.bibliographyNumbers = bibliographyNumbers;
   }
 
 }

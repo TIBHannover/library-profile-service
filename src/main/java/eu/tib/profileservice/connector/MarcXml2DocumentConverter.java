@@ -181,6 +181,7 @@ public class MarcXml2DocumentConverter extends Converter {
     document.setAuthors(getAuthors(record));
     document.setDeweyDecimalClassifications(getDeweyDecimalClassifications(record));
     document.setFormKeywords(getAllData(record, "655", 'a'));
+    document.setBibliographyNumbers(getAllData(record, "015", 'a'));
     return document;
   }
 

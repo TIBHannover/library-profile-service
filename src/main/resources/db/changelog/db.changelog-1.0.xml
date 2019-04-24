@@ -17,4 +17,16 @@
             columnDataType="TIMESTAMP"/>
     </changeSet>
 
+    <changeSet author="hoffmann (generated)" id="1556110048432-1">
+        <createTable tableName="document_metadata_bibliography_number">
+            <column name="document_metadata_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bibliography_numbers" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1556110048432-2">
+        <addForeignKeyConstraint baseColumnNames="document_metadata_id" baseTableName="document_metadata_bibliography_number" constraintName="FKs81pvght8bh9f42952gg6jj70" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="document_metadata"/>
+    </changeSet>
+
 </databaseChangeLog>
