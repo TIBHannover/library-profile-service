@@ -5,6 +5,7 @@ import eu.tib.profileservice.domain.DocumentMetadata;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,8 +35,13 @@ public class FileExportProcessor {
   public void cleanupExportFiles() {
     File exportDir = getExportDir();
     if (exportDir != null) {
-      for (File file : exportDir.listFiles((dir, name) -> name.startsWith(TMP_FILE_PREFIX))) {
-        file.delete();
+      File[] files = exportDir.listFiles((dir, name) -> name.startsWith(TMP_FILE_PREFIX));
+      if (files != null) {
+        for (File file : files) {
+          if (!file.delete()) {
+            LOG.warn("delete file {} not successful", file.getAbsolutePath());
+          }
+        }
       }
     }
   }
@@ -48,9 +54,9 @@ public class FileExportProcessor {
   public byte[] getBytesOfExportFile(final String exportFileName) {
     File exportDir = getExportDir();
     if (exportDir != null) {
-      List<File> f = Arrays.asList(exportDir.listFiles((dir, name) -> name.equals(exportFileName)));
-      if (f.size() > 0) {
-        Path path = Paths.get(f.get(0).getAbsolutePath());
+      File[] files = exportDir.listFiles((dir, name) -> name.equals(exportFileName));
+      if (files != null && files.length > 0) {
+        Path path = Paths.get(files[0].getAbsolutePath());
         try {
           return Files.readAllBytes(path);
         } catch (IOException e) {
@@ -70,13 +76,14 @@ public class FileExportProcessor {
     File exportDir = getExportDir();
     if (exportDir == null) {
       LOG.warn("cannot find the export directory");
-      return new String[0];
     } else {
       String[] files = exportDir.list((dir, name) -> name.startsWith(TMP_FILE_PREFIX));
-      Arrays.sort(files);
-      return files;
+      if (files != null) {
+        Arrays.sort(files);
+        return files;
+      }
     }
-
+    return new String[0];
   }
 
   private File getExportDir() {
@@ -85,7 +92,9 @@ public class FileExportProcessor {
     try {
       exportFile = File.createTempFile("profileservice", ".tmp");
       exportDir = exportFile.getParentFile();
-      exportFile.delete();
+      if (!exportFile.delete()) {
+        LOG.info("delete file {} not successful", exportFile.getAbsolutePath());
+      }
     } catch (IOException e) {
       return null;
     }
@@ -101,7 +110,7 @@ public class FileExportProcessor {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
     String timestamp = LocalDateTime.now().format(formatter);
     File exportFile = File.createTempFile(TMP_FILE_PREFIX + timestamp + "_", ".txt");
-    try (FileWriter fw = new FileWriter(exportFile)) {
+    try (FileWriter fw = new FileWriter(exportFile, Charset.forName("UTF-8"))) {
       for (Document document : documents) {
         fw.write(toExportString(document));
         fw.write(LINE_SEPARATOR);
