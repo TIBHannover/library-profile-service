@@ -12,6 +12,19 @@ a[aria-expanded=false] .glyphicon-minus {
    display: none;
 }
 </style>
+    <script type="text/javascript">
+        function setNewPw() {
+            var newPwInput = document.getElementById("newPassword");
+            var pwInput = document.getElementById("password");
+            if (newPwInput.value) {
+                pwInput.value = newPwInput.value;
+            }
+        }
+        function dummyNewPw() {
+        	var newPwInput = document.getElementById("newPassword");
+        	newPwInput.value = "***";
+        }
+    </script>
 </head>
 <body>
 	<div layout:fragment="page_content">
@@ -26,11 +39,11 @@ a[aria-expanded=false] .glyphicon-minus {
 				</ul>
 			</div>
 		</div>
+
+
 		<form action="#" th:action="@{${actionSave}}" th:object="${user}" method="post" th:with="saveMethod=${(edit != null && edit)?methodEdit:methodCreate},
 			refreshMethod=${(edit != null && edit)?methodRefreshEdit:methodRefreshCreate}">
 			<fieldset>
-
-				<!-- <legend th:text="#{user.create}">Add new user</legend> -->
 				<ul th:if="${#fields.hasErrors('*')}" class="errorlist">
 					<li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input
 						is incorrect</li>	
@@ -43,7 +56,34 @@ a[aria-expanded=false] .glyphicon-minus {
 						th:errorclass="fieldError" />
 				</div>
 				<div class="form-group" th:if="${edit}">
-					<input type="hidden" class="form-control" th:field="*{password}" th:errorclass="fieldError" />
+					<input type="hidden" class="form-control" th:field="*{password}" th:errorclass="fieldError" id="password" />
+					<label for="password" th:text="#{password}">password</label>
+					
+					<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalTitle">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title" id="passwordModalTitle" th:text="#{password.change}">change password</h4>
+								</div>
+								<div class="modal-body">
+									<label th:text="#{password.new}">new password</label>
+									<input type="password" class="form-control" required="required" id="newPassword" />
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}">Close</button>
+									<button type="submit" th:name="${refreshMethod}" class="btn btn-primary" th:text="#{change}" th:onclick="'setNewPw();'">Change</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="input-group mb-3">
+						<input disabled="disabled" type="password" class="form-control" value="***"/>
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#passwordModal" th:text="#{change}">Change</button>
+						</span>
+					</div>
+					
 				</div>
 				<div class="form-group" th:unless="${edit}">
 					<label for="password" th:text="#{password}">password</label>
@@ -116,7 +156,7 @@ a[aria-expanded=false] .glyphicon-minus {
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button formnovalidate="formnovalidate" type="submit" th:name="${refreshMethod}" class="btn btn-primary" th:text="#{close}">Close</button>
+									<button formnovalidate="formnovalidate" type="submit" th:name="${refreshMethod}" class="btn btn-primary" th:text="#{close}" th:onclick="'dummyNewPw();'">Close</button>
 								</div>
 							</div>
 						</div>
@@ -124,7 +164,7 @@ a[aria-expanded=false] .glyphicon-minus {
 					<button type="button" class="btn btn-default" data-toggle="modal" data-target="#categoriesModal" data-backdrop="static" data-keyboard="false" th:text="#{categories.edit}">edit categories</button>
 				</div>
 
-				<button type="submit" class="btn btn-primary" th:name="${saveMethod}" th:text="#{save}">Save</button>
+				<button type="submit" class="btn btn-primary" th:name="${saveMethod}" th:text="#{save}" th:onclick="'dummyNewPw();'">Save</button>
 			</fieldset>
 		</form>
 
