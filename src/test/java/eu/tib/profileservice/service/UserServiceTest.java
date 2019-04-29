@@ -82,6 +82,15 @@ public class UserServiceTest {
     assertThat(result.getPassword()).isNotNull();
     assertThat(result.getPassword()).isEqualTo("pw");
 
+    user.setPassword("");
+    User u2 = newUser("test1", "pw", "t1");
+    when(userRepository.findById(1L)).thenReturn(Optional.of(u2));
+    when(userRepository.save(user)).thenReturn(u2);
+    result = userService.update(user);
+    assertThat(result).isNotNull();
+    assertThat(result.getPassword()).isNotNull();
+    assertThat(result.getPassword()).isEqualTo("pw");
+
     // with password change
     user.setPassword("pw2");
     when(passwordEncoder.encode(Mockito.anyString())).thenReturn("encryptedPw");

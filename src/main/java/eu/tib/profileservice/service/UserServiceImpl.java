@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -76,7 +77,8 @@ public class UserServiceImpl implements UserService {
     if (currentUser == null) {
       throw new IllegalArgumentException("user does not exist");
     }
-    if (!currentUser.getPassword().equals(user.getPassword())) {
+    if (!currentUser.getPassword().equals(user.getPassword())
+        && !StringUtils.isEmpty(user.getPassword())) {
       user.setPassword(passwordEncoder.encode(user.getPassword()));
       LOG.debug("Change password of user {}", user.getName());
     }
