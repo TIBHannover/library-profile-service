@@ -11,8 +11,6 @@ import eu.tib.profileservice.domain.DocumentMetadata;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -39,9 +37,8 @@ public class DnbConnectorTest {
    */
   @Before
   public void setup() {
-    OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
-    LocalDate now = utc.toLocalDate();
-    conn = new DnbConnector(restTemplateMock, "http://some.url", "token", now, now);
+    LocalDate date = LocalDate.of(2019, 01, 01);
+    conn = new DnbConnector(restTemplateMock, "http://some.url", "token", date, date);
   }
 
   @Test
@@ -114,7 +111,7 @@ public class DnbConnectorTest {
     expectResourceAsRestTemplateRespone("connector/DNBResponse005.xml");
     List<DocumentMetadata> result = conn.retrieveNextDocuments();
     assertNotNull(result);
-    assertEquals(1, result.size());
+    assertEquals(0, result.size());
   }
 
 }

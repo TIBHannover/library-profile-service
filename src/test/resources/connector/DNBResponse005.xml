@@ -19,7 +19,11 @@
 					<controlfield tag="007">tu</controlfield>
 					<controlfield tag="008">181220s2020 gw ||||| |||| 00||||ger  </controlfield>
 					<datafield tag="015" ind1=" " ind2=" ">
-						<subfield code="a">19,N01,0358</subfield>
+						<subfield code="a">19,N04,0358</subfield>
+						<subfield code="2">dnb</subfield>
+					</datafield>
+					<datafield tag="015" ind1=" " ind2=" ">
+						<subfield code="a">18,N04</subfield>
 						<subfield code="2">dnb</subfield>
 					</datafield>
 					<datafield tag="016" ind1="7" ind2=" ">

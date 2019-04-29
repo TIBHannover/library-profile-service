@@ -3,10 +3,15 @@ package eu.tib.profileservice.connector;
 import eu.tib.profileservice.domain.DocumentMetadata;
 import java.io.IOException;
 import java.io.StringReader;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.IsoFields;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -139,8 +144,23 @@ public class DnbConnector implements InstitutionConnector {
    * @return true, if the document matches
    */
   private boolean matchesSearchCriteria(final DocumentMetadata document) {
-    return document.getBibliographyNumbers().stream().anyMatch(s -> s.matches(
-        REGEX_BIB_NR_REIHE_N));
+    Pattern pattern = Pattern.compile(REGEX_BIB_NR_REIHE_N);
+    for (String bibliographyNumber : document.getBibliographyNumbers()) {
+      Matcher matcher = pattern.matcher(bibliographyNumber);
+      if (matcher.find()) {
+        int year = Integer.valueOf(matcher.group(1)) + 2000;
+        int edition = Integer.valueOf(matcher.group(2));
+        LocalDate week = LocalDate.of(year, Month.FEBRUARY, 1).with(
+            IsoFields.WEEK_OF_WEEK_BASED_YEAR, edition).with(DayOfWeek.MONDAY);
+        LocalDate start = week.minusDays(5);
+        LocalDate end = week.plusDays(2);
+        if (!from.isAfter(end) && !to.isBefore(start)) {
+          return true;
+        }
+        LOG.debug("bib: {} ({} - {}) does not match", bibliographyNumber, start, end);
+      }
+    }
+    return false;
   }
 
   private String getResumptionToken(final String oaiResponse) {

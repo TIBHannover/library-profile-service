@@ -48,6 +48,7 @@ Der Import findet regelmäßig statt über den _eu.tib.profileservice.scheduling
 
         https://services.dnb.de/oai/accessToken~${token}/repository?verb=ListRecords&from=2019-02-18&until=2019-02-18&set=dnb-all:reiheN&metadataPrefix=MARC21-xml
 
+* Es werden nur Titel importiert mit passender _Bibliography Number_. Dabei muss sowohl Jahr als auch Woche zum aktuellen Import-Datumsbereich passen. Muster _YY_,N_WW_
 * Konfiguration in den _profileservice.properties_
      * externalsystem.dnb.baseurl - URL der OAI-Schnittstelle
      * externalsystem.dnb.token - DNB access token
