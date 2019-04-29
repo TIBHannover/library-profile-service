@@ -93,6 +93,10 @@ public class DnbConnectorTest {
     result = conn.retrieveNextDocuments();
     assertNotNull(result);
     assertEquals(2, result.size());
+    assertTrue(conn.hasNext());
+    conn.retrieveNextDocuments();
+    assertTrue(conn.hasNext());
+    conn.retrieveNextDocuments();
     assertFalse(conn.hasNext());
   }
 

@@ -26,6 +26,10 @@
 						<subfield code="a">18,N04</subfield>
 						<subfield code="2">dnb</subfield>
 					</datafield>
+					<datafield tag="015" ind1=" " ind2=" ">
+						<subfield code="a">18,N99</subfield>
+						<subfield code="2">dnb</subfield>
+					</datafield>
 					<datafield tag="016" ind1="7" ind2=" ">
 						<subfield code="2">DE-101</subfield>
 						<subfield code="a">1173927557</subfield>

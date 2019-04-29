@@ -44,11 +44,11 @@ Der Import findet regelmäßig statt über den _eu.tib.profileservice.scheduling
 
 ##### DNB
 
-* Neuerscheinungen werden importiert via OAI (siehe <https://www.dnb.de/DE/Service/DigitaleDienste/OAI/oai_node.html>) im Format _marcxml_
+* Neuerscheinungen + Reihe A + Reihe B werden importiert via OAI (siehe <https://www.dnb.de/DE/Service/DigitaleDienste/OAI/oai_node.html>) im Format _marcxml_
 
         https://services.dnb.de/oai/accessToken~${token}/repository?verb=ListRecords&from=2019-02-18&until=2019-02-18&set=dnb-all:reiheN&metadataPrefix=MARC21-xml
 
-* Es werden nur Titel importiert mit passender _Bibliography Number_. Dabei muss sowohl Jahr als auch Woche zum aktuellen Import-Datumsbereich passen. Muster _YY_,N_WW_
+* Es werden nur Titel importiert mit passender _Bibliography Number_. Dabei muss sowohl Jahr als auch Woche zum aktuellen Import-Datumsbereich passen. Muster _YY_,[ABN]_WW_
 * Konfiguration in den _profileservice.properties_
      * externalsystem.dnb.baseurl - URL der OAI-Schnittstelle
      * externalsystem.dnb.token - DNB access token
