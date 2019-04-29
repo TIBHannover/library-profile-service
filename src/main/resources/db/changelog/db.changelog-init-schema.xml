@@ -27,7 +27,7 @@
 			<column autoIncrement="true" name="id" type="BIGINT">
 				<constraints primaryKey="true" primaryKeyName="documentPK" />
 			</column>
-			<column name="creation_date" type="TIMESTAMP">
+			<column name="creation_date" type="DATETIME">
 				<constraints nullable="false" />
 			</column>
 			<column name="status" type="VARCHAR(255)" />
@@ -214,7 +214,7 @@
 			<column autoIncrement="true" name="id" type="BIGINT">
 				<constraints primaryKey="true" primaryKeyName="document_import_statisticsPK" />
 			</column>
-			<column name="end" type="TIMESTAMP" />
+			<column name="end" type="DATETIME" />
 			<column name="error_in_institution_connector" type="BOOLEAN">
 				<constraints nullable="false" />
 			</column>
@@ -238,7 +238,7 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="source" type="VARCHAR(255)" />
-			<column name="start" type="TIMESTAMP" />
+			<column name="start" type="DATETIME" />
 			<column name="to_date" type="date" />
 		</createTable>
 		<modifySql dbms="mysql, mariadb">
