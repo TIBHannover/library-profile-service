@@ -28,7 +28,7 @@ public interface DocumentRepository extends JpaRepository<Document, Long>,
    * @param newStatus status to set
    * @return number of updated documents
    */
-  @Modifying(clearAutomatically = true)
+  @Modifying(flushAutomatically = true, clearAutomatically = true)
   @Query("UPDATE " + Document.ENTITY_NAME
       + " d SET d.status = :newStatus WHERE d.status = :oldStatus")
   int updateStatus(@Param("oldStatus") Status oldStatus, @Param("newStatus") Status newStatus);
