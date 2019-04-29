@@ -62,6 +62,8 @@ public class DocumentImportServiceTest {
   @MockBean
   private UserService userService;
   @MockBean
+  private DocumentService documentService;
+  @MockBean
   private ImportFilterService importFilterService;
 
   private DocumentMetadata newDocumentMetadataDummy() {
@@ -109,7 +111,7 @@ public class DocumentImportServiceTest {
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
-    verify(documentRepository, times(0)).save(Mockito.any(Document.class));
+    verify(documentService, times(0)).saveDocument(Mockito.any(Document.class));
   }
 
   @Test
@@ -120,7 +122,7 @@ public class DocumentImportServiceTest {
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
-    verify(documentRepository, times(0)).save(Mockito.any(Document.class));
+    verify(documentService, times(0)).saveDocument(Mockito.any(Document.class));
   }
 
   @Test
@@ -138,7 +140,7 @@ public class DocumentImportServiceTest {
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
     ArgumentCaptor<Document> arg1 = ArgumentCaptor.forClass(Document.class);
-    verify(documentRepository, times(1)).save(arg1.capture());
+    verify(documentService, times(1)).saveDocument(arg1.capture());
     Document doc = arg1.getValue();
     assertThat(doc).isNotNull();
     assertThat(doc.getStatus()).isEqualTo(Status.IGNORED);
@@ -155,7 +157,7 @@ public class DocumentImportServiceTest {
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
-    verify(documentRepository, times(1)).save(Mockito.any(Document.class));
+    verify(documentService, times(1)).saveDocument(Mockito.any(Document.class));
   }
 
   @Test
@@ -172,7 +174,7 @@ public class DocumentImportServiceTest {
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
-    verify(documentRepository, times(0)).save(Mockito.any(Document.class));
+    verify(documentService, times(0)).saveDocument(Mockito.any(Document.class));
   }
 
   @Test
@@ -192,7 +194,7 @@ public class DocumentImportServiceTest {
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
-    verify(documentRepository, times(0)).save(Mockito.any(Document.class));
+    verify(documentService, times(0)).saveDocument(Mockito.any(Document.class));
     ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(null);
   }
 
@@ -213,7 +215,7 @@ public class DocumentImportServiceTest {
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
-    verify(documentRepository, times(1)).save(Mockito.any(Document.class));
+    verify(documentService, times(1)).saveDocument(Mockito.any(Document.class));
     ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(null);
   }
 
@@ -234,7 +236,7 @@ public class DocumentImportServiceTest {
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
-    verify(documentRepository, times(1)).save(Mockito.any(Document.class));
+    verify(documentService, times(1)).saveDocument(Mockito.any(Document.class));
     ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(null);
   }
 

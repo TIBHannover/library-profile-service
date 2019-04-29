@@ -18,6 +18,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -96,11 +97,13 @@ public class DocumentServiceImpl implements DocumentService {
     return documentRepository.save(document);
   }
 
+  @Transactional
   @Override
   public void deleteDocumentExpiryDateBefore(final LocalDateTime expiryDateUtc) {
     documentRepository.deleteByExpiryDateUtcBefore(expiryDateUtc);
   }
 
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   @Override
   public Document saveDocument(final Document document) {
     return documentRepository.save(document);
@@ -129,6 +132,7 @@ public class DocumentServiceImpl implements DocumentService {
     return true;
   }
 
+  @Transactional(readOnly = true)
   @Override
   public long countByExample(final Document example) {
     return documentRepository.count(Example.of(example));

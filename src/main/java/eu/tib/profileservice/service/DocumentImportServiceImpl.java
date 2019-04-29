@@ -42,6 +42,9 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   private UserService userService;
 
   @Autowired
+  private DocumentService documentService;
+
+  @Autowired
   private DocumentRepository documentRepository;
 
   @Autowired
@@ -121,7 +124,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
         document.setAssignee(documentAssignmentFinder.determineAssignee(documentMetadata));
         statistics.addNrImported(1);
       }
-      documentRepository.save(document);
+      documentService.saveDocument(document);
       //LOG.debug("document imported: {}", buildDocumentMetadataString(documentMetadata));
     }
   }
