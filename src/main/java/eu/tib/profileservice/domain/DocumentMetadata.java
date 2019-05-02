@@ -71,6 +71,10 @@ public class DocumentMetadata {
   @CollectionTable(name = TABLE_NAME_DDC_CLASSES)
   private Set<String> deweyDecimalClassifications;
 
+  /** if an inventory connector is configured: is the document contained in the inventory?
+   * when the inventory could not be reached: null. */
+  private Boolean containedInInventory;
+
   /**
    * getter: id.
    *
@@ -353,6 +357,22 @@ public class DocumentMetadata {
    */
   public void setBibliographyNumbers(final List<String> bibliographyNumbers) {
     this.bibliographyNumbers = bibliographyNumbers;
+  }
+
+  /** getter: containedInInventory.
+   * true, if an inventory connector is configured and the document exists in the inventory
+   * when the document is imported.
+   * @return the containedInInventory
+   */
+  public Boolean isContainedInInventory() {
+    return containedInInventory;
+  }
+
+  /** setter: containedInInventory.
+   * @param containedInInventory the containedInInventory to set
+   */
+  public void setContainedInInventory(final Boolean containedInInventory) {
+    this.containedInInventory = containedInInventory;
   }
 
 }

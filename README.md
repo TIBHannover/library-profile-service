@@ -90,9 +90,12 @@ Vorhandene Sachgruppen
     
 ### Bestandsabgleich
 
-Titel werden gegen den eigenen Bestand abgeglichen, so dass Titel, die im eigenen Bestand vorhanden sind nicht importiert werden. Berücksichtigt wird dabei der lokale Bestand der Anwendung und ein(!) externer Bestand (optional), der über einen _InventoryConnector_ abgefragt wird.
+* Titel können beim Import gegen den eigenen Bestand abgeglichen werden (optional).
+* In der Darstellung der Titel erhält man dann die Information, ob der Titel vorhanden ist oder nicht.
+* Als "vorhanden" wird der Titel markiert wenn eine(!) ISBN des Titels im Bestand vorhanden ist.
+* Berücksichtigt wird dabei ein externer Bestand, der über einen _InventoryConnector_ abgefragt wird.
+* Kriterien für den Abgleich im Bestand: ISBN
 
-Kriterien für den Abgleich im lokalen Bestand: ISBN
 
 #### InventoryConnector
 
@@ -105,13 +108,6 @@ Implementierte Connectoren:
 ##### TibConnector 
 * SRU-Schnittstelle + Prüfung wieviele Ergebnisse geliefert werden.
 * Kriterien für den Abgleich: ISBN
-     * **TODO**:
-     
-> zur Klärung und Ergänzung des Punktes Dublettencheck gegen unseren OPAC noch ein Nachtrag:
->
-> E-Books enthalten oftmals zwei ISBNs, nämlich die des E-Books selbst und die der Printausgabe (Parallelausgabe).
-> Wenn im OPAC daher ein Titel nur als E-Book vorhanden ist (dies betrifft v.a. eingespielte große E-Book-Pakete,  z.B. Springer oder EBA), dann darf die Printausgabe aus dem Profildienst nicht entfernt werden.
-     
 * Aktivieren: _profileservice.properties_: _inventory.system=tib_
 * Konfiguration _profileservice.properties_
      * _inventory.tib.baseurl_ (URL der SRU-Schnittstelle)

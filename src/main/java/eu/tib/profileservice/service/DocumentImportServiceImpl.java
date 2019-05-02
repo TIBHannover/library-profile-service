@@ -98,14 +98,14 @@ public class DocumentImportServiceImpl implements DocumentImportService {
       statistics.addNrInvalid(1);
       return;
     }
-    boolean documentExists = false;
     try {
-      documentExists = containedInInventory(documentMetadata);
+      processInventoryCheck(documentMetadata);
     } catch (ConnectorException e) {
       LOG.error("error in inventory connector while checking " + buildDocumentMetadataString(
           documentMetadata), e);
       statistics.setErrorInInventoryConnector(true);
     }
+    boolean documentExists = containedInInventory(documentMetadata);
     if (documentExists) {
       statistics.addNrExists(1);
     } else {
@@ -129,31 +129,26 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     }
   }
 
+  private void processInventoryCheck(final DocumentMetadata documentMetadata)
+      throws ConnectorException {
+    if (inventoryConnector != null) {
+      boolean exists = inventoryConnector.contains(documentMetadata);
+      documentMetadata.setContainedInInventory(exists);
+    }
+  }
+
   /**
-   * Check if the given {@link DocumentMetadata} already exists in the inventory (local and
-   * external).
+   * Check if the given {@link DocumentMetadata} already exists in the inventory (local).
    *
    * @param documentMetadata has to match this document
    * @return true, if the document is contained in the inventory; false, otherwise
-   * @throws ConnectorException thrown when the {@link InventoryConnector} has an error
    */
-  private boolean containedInInventory(final DocumentMetadata documentMetadata)
-      throws ConnectorException {
+  private boolean containedInInventory(final DocumentMetadata documentMetadata) {
     // check local inventory
     for (String isbn : documentMetadata.getIsbns()) {
       Document existingDocument = documentRepository.findByMetadataIsbnsContains(isbn);
       if (existingDocument != null) {
         LOG.debug("document already exists in local inventory: {}", buildDocumentMetadataString(
-            documentMetadata));
-        return true;
-      }
-    }
-
-    // check remote inventory
-    if (inventoryConnector != null) {
-      boolean exists = inventoryConnector.contains(documentMetadata);
-      if (exists) {
-        LOG.debug("document already exists in remote inventory: {}", buildDocumentMetadataString(
             documentMetadata));
         return true;
       }
@@ -170,9 +165,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   }
 
   private boolean isValid(final DocumentMetadata documentMetadata) {
-    // TODO
     boolean valid = documentMetadata.getIsbns() != null && documentMetadata.getIsbns().size() > 0;
-
     return valid;
   }
 

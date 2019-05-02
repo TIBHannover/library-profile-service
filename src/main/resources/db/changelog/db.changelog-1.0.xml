@@ -28,5 +28,10 @@
     <changeSet author="hoffmann (generated)" id="1556110048432-2">
         <addForeignKeyConstraint baseColumnNames="document_metadata_id" baseTableName="document_metadata_bibliography_number" constraintName="FKs81pvght8bh9f42952gg6jj70" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="document_metadata"/>
     </changeSet>
+    <changeSet author="hoffmann (generated)" id="1556781319297-1">
+        <addColumn tableName="document_metadata">
+            <column name="contained_in_inventory" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

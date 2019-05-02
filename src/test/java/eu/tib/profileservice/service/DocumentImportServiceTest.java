@@ -1,6 +1,8 @@
 package eu.tib.profileservice.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -194,7 +196,13 @@ public class DocumentImportServiceTest {
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
-    verify(documentService, times(0)).saveDocument(Mockito.any(Document.class));
+    ArgumentCaptor<Document> arg1 = ArgumentCaptor.forClass(Document.class);
+    verify(documentService, times(1)).saveDocument(arg1.capture());
+    Document doc = arg1.getValue();
+    assertThat(doc).isNotNull();
+    assertThat(doc.getMetadata()).isNotNull();
+    assertTrue(doc.getMetadata().isContainedInInventory());
+
     ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(null);
   }
 
@@ -215,7 +223,12 @@ public class DocumentImportServiceTest {
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
-    verify(documentService, times(1)).saveDocument(Mockito.any(Document.class));
+    ArgumentCaptor<Document> arg1 = ArgumentCaptor.forClass(Document.class);
+    verify(documentService, times(1)).saveDocument(arg1.capture());
+    Document doc = arg1.getValue();
+    assertThat(doc).isNotNull();
+    assertThat(doc.getMetadata()).isNotNull();
+    assertFalse(doc.getMetadata().isContainedInInventory());
     ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(null);
   }
 
@@ -236,7 +249,13 @@ public class DocumentImportServiceTest {
     LocalDate now = utc.toLocalDate();
     documentImportService.importDocuments(now, now, ConnectorType.DNB);
 
-    verify(documentService, times(1)).saveDocument(Mockito.any(Document.class));
+    ArgumentCaptor<Document> arg1 = ArgumentCaptor.forClass(Document.class);
+    verify(documentService, times(1)).saveDocument(arg1.capture());
+    Document doc = arg1.getValue();
+    assertThat(doc).isNotNull();
+    assertThat(doc.getMetadata()).isNotNull();
+    assertThat(doc.getMetadata().isContainedInInventory()).isNull();
+    ;
     ((DocumentImportServiceImpl) documentImportService).setInventoryConnector(null);
   }
 
