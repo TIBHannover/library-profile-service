@@ -33,5 +33,10 @@
             <column name="contained_in_inventory" type="BOOLEAN"/>
         </addColumn>
     </changeSet>
+    <changeSet author="hoffmann (generated)" id="1556794215236-1">
+        <addColumn tableName="document_metadata">
+            <column name="source" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

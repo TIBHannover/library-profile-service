@@ -1,5 +1,6 @@
 package eu.tib.profileservice.connector;
 
+import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType;
 import eu.tib.profileservice.domain.DocumentMetadata;
 import java.io.IOException;
 import java.io.StringReader;
@@ -117,6 +118,7 @@ public class DnbConnector implements InstitutionConnector {
             if (!matchesSearchCriteria(document)) {
               iterator.remove();
             }
+            document.setSource(ConnectorType.DNB.toString());
           }
         }
         if (converter.hasErrors()) {

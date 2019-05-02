@@ -124,6 +124,10 @@
 											<span class="text-muted" th:text="#{document.expiry.date} + ':'" ></span>
 											<span th:text="${#temporals.format(document.expiryDateUtc, 'yyyy-MM-dd HH:mm:ss')}" ></span>
 										</p>
+<!--										<p>
+											<span class="text-muted" th:text="'source:'" ></span>
+											<span th:text="${document.metadata.source}" ></span>
+										</p>-->
 <!-- 										<p>
 											<span class="text-muted">bibliographyNumbers</span>
 											<span th:text="${#strings.listJoin(document.metadata.bibliographyNumbers, ', ')}" ></span>

@@ -75,6 +75,8 @@ public class DocumentMetadata {
    * when the inventory could not be reached: null. */
   private Boolean containedInInventory;
 
+  private String source;
+
   /**
    * getter: id.
    *
@@ -373,6 +375,20 @@ public class DocumentMetadata {
    */
   public void setContainedInInventory(final Boolean containedInInventory) {
     this.containedInInventory = containedInInventory;
+  }
+
+  /** getter: source.
+   * @return the source
+   */
+  public String getSource() {
+    return source;
+  }
+
+  /** setter: source.
+   * @param source the source to set
+   */
+  public void setSource(final String source) {
+    this.source = source;
   }
 
 }

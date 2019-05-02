@@ -1,5 +1,6 @@
 package eu.tib.profileservice.connector;
 
+import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType;
 import eu.tib.profileservice.domain.DocumentMetadata;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -203,7 +204,7 @@ public class BlConnector implements InstitutionConnector {
       LOG.error("Error while accessing: " + baseUrl, e);
       errorOccurred = true;
     }
-
+    documents.stream().forEach(d -> d.setSource(ConnectorType.BL.toString()));
     return documents;
   }
 
