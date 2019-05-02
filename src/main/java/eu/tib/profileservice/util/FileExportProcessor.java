@@ -143,7 +143,10 @@ public class FileExportProcessor {
     sb.append(LINE_SEPARATOR);
     sb.append(meta.getTermsOfAvailability() == null ? "" : meta.getTermsOfAvailability());
 
-    return sb.toString();
+    String result = sb.toString();
+    result = result.replaceAll("\u0098", "");
+    result = result.replaceAll("\u009C", "");
+    return result;
   }
 
   private void append(final StringBuilder sb, final String text) {

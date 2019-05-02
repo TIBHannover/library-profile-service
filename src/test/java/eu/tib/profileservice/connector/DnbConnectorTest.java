@@ -118,4 +118,18 @@ public class DnbConnectorTest {
     assertEquals(0, result.size());
   }
 
+  /**
+   * Text in response contains special chars Start-Of-String and String-Terminator.
+   * @throws IOException ioexception
+   */
+  @Test
+  public void testRetrieveDocumentsContainingSosAndSt() throws IOException {
+    expectResourceAsRestTemplateRespone("connector/DNBResponse006.xml");
+
+    List<DocumentMetadata> result = conn.retrieveNextDocuments();
+    assertNotNull(result);
+    assertEquals(1, result.size());
+    assertThat(result.get(0).getTitle()).isEqualTo("The train was on time");
+  }
+
 }

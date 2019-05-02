@@ -264,7 +264,10 @@ public class MarcXml2DocumentConverter extends Converter {
   private String getData(final VariableField field, final char code) {
     if (field instanceof DataField && ((DataField) field).getSubfield(code) != null) {
       String data = ((DataField) field).getSubfield(code).getData().trim();
-      return Normalizer.normalize(data, Form.NFC);
+      data = Normalizer.normalize(data, Form.NFC);
+      data = data.replaceAll("\u0098", "");
+      data = data.replaceAll("\u009C", "");
+      return data;
     }
     return "";
   }
