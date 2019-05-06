@@ -65,10 +65,7 @@ Der Import findet regelmäßig statt über den _eu.tib.profileservice.scheduling
 * Neuerscheinungen der letzten 25 Wochen verfügbar im Format RDF/XML als Zip-Datei via http: <http://www.bl.uk/bibliographic/bnbrdfxml.html>, zB <http://www.bl.uk/bibliographic/bnbrdf/bnbrdf_N3536.zip>
 * Die Zip-Datei hat eine fortlaufende Nummer, die jede Woche erhöht wird. Allerdings gibt es auch Wochen, die ausgelassen werden (zB auf Grund von Feiertagen).
     * => Das macht es schwierig zu einem Datum die aktuelle Nummer und damit Datei zu ermitteln.
-    * Ansätze: TODO: welchen? andere?
-         * Dateinummer errechnen, bekannte Ausnahmen berücksichtigen: Ausnahmen müssen ständig aktualisiert werden :(
-         * Dateinummer zu einem Datum aus der Übersicht (html, s.o.) ermitteln: html parsen und hoffen, dass sich die html-Seite nicht ändert :(
-         * Letzte Dateinummer errechnen und schauen, ob die Datei verfügbar ist. Falls nicht: Nummer runterzählen bis Datei gefunden wird. Raten, ungenau, mit der Zeit immer mehr unnötige Abfragen :(
+    * aktueller Ansatz: Dateinummer zu einem Datum aus der Übersicht (html, s.o.) ermitteln: html parsen
 * Konfiguration in den _profileservice.properties_
      * externalsystem.bl.baseurl - base URL für die rdf Dateien (http://www.bl.uk/bibliographic/bnbrdf)
      * externalsystem.bl.schedule.cron - Cron Schedule des Import-Jobs;  wenn leer, dann gibt es keinen automatischen Import für diesen Connector
@@ -123,7 +120,7 @@ Implementierte Connectoren:
 
 Es können Regeln erstellt werden, so dass Titel direkt beim Import abgelehnt werden können. Die Konfiguration der Filterregeln ist über die Weboberfläche möglich.
 Es können folgende Bedingungen konfiguriert werden:
-* __Formschlagwort + regulärer Ausdruck__: es wird geprüft, der reguläre Ausdruck auf ein beliebiges Formschlagwort der Neuerscheinung passt.
+* __Formschlagwort + regulärer Ausdruck__: es wird geprüft, ob der reguläre Ausdruck auf ein beliebiges Formschlagwort der Neuerscheinung passt.
     * **Beispiel**: _.*Jugendbuch.*_ => zB wird Neuerscheinung mit Formschlagwort "Jugendbuch ab 11 Jahren" aussortiert.
 * __Sachgruppe + regulärer Ausdruck__: es wird geprüft, der reguläre Ausdruck auf eine beliebige Sachgruppe der Neuerscheinung passt.
     * **Beispiel**: _123.*_ => zB wird Neuerscheinung mit Sachgruppe 123.456 aussortiert.
