@@ -21,16 +21,20 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@PropertySource(value = "file:${envConfigDir:envConf/default/}profileservice.properties")
 public class DocumentImportServiceImpl implements DocumentImportService {
 
   private static final Logger LOG = LoggerFactory.getLogger(DocumentImportServiceImpl.class);
 
-  /** Cleanup documents with creation date older than this amount of days. */
-  private static final int DEFAULT_EXPIRY_DAYS = 60;
+  /** Cleanup documents with creation date older than this amount of months. */
+  @Value("${document.expiry.months.default}")
+  private int defaultExpiryMonths;
 
   @Autowired
   private InstitutionConnectorFactory connectorFactory;
@@ -112,7 +116,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
       Document document = new Document();
       OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
       document.setCreationDateUtc(utc.toLocalDateTime());
-      document.setExpiryDateUtc(utc.plusDays(DEFAULT_EXPIRY_DAYS).toLocalDateTime());
+      document.setExpiryDateUtc(utc.plusMonths(defaultExpiryMonths).toLocalDateTime());
       document.setMetadata(documentMetadata);
 
       filterProcessor.process(document);

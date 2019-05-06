@@ -127,7 +127,9 @@ Es können folgende Bedingungen konfiguriert werden:
     
 ### Cleanup
 
-Die Daten werden nach einem bestimmten Zeitraum wieder aus dem System gelöscht über den _eu.tib.profileservice.scheduling.DocumentCleanupJob_. Dazu hat jedes Dokument ein "expiryDate", das angibt wann das Dokument gelöscht werden soll. Wird dieses Datum erreicht, dann wird das Dokument bei der nächsten Ausführung des Jobs gelöscht.
+* Die Daten werden nach einem bestimmten Zeitraum wieder aus dem System gelöscht über den _eu.tib.profileservice.scheduling.DocumentCleanupJob_.
+* Dazu hat jedes Dokument ein "expiryDate", das angibt wann das Dokument gelöscht werden soll. Wird dieses Datum erreicht, dann wird das Dokument bei der nächsten Ausführung des Jobs gelöscht.
+* In der Property _document.expiry.months.default_ wird konfiguriert wieviele Monate nach dem Import das Dokument gelöscht wird.
 
 ### Zurückstellen
 
