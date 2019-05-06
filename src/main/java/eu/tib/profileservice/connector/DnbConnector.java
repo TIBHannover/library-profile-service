@@ -161,8 +161,8 @@ public class DnbConnector implements InstitutionConnector {
       Matcher matcher = pattern.matcher(bibliographyNumber);
       if (matcher.find()) {
         try {
-          int year = Integer.valueOf(matcher.group(1)) + 2000;
-          int edition = Integer.valueOf(matcher.group(2));
+          int year = Integer.parseInt(matcher.group(1)) + 2000;
+          int edition = Integer.parseInt(matcher.group(2));
           LocalDate week = LocalDate.of(year, Month.FEBRUARY, 1).with(
               IsoFields.WEEK_OF_WEEK_BASED_YEAR, edition).with(DayOfWeek.MONDAY);
           LocalDate start = week.minusDays(5);
