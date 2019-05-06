@@ -29,7 +29,7 @@ public class FileExportProcessor {
   private static final Logger LOG = LoggerFactory.getLogger(FileExportProcessor.class);
 
   private static final String TMP_FILE_PREFIX = "profileservice_export_";
-  private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+  private static final String LINE_SEPARATOR = "\r\n"; // windows linebreak
 
   /**
    * Delete the export files in the export directory.
