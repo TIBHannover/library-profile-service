@@ -13,10 +13,12 @@ import eu.tib.profileservice.domain.ImportFilter;
 import eu.tib.profileservice.repository.DocumentImportStatisticsRepository;
 import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.util.DocumentAssignmentFinder;
+import eu.tib.profileservice.util.DocumentSourceComparator;
 import eu.tib.profileservice.util.ImportFilterProcessor;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Comparator;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,9 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   /** Cleanup documents with creation date older than this amount of months. */
   @Value("${document.expiry.months.default}")
   private int defaultExpiryMonths;
+
+  @Value("${document.source.priorities}")
+  private String sourcePriorityList;
 
   @Autowired
   private InstitutionConnectorFactory connectorFactory;
@@ -109,9 +114,14 @@ public class DocumentImportServiceImpl implements DocumentImportService {
           documentMetadata), e);
       statistics.setErrorInInventoryConnector(true);
     }
-    boolean documentExists = containedInInventory(documentMetadata);
-    if (documentExists) {
+    Document existingDocument = getExistingDocument(documentMetadata);
+    if (existingDocument != null) {
       statistics.addNrExists(1);
+      Comparator<DocumentMetadata> comparator = new DocumentSourceComparator(sourcePriorityList);
+      if (comparator.compare(documentMetadata, existingDocument.getMetadata()) > 0) {
+        updateExistingDocument(existingDocument, documentMetadata);
+        statistics.addNrUpdated(1);
+      }
     } else {
       Document document = new Document();
       OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -133,6 +143,31 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     }
   }
 
+  private void updateExistingDocument(final Document existingDocument,
+      final DocumentMetadata newData) {
+    LOG.debug("update existing document: {}", buildDocumentMetadataString(newData));
+    DocumentMetadata existingData = existingDocument.getMetadata();
+    existingData.setAuthors(newData.getAuthors());
+    existingData.setBibliographyNumbers(newData.getBibliographyNumbers());
+    existingData.setContainedInInventory(newData.isContainedInInventory());
+    existingData.setDateOfPublication(newData.getDateOfPublication());
+    existingData.setDeweyDecimalClassifications(newData.getDeweyDecimalClassifications());
+    existingData.setEdition(newData.getEdition());
+    existingData.setFormKeywords(newData.getFormKeywords());
+    existingData.setFormOfProduct(newData.getFormOfProduct());
+    existingData.setIsbns(newData.getIsbns());
+    existingData.setPhysicalDescription(newData.getPhysicalDescription());
+    existingData.setPlaceOfPublication(newData.getPlaceOfPublication());
+    existingData.setPublisher(newData.getPublisher());
+    existingData.setRemainderOfTitle(newData.getRemainderOfTitle());
+    existingData.setSeries(newData.getSeries());
+    existingData.setSource(newData.getSource());
+    existingData.setTermsOfAvailability(newData.getTermsOfAvailability());
+    existingData.setTitle(newData.getTitle());
+    documentService.saveDocument(existingDocument);
+  }
+
+
   private void processInventoryCheck(final DocumentMetadata documentMetadata)
       throws ConnectorException {
     if (inventoryConnector != null) {
@@ -145,19 +180,19 @@ public class DocumentImportServiceImpl implements DocumentImportService {
    * Check if the given {@link DocumentMetadata} already exists in the inventory (local).
    *
    * @param documentMetadata has to match this document
-   * @return true, if the document is contained in the inventory; false, otherwise
+   * @return the document, if it is contained in the inventory; null, otherwise
    */
-  private boolean containedInInventory(final DocumentMetadata documentMetadata) {
+  private Document getExistingDocument(final DocumentMetadata documentMetadata) {
     // check local inventory
     for (String isbn : documentMetadata.getIsbns()) {
       Document existingDocument = documentRepository.findByMetadataIsbnsContains(isbn);
       if (existingDocument != null) {
         LOG.debug("document already exists in local inventory: {}", buildDocumentMetadataString(
             documentMetadata));
-        return true;
+        return existingDocument;
       }
     }
-    return false;
+    return null;
   }
 
   private String buildDocumentMetadataString(final DocumentMetadata documentMetadata) {

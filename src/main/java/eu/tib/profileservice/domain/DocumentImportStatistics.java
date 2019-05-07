@@ -32,9 +32,18 @@ public class DocumentImportStatistics {
 
   private int nrRetrieved;
   private int nrExists;
+  private int nrUpdated;
   private int nrInvalid;
   private int nrIgnored;
   private int nrImported;
+
+  /**
+   * Add the given amount.
+   * @param amount amount to add
+   */
+  public void addNrUpdated(final int amount) {
+    this.nrUpdated += amount;
+  }
 
   /**
    * Add the given amount.
@@ -256,6 +265,20 @@ public class DocumentImportStatistics {
    */
   public void setId(final Long id) {
     this.id = id;
+  }
+
+  /** getter: nrUpdated.
+   * @return the nrUpdated
+   */
+  public int getNrUpdated() {
+    return nrUpdated;
+  }
+
+  /** setter: nrUpdated.
+   * @param nrUpdated the nrUpdated to set
+   */
+  public void setNrUpdated(final int nrUpdated) {
+    this.nrUpdated = nrUpdated;
   }
 
 }

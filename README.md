@@ -122,7 +122,7 @@ Es können Regeln erstellt werden, so dass Titel direkt beim Import abgelehnt we
 Es können folgende Bedingungen konfiguriert werden:
 * __Formschlagwort + regulärer Ausdruck__: es wird geprüft, ob der reguläre Ausdruck auf ein beliebiges Formschlagwort der Neuerscheinung passt.
     * **Beispiel**: _.*Jugendbuch.*_ => zB wird Neuerscheinung mit Formschlagwort "Jugendbuch ab 11 Jahren" aussortiert.
-* __Sachgruppe + regulärer Ausdruck__: es wird geprüft, der reguläre Ausdruck auf eine beliebige Sachgruppe der Neuerscheinung passt.
+* __Sachgruppe + regulärer Ausdruck__: es wird geprüft, ob der reguläre Ausdruck auf eine beliebige Sachgruppe der Neuerscheinung passt.
     * **Beispiel**: _123.*_ => zB wird Neuerscheinung mit Sachgruppe 123.456 aussortiert.
     
 ### Cleanup
@@ -134,6 +134,12 @@ Es können folgende Bedingungen konfiguriert werden:
 ### Zurückstellen
 
 Kann nicht sofort entschieden werden was mit einem Titel geschehen soll, dann kann der Titel zurückgestellt werden. Der Titel erhält den Status "zurückgestellt" und das Verfallsdatum (an dem der Titel gelöscht wird) kann angepasst werden.
+
+### Priorisierung der Quellen
+
+* Es gibt die Möglichkeit den verschiedenen Quellen eine Priorisierung zuzuordnen.
+* Wenn ein Titel in verschiedenen Quellen vorhanden ist, dann werden die Daten aus der höher priorisierten Quelle verwendet. Sind die Daten bereits aus der niedriger priorisierten Quelle importiert, dann werden diese Daten überschrieben.
+* Die Priorisierung wird angegeben via Property _document.source.priorities_ - dort werden die Quellen kommagetrennt ausgeführt. Die am weitesten vorne stehende Quelle hat die höchste Priorität.
 
 ### Export
 
