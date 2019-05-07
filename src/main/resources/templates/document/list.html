@@ -7,7 +7,7 @@
 
     
 </script>   
-	<link th:href="@{/css/print.css}" rel="stylesheet" type="text/css" />
+	<link media="print" th:href="@{/css/print.css}" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div layout:fragment="page_content">
@@ -42,8 +42,8 @@
 		</div>
 		<div th:unless="${documents.empty}" class="row" id="pageinfo">
 			<div class="container col-lg-12">
-				<p class="col-lg-6" th:text="#{documents.nroftotalelements(${page.totalElements},${page.totalPages})}">0 Eintr&auml;ge</p>
-				<p th:if="${page?.pageable?.isPaged()}" class="col-lg-6 text-right">
+				<span class="col-lg-6" th:text="#{documents.nroftotalelements(${page.totalElements},${page.totalPages})}">0 Eintr&auml;ge</span>
+				<span th:if="${page?.pageable?.isPaged()}" class="col-lg-6 text-right">
 					<span th:text="#{documents.nrofentries}">Eintr&auml;ge pro Seite</span>
 					<th:block th:each="pagesize,sizeStat : ${availableSizes}" th:with="url=${#request.servletPath},
 						searchQuery=${T(eu.tib.profileservice.controller.DocumentController).buildSearchQuery(search,null)},
@@ -52,7 +52,10 @@
 						<span th:if="${pagesize} == ${page?.pageable?.pageSize}" th:text="${pagesize}" ></span>
 						<span th:unless="${sizeStat.last}">|</span>
 					</th:block>
-				</p>
+				</span>
+			</div>
+			<div class="container col-lg-12 text-right">
+				<a href="javascript:window.print()" th:title="#{documents.printpage(${page.numberOfElements})}"><span class="glyphicon glyphicon-print"></span></a>
 			</div>
 		</div>
 		<table class="table">
