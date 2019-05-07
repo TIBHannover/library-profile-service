@@ -127,6 +127,11 @@ public class DocumentController {
     return METHOD_PENDING;
   }
 
+  @ModelAttribute("availableSizes")
+  public int[] populateAvailableSizes() {
+    return new int[] {20, 50, 100};
+  }
+
   @GetMapping("**")
   public String index() {
     return "redirect:" + BASE_PATH + PATH_MY;
@@ -137,7 +142,7 @@ public class DocumentController {
    * @param search search
    * @return query string
    */
-  public static String buildSearchQuery(final DocumentSearch search) {
+  public static String buildSearchQuery(final DocumentSearch search, final Pageable pageable) {
     final StringBuilder sb = new StringBuilder();
     if (search != null) {
       if (search.getAssignee() != null && search.getAssignee().getId() != null) {
@@ -161,6 +166,12 @@ public class DocumentController {
         }
         sb.append("creationDateTo=").append(search.getCreationDateTo().toString());
       }
+    }
+    if (pageable != null && pageable.isPaged()) {
+      if (sb.length() > 0) {
+        sb.append("&");
+      }
+      sb.append("size=").append(pageable.getPageSize());
     }
     return sb.toString();
   }
@@ -206,7 +217,7 @@ public class DocumentController {
       exampleSearch.setCreationDateFrom(utc.minusDays(7).toLocalDate());
       exampleSearch.setCreationDateTo(now);
 
-      searchQuery = buildSearchQuery(exampleSearch);
+      searchQuery = buildSearchQuery(exampleSearch, pageable);
     }
     return "redirect:" + BASE_PATH + PATH_LIST + (searchQuery.length() > 0 ? ("?" + searchQuery)
         : "");
