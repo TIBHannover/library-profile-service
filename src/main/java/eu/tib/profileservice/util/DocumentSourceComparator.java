@@ -1,6 +1,7 @@
 package eu.tib.profileservice.util;
 
 import eu.tib.profileservice.domain.DocumentMetadata;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,9 @@ import java.util.Map;
 /**
  * {@link Comparator} that compares the source of {@link DocumentMetadata}s.
  */
-public class DocumentSourceComparator implements Comparator<DocumentMetadata> {
+public class DocumentSourceComparator implements Comparator<DocumentMetadata>, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private Map<String, Integer> priorityBySources;
 
