@@ -25,6 +25,8 @@ public interface DocumentService {
 
   Document findById(Long id);
 
+  Document findByMetadataIsbnsContains(String isbn);
+
   Document assignToUser(Document document, User user);
 
   Document acceptDocument(Long id);

@@ -138,4 +138,10 @@ public class DocumentServiceImpl implements DocumentService {
     return documentRepository.count(Example.of(example));
   }
 
+  @Transactional(readOnly = true)
+  @Override
+  public Document findByMetadataIsbnsContains(final String isbn) {
+    return documentRepository.findByMetadataIsbnsContains(isbn);
+  }
+
 }

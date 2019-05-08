@@ -11,7 +11,6 @@ import eu.tib.profileservice.domain.DocumentImportStatistics;
 import eu.tib.profileservice.domain.DocumentMetadata;
 import eu.tib.profileservice.domain.ImportFilter;
 import eu.tib.profileservice.repository.DocumentImportStatisticsRepository;
-import eu.tib.profileservice.repository.DocumentRepository;
 import eu.tib.profileservice.util.DocumentAssignmentFinder;
 import eu.tib.profileservice.util.DocumentSourceComparator;
 import eu.tib.profileservice.util.ImportFilterProcessor;
@@ -52,9 +51,6 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 
   @Autowired
   private DocumentService documentService;
-
-  @Autowired
-  private DocumentRepository documentRepository;
 
   @Autowired
   private DocumentImportStatisticsRepository importStatisticsRepository;
@@ -185,7 +181,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   private Document getExistingDocument(final DocumentMetadata documentMetadata) {
     // check local inventory
     for (String isbn : documentMetadata.getIsbns()) {
-      Document existingDocument = documentRepository.findByMetadataIsbnsContains(isbn);
+      Document existingDocument = documentService.findByMetadataIsbnsContains(isbn);
       if (existingDocument != null) {
         LOG.debug("document already exists in local inventory: {}", buildDocumentMetadataString(
             documentMetadata));

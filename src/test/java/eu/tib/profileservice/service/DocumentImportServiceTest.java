@@ -19,7 +19,6 @@ import eu.tib.profileservice.domain.ImportFilter;
 import eu.tib.profileservice.domain.ImportFilter.Action;
 import eu.tib.profileservice.domain.ImportFilter.ConditionType;
 import eu.tib.profileservice.repository.DocumentImportStatisticsRepository;
-import eu.tib.profileservice.repository.DocumentRepository;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -57,8 +56,6 @@ public class DocumentImportServiceTest {
 
   @Autowired
   private DocumentImportService documentImportService;
-  @MockBean
-  private DocumentRepository documentRepository;
   @MockBean
   private DocumentImportStatisticsRepository documentImportStatisticsRepository;
   @MockBean
@@ -139,7 +136,7 @@ public class DocumentImportServiceTest {
         newDocumentMetadataDummy()});
     when(importFilterService.findAll()).thenReturn(filters);
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
-    when(documentRepository.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
+    when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
@@ -157,7 +154,7 @@ public class DocumentImportServiceTest {
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
         newDocumentMetadataDummy()});
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
-    when(documentRepository.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
+    when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
@@ -173,7 +170,7 @@ public class DocumentImportServiceTest {
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
         newDocumentMetadataDummy()});
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
-    when(documentRepository.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(
+    when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(
         existingDocument);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -192,7 +189,7 @@ public class DocumentImportServiceTest {
         newDocumentMetadataDummy()});
     connectorResult.get(0).setSource(ConnectorType.DNB.toString());
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
-    when(documentRepository.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(
+    when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(
         existingDocument);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -211,7 +208,7 @@ public class DocumentImportServiceTest {
         newDocumentMetadataDummy()});
     connectorResult.get(0).setSource(ConnectorType.BL.toString());
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
-    when(documentRepository.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(
+    when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(
         existingDocument);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -231,7 +228,7 @@ public class DocumentImportServiceTest {
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
         newDocumentMetadataDummy()});
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
-    when(documentRepository.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
+    when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
     when(inventoryConnector.contains(Mockito.any(DocumentMetadata.class))).thenReturn(true);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -258,7 +255,7 @@ public class DocumentImportServiceTest {
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
         newDocumentMetadataDummy()});
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
-    when(documentRepository.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
+    when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
     when(inventoryConnector.contains(Mockito.any(DocumentMetadata.class))).thenReturn(false);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
@@ -283,7 +280,7 @@ public class DocumentImportServiceTest {
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
         newDocumentMetadataDummy()});
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
-    when(documentRepository.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
+    when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
     when(inventoryConnector.contains(Mockito.any(DocumentMetadata.class))).thenThrow(
         ConnectorException.class);
 
