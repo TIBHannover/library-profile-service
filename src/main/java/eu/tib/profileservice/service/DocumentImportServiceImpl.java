@@ -195,7 +195,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     Set<Long> ids = new HashSet<Long>();
     for (String isbn : documentMetadata.getIsbns()) {
       Document existingDocument = documentService.findByMetadataIsbnsContains(isbn);
-      if (existingDocument != null && !ids.contains(existingDocument.getId().longValue())) {
+      if (existingDocument != null && !ids.contains(existingDocument.getId())) {
         result.add(existingDocument);
         ids.add(existingDocument.getId());
       }
