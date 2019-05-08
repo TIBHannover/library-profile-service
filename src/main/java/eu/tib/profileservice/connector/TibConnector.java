@@ -32,8 +32,8 @@ public class TibConnector implements InventoryConnector {
 
   @Value("${inventory.tib.baseurl}")
   private String baseUrl;
-  @Value("${inventory.tib.recordnrpath}")
-  private String pathNumberOfRecords;
+  //  @Value("${inventory.tib.recordnrpath}")
+  //  private String pathNumberOfRecords;
 
   @Autowired
   private RestTemplate restTemplate;
