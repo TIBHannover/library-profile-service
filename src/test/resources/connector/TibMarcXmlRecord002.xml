@@ -1,0 +1,88 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+    <leader>00877naa a22003371  4500</leader>
+    <controlfield tag="001">011078464</controlfield>
+    <controlfield tag="003">DE-89</controlfield>
+    <controlfield tag="005">20190508151057.0</controlfield>
+    <controlfield tag="007">t|</controlfield>
+    <controlfield tag="008">190508s1977    gw            0|| ||ger d</controlfield>
+    <datafield ind1="7" ind2=" " tag="024">
+      <subfield code="a">TIBKAT:011078464</subfield>
+      <subfield code="2">TIB_ID</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="040">
+      <subfield code="a">DE-89</subfield>
+      <subfield code="b">ger</subfield>
+      <subfield code="c">DE-89</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="500">
+      <subfield code="a">Buch</subfield>
+    </datafield>
+    <datafield ind1="7" ind2=" " tag="024">
+      <subfield code="a">011078464</subfield>
+      <subfield code="2">ppn</subfield>
+    </datafield>
+    <datafield ind1="7" ind2=" " tag="024">
+      <subfield code="a">GBV:011078464</subfield>
+      <subfield code="2">firstid</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="020">
+      <subfield code="a">3450119079</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="990">
+      <subfield code="a">(epn)302827242</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="990">
+      <subfield code="a">(epn)302827242</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="900">
+      <subfield code="b">TIBKAT</subfield>
+      <subfield code="a">inval</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="900">
+      <subfield code="b">invalid</subfield>
+      <subfield code="d">77-2916</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="900">
+      <subfield code="d">77-2916</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="990">
+      <subfield code="a">(epn)302827242</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="300">
+      <subfield code="a">202 S (unknown)</subfield>
+    </datafield>
+    <datafield ind1="0" ind2="0" tag="245">
+      <subfield code="a">Die jüdische Religion</subfield>
+    </datafield>
+    <datafield ind1="1" ind2=" " tag="700">
+      <subfield code="a">Lachmann, Frederick R.</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="260">
+      <subfield code="b">Henn</subfield>
+      <subfield code="c">1977</subfield>
+      <subfield code="a">Kastellaun</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="084">
+      <subfield code="2">loc</subfield>
+      <subfield code="a">BM43</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="084">
+      <subfield code="2">dbn</subfield>
+      <subfield code="a">02a</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="084">
+      <subfield code="2">ddc</subfield>
+      <subfield code="a">296</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="084">
+      <subfield code="2">linsearch</subfield>
+      <subfield code="a">rel</subfield>
+    </datafield>
+    <datafield ind1=" " ind2=" " tag="084">
+      <subfield code="2">linsearch</subfield>
+      <subfield code="a">phi</subfield>
+    </datafield>
+    <datafield ind1="1" ind2="0" tag="650">
+      <subfield code="a">Judaism</subfield>
+    </datafield>
+  </record>

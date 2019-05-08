@@ -1,14 +1,7 @@
 package eu.tib.profileservice.connector;
 
 import eu.tib.profileservice.domain.DocumentMetadata;
-import java.io.IOException;
-import java.io.StringReader;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Implementation of {@link InventoryConnector} for sru api of <i>tib.eu</i>.
@@ -34,11 +24,11 @@ public class TibConnector implements InventoryConnector {
 
   private static final Logger LOG = LoggerFactory.getLogger(TibConnector.class);
 
-  private static final String RESULT_FORMAT = "dcx";
+  //  private static final String RESULT_FORMAT = "dcx";
 
-  //  private static final String RESULT_FORMAT = "marcxml";
-  //  private static final String MARCXML_RECORD_PATH =
-  //      "/searchRetrieveResponse/records/record/recordData/record";
+  private static final String RESULT_FORMAT = "marcxml";
+  private static final String MARCXML_RECORD_PATH =
+      "/searchRetrieveResponse/records/record/recordData/record";
 
   @Value("${inventory.tib.baseurl}")
   private String baseUrl;
@@ -65,20 +55,21 @@ public class TibConnector implements InventoryConnector {
     return sb.toString();
   }
 
-  private int getNrOfRecords(final String responseDcxXml) throws ConnectorException {
-    final XPath xpath = XPathFactory.newInstance().newXPath();
-    try {
-      final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      final Document xml = builder.parse(new InputSource(new StringReader(responseDcxXml)));
-      return Integer.parseInt(xpath.evaluate(pathNumberOfRecords, xml));
-    } catch (XPathExpressionException | ParserConfigurationException | SAXException
-        | IOException e) {
-      throw new ConnectorException("error while parsing reply", e);
-    }
-  }
+  //  private int getNrOfRecords(final String responseDcxXml) throws ConnectorException {
+  //    final XPath xpath = XPathFactory.newInstance().newXPath();
+  //    try {
+  //      final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+  //      final Document xml = builder.parse(new InputSource(new StringReader(responseDcxXml)));
+  //      return Integer.parseInt(xpath.evaluate(pathNumberOfRecords, xml));
+  //    } catch (XPathExpressionException | ParserConfigurationException | SAXException
+  //        | IOException e) {
+  //      throw new ConnectorException("error while parsing reply", e);
+  //    }
+  //  }
 
   @Override
-  public boolean contains(final DocumentMetadata documentMetadata) throws ConnectorException {
+  public boolean processInventoryCheck(final DocumentMetadata documentMetadata)
+      throws ConnectorException {
     final String request = buildRequest(documentMetadata);
     LOG.debug("retrieveDocument with request: {}", request);
     try {
@@ -87,8 +78,18 @@ public class TibConnector implements InventoryConnector {
       boolean contained = false;
       if (HttpStatus.OK.equals(response.getStatusCode()) && response.hasBody()) {
         LOG.debug("response body: {}", response.getBody());
-        int nrOfExistingDocuments = getNrOfRecords(response.getBody());
-        contained = nrOfExistingDocuments > 0;
+        MarcXml2DocumentConverter converter = new TibMarcXml2DocumentConverter();
+        List<DocumentMetadata> documents = converter.extractMarcXmlRecordsAndConvert(
+            MARCXML_RECORD_PATH, response.getBody());
+        if (converter.hasErrors()) {
+          throw new ConnectorException("error while parsing reply");
+        }
+        if (documents != null && documents.size() > 0) {
+          contained = true;
+          DocumentMetadata existing = documents.get(0);
+          documentMetadata.setInventoryAccessionNumber(existing.getInventoryAccessionNumber());
+          documentMetadata.setInventoryUri(existing.getInventoryUri());
+        }
       } else {
         throw new ConnectorException("Cannot retrieve document from: " + baseUrl);
       }

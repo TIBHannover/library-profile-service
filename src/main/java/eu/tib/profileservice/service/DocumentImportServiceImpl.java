@@ -171,6 +171,8 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     existingData.setSource(newData.getSource());
     existingData.setTermsOfAvailability(newData.getTermsOfAvailability());
     existingData.setTitle(newData.getTitle());
+    existingData.setInventoryAccessionNumber(newData.getInventoryAccessionNumber());
+    existingData.setInventoryUri(newData.getInventoryUri());
     documentService.saveDocument(existingDocument);
   }
 
@@ -178,7 +180,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
   private void processInventoryCheck(final DocumentMetadata documentMetadata)
       throws ConnectorException {
     if (inventoryConnector != null) {
-      boolean exists = inventoryConnector.contains(documentMetadata);
+      boolean exists = inventoryConnector.processInventoryCheck(documentMetadata);
       documentMetadata.setContainedInInventory(exists);
     }
   }

@@ -45,5 +45,15 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="hoffmann (generated)" id="1557321443851-1">
+        <addColumn tableName="document_metadata">
+            <column name="inventory_accession_number" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1557321443851-2">
+        <addColumn tableName="document_metadata">
+            <column name="inventory_uri" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

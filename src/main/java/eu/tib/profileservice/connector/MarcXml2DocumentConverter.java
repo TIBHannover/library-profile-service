@@ -164,7 +164,12 @@ public class MarcXml2DocumentConverter extends Converter {
     return documents;
   }
 
-  private DocumentMetadata record2Document(final Record record) {
+  /**
+   * Convert the record into a {@link DocumentMetadata}.
+   * @param record record to convert
+   * @return document
+   */
+  protected DocumentMetadata record2Document(final Record record) {
     final DocumentMetadata document = new DocumentMetadata();
 
     document.setTitle(getDataIfExists(record, "245", 'a'));
@@ -331,7 +336,7 @@ public class MarcXml2DocumentConverter extends Converter {
    * @param indicator2 indicator2 of the datafield; may be null - in this case: ignore indicator2
    * @return
    */
-  private List<String> getAllData(final Record record, final String tag, final char code,
+  protected List<String> getAllData(final Record record, final String tag, final char code,
       final String pattern, final Character indicator1, final Character indicator2) {
     List<VariableField> fields;
     if (pattern != null) {

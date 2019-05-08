@@ -77,6 +77,10 @@ public class DocumentMetadata {
 
   private String source;
 
+  private String inventoryUri;
+
+  private String inventoryAccessionNumber;
+
   /**
    * getter: id.
    *
@@ -389,6 +393,34 @@ public class DocumentMetadata {
    */
   public void setSource(final String source) {
     this.source = source;
+  }
+
+  /** getter: inventoryUri.
+   * @return the inventoryUri
+   */
+  public String getInventoryUri() {
+    return inventoryUri;
+  }
+
+  /** setter: inventoryUri.
+   * @param inventoryUri the inventoryUri to set
+   */
+  public void setInventoryUri(final String inventoryUri) {
+    this.inventoryUri = inventoryUri;
+  }
+
+  /** getter: inventoryAccessionNumber.
+   * @return the inventoryAccessionNumber
+   */
+  public String getInventoryAccessionNumber() {
+    return inventoryAccessionNumber;
+  }
+
+  /** setter: inventoryAccessionNumber.
+   * @param inventoryAccessionNumber the inventoryAccessionNumber to set
+   */
+  public void setInventoryAccessionNumber(final String inventoryAccessionNumber) {
+    this.inventoryAccessionNumber = inventoryAccessionNumber;
   }
 
 }

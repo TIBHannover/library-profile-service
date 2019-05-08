@@ -98,7 +98,11 @@
 								<div>
 									<span class="text-muted" th:text="#{inventory.comparison} + ':'" ></span>
 									<span th:if="${document.metadata.containedInInventory} == null" th:text="#{inventory.comparison.unknown}" ></span>
-									<span class="text-danger" th:if="${document.metadata.containedInInventory}" th:text="#{inventory.comparison.contained}" ></span>
+									<span th:if="${document.metadata.containedInInventory}" >
+										<span th:if="${#strings.isEmpty(document.metadata.inventoryUri)}" class="text-danger" th:text="#{inventory.comparison.contained}"></span>
+										<a th:unless="${#strings.isEmpty(document.metadata.inventoryUri)}" th:href="${document.metadata.inventoryUri}" class="text-danger" th:text="#{inventory.comparison.contained}"></a>
+										<span th:unless="${#strings.isEmpty(document.metadata.inventoryAccessionNumber)}" th:text="' (' + ${document.metadata.inventoryAccessionNumber} + ')'"></span>
+									</span>
 									<span th:if="${document.metadata.containedInInventory} == false" th:text="#{inventory.comparison.notcontained}" ></span>
 								</div>
 							</div>

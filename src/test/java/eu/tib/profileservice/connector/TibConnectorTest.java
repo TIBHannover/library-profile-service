@@ -1,5 +1,6 @@
 package eu.tib.profileservice.connector;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -58,7 +59,7 @@ public class TibConnectorTest {
     when(restTemplateMock.getForEntity(Mockito.anyString(), ArgumentMatchers.<Class<String>>any()))
         .thenReturn(response);
 
-    connector.contains(newDocumentMetadataDummy("123456789"));
+    connector.processInventoryCheck(newDocumentMetadataDummy("123456789"));
   }
 
   @Test(expected = ConnectorException.class)
@@ -67,7 +68,7 @@ public class TibConnectorTest {
     when(restTemplateMock.getForEntity(Mockito.anyString(), ArgumentMatchers.<Class<String>>any()))
         .thenReturn(response);
 
-    connector.contains(newDocumentMetadataDummy("123456789", "987654321"));
+    connector.processInventoryCheck(newDocumentMetadataDummy("123456789", "987654321"));
   }
 
   private void expectResourceAsRestTemplateRespone(final String resourceName) throws IOException {
@@ -82,11 +83,14 @@ public class TibConnectorTest {
   @Test
   public void testContains() throws IOException, ConnectorException {
     expectResourceAsRestTemplateRespone("connector/TIBResponse001.xml");
-    boolean contains = connector.contains(newDocumentMetadataDummy("123456789", "987654321"));
+    DocumentMetadata metadata = newDocumentMetadataDummy("123456789", "987654321");
+    boolean contains = connector.processInventoryCheck(metadata);
     assertTrue(contains);
+    assertThat(metadata.getInventoryUri()).isEqualTo(
+        "https://www.tib.eu/de/suchen/id/TIBKAT%3A772916411");
 
     expectResourceAsRestTemplateRespone("connector/TIBResponse002.xml");
-    contains = connector.contains(newDocumentMetadataDummy("123456789", "987654321"));
+    contains = connector.processInventoryCheck(newDocumentMetadataDummy("123456789", "987654321"));
     assertFalse(contains);
   }
 

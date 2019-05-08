@@ -98,8 +98,8 @@ public class DocumentImportServiceTest {
   @Before
   public void setup() {
     when(connectorFactory.createConnector(Mockito.any(ConnectorType.class), Mockito.any(
-            LocalDate.class), Mockito.any(LocalDate.class)))
-                .thenReturn(connector);
+        LocalDate.class), Mockito.any(LocalDate.class)))
+            .thenReturn(connector);
     when(connector.hasNext()).thenReturn(true).thenReturn(false);
   }
 
@@ -232,7 +232,8 @@ public class DocumentImportServiceTest {
         newDocumentMetadataDummy()});
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
     when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
-    when(inventoryConnector.contains(Mockito.any(DocumentMetadata.class))).thenReturn(true);
+    when(inventoryConnector.processInventoryCheck(Mockito.any(DocumentMetadata.class))).thenReturn(
+        true);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
@@ -259,7 +260,8 @@ public class DocumentImportServiceTest {
         newDocumentMetadataDummy()});
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
     when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
-    when(inventoryConnector.contains(Mockito.any(DocumentMetadata.class))).thenReturn(false);
+    when(inventoryConnector.processInventoryCheck(Mockito.any(DocumentMetadata.class))).thenReturn(
+        false);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
     LocalDate now = utc.toLocalDate();
@@ -284,7 +286,7 @@ public class DocumentImportServiceTest {
         newDocumentMetadataDummy()});
     when(connector.retrieveNextDocuments()).thenReturn(connectorResult);
     when(documentService.findByMetadataIsbnsContains(Mockito.anyString())).thenReturn(null);
-    when(inventoryConnector.contains(Mockito.any(DocumentMetadata.class))).thenThrow(
+    when(inventoryConnector.processInventoryCheck(Mockito.any(DocumentMetadata.class))).thenThrow(
         ConnectorException.class);
 
     OffsetDateTime utc = OffsetDateTime.now(ZoneOffset.UTC);
