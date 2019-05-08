@@ -34,7 +34,56 @@
 				</div>
 				<div class="form-group">
 					<label for="condition" th:text="#{import.filter.condition}">condition</label>
-					<input type="text" class="form-control" th:field="*{condition}" th:placeholder="#{import.filter.condition.regular.expression}" th:errorclass="fieldError" />
+
+					<div class="modal fade" id="regexInfoModal" tabindex="-1" role="dialog" aria-labelledby="regexInfoModalTitle">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title" id="regexInfoModalTitle" th:text="#{import.filter.regular.expression.info.title}">title</h4>
+								</div>
+								<div class="modal-body">
+									<p th:text="#{import.filter.regular.expression.info.content}" />
+									<span th:text="#{import.filter.regular.expression.info.examples}"></span>
+									<table class="table table-striped">
+										<tbody>
+											<tr>
+												<td th:text="#{import.filter.regular.expression.info.example1.char}"></td>
+												<td th:text="#{import.filter.regular.expression.info.example1.description}"></td>
+											</tr>
+											<tr>
+												<td th:text="#{import.filter.regular.expression.info.example2.char}"></td>
+												<td th:text="#{import.filter.regular.expression.info.example2.description}"></td>
+											</tr>
+											<tr>
+												<td th:text="#{import.filter.regular.expression.info.example3.char}"></td>
+												<td th:text="#{import.filter.regular.expression.info.example3.description}"></td>
+											</tr>
+											<tr>
+												<td th:text="#{import.filter.regular.expression.info.example4.char}"></td>
+												<td th:text="#{import.filter.regular.expression.info.example4.description}"></td>
+											</tr>
+											<tr>
+												<td th:text="#{import.filter.regular.expression.info.example5.char}"></td>
+												<td th:text="#{import.filter.regular.expression.info.example5.description}"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="input-group">
+						<input type="text" class="form-control" th:field="*{condition}" th:placeholder="#{import.filter.condition.regular.expression}" th:errorclass="fieldError" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" th:title="#{import.filter.regular.expression.info.title}" data-toggle="modal" data-target="#regexInfoModal">
+								<span class="glyphicon glyphicon-info-sign"></span>
+							</button>
+						</span>
+					</div>
 				</div>
 				<div class="form-group">
 					<label for="action" th:text="#{import.filter.action}">action</label>
