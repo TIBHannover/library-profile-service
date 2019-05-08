@@ -150,3 +150,9 @@ Kann nicht sofort entschieden werden was mit einem Titel geschehen soll, dann ka
 * Exportierte Dokumente erhalten einen neuen Status, damit sie nur einmalig exportiert werden.
     * Dokumente, die gerade exportiert werden, erhalten den Status EXPORTING.
     * Dokumente, die bereits exportiert wurden, erhalten den Status EXPORTED.
+    
+### Datenbankupdates
+
+* Die Initialisierung des DB-Schemas und nachfolgende Updates werden über liquibase beim Deployment der war automatisch eingepflegt.
+* <https://www.liquibase.org>
+* Die Liquibase Change-Sets können über das Liquibase-Maven-Plugin generiert werden. Dazu die Konfiguration des Plugins anpassen (aktuelle DB konfigurieren) und mit 'mvn clean compile' + 'mvn liquibase:diff' ausführen. Die Change-Sets sind dann unter _target_ zu finden.
