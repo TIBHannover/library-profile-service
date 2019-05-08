@@ -166,6 +166,7 @@ public class DocumentImportServiceTest {
   @Test
   public void testImportDocumentsWithExistingLocalDocument() {
     Document existingDocument = new Document();
+    existingDocument.setId(1L);
     existingDocument.setMetadata(newDocumentMetadataDummy());
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
         newDocumentMetadataDummy()});
@@ -183,6 +184,7 @@ public class DocumentImportServiceTest {
   @Test
   public void testImportDocumentsWithExistingLocalDocumentHigherPriority() {
     Document existingDocument = new Document();
+    existingDocument.setId(1L);
     existingDocument.setMetadata(newDocumentMetadataDummy());
     existingDocument.getMetadata().setSource(ConnectorType.BL.toString());
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {
@@ -202,6 +204,7 @@ public class DocumentImportServiceTest {
   @Test
   public void testImportDocumentsWithExistingLocalDocumentLowerPriority() {
     Document existingDocument = new Document();
+    existingDocument.setId(1L);
     existingDocument.setMetadata(newDocumentMetadataDummy());
     existingDocument.getMetadata().setSource(ConnectorType.DNB.toString());
     List<DocumentMetadata> connectorResult = Arrays.asList(new DocumentMetadata[] {

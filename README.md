@@ -139,6 +139,7 @@ Kann nicht sofort entschieden werden was mit einem Titel geschehen soll, dann ka
 
 * Es gibt die Möglichkeit den verschiedenen Quellen eine Priorisierung zuzuordnen.
 * Wenn ein Titel in verschiedenen Quellen vorhanden ist, dann werden die Daten aus der höher priorisierten Quelle verwendet. Sind die Daten bereits aus der niedriger priorisierten Quelle importiert, dann werden diese Daten überschrieben.
+* Wenn der neue Datensatz mehreren alten Datensätzen zugeordnet werden kann, dann gibt es kein Update der alten Daten. Bei der Surjektion könnten sonst Informationen verloren gehen (wenn die Datensätze bereits bearbeitet wurden)
 * Die Priorisierung wird angegeben via Property _document.source.priorities_ - dort werden die Quellen kommagetrennt ausgeführt. Die am weitesten vorne stehende Quelle hat die höchste Priorität.
 
 ### Export

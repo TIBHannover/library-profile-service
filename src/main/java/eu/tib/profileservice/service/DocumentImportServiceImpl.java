@@ -17,8 +17,11 @@ import eu.tib.profileservice.util.ImportFilterProcessor;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,13 +113,20 @@ public class DocumentImportServiceImpl implements DocumentImportService {
           documentMetadata), e);
       statistics.setErrorInInventoryConnector(true);
     }
-    Document existingDocument = getExistingDocument(documentMetadata);
-    if (existingDocument != null) {
+    List<Document> existingDocuments = getExistingDocuments(documentMetadata);
+    if (existingDocuments.size() > 0) {
+      LOG.debug("document already exists in local inventory: {}", buildDocumentMetadataString(
+          documentMetadata));
       statistics.addNrExists(1);
-      Comparator<DocumentMetadata> comparator = new DocumentSourceComparator(sourcePriorityList);
-      if (comparator.compare(documentMetadata, existingDocument.getMetadata()) > 0) {
-        updateExistingDocument(existingDocument, documentMetadata);
-        statistics.addNrUpdated(1);
+      if (existingDocuments.size() > 1) {
+        LOG.debug("more than one document exists, no update!");
+      } else {
+        Document existingDocument = existingDocuments.get(0);
+        Comparator<DocumentMetadata> comparator = new DocumentSourceComparator(sourcePriorityList);
+        if (comparator.compare(documentMetadata, existingDocument.getMetadata()) > 0) {
+          updateExistingDocument(existingDocument, documentMetadata);
+          statistics.addNrUpdated(1);
+        }
       }
     } else {
       Document document = new Document();
@@ -141,7 +151,8 @@ public class DocumentImportServiceImpl implements DocumentImportService {
 
   private void updateExistingDocument(final Document existingDocument,
       final DocumentMetadata newData) {
-    LOG.debug("update existing document: {}", buildDocumentMetadataString(newData));
+    LOG.debug("update existing document: {}", buildDocumentMetadataString(existingDocument
+        .getMetadata()));
     DocumentMetadata existingData = existingDocument.getMetadata();
     existingData.setAuthors(newData.getAuthors());
     existingData.setBibliographyNumbers(newData.getBibliographyNumbers());
@@ -178,17 +189,18 @@ public class DocumentImportServiceImpl implements DocumentImportService {
    * @param documentMetadata has to match this document
    * @return the document, if it is contained in the inventory; null, otherwise
    */
-  private Document getExistingDocument(final DocumentMetadata documentMetadata) {
+  private List<Document> getExistingDocuments(final DocumentMetadata documentMetadata) {
     // check local inventory
+    List<Document> result = new ArrayList<Document>();
+    Set<Long> ids = new HashSet<Long>();
     for (String isbn : documentMetadata.getIsbns()) {
       Document existingDocument = documentService.findByMetadataIsbnsContains(isbn);
-      if (existingDocument != null) {
-        LOG.debug("document already exists in local inventory: {}", buildDocumentMetadataString(
-            documentMetadata));
-        return existingDocument;
+      if (existingDocument != null && !ids.contains(existingDocument.getId().longValue())) {
+        result.add(existingDocument);
+        ids.add(existingDocument.getId());
       }
     }
-    return null;
+    return result;
   }
 
   private String buildDocumentMetadataString(final DocumentMetadata documentMetadata) {
