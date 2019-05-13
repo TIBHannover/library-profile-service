@@ -34,6 +34,7 @@ public class DocumentMetadata {
   private String remainderOfTitle;
 
   @ElementCollection
+  @Column(length = 1024)
   @CollectionTable(name = TABLE_NAME_AUTHORS)
   private List<String> authors;
 

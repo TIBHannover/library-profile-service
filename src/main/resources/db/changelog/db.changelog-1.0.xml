@@ -55,5 +55,7 @@
             <column name="inventory_uri" type="varchar(255)"/>
         </addColumn>
     </changeSet>
-
+    <changeSet author="hoffmann" id="201905130800-1">
+        <modifyDataType tableName="document_metadata_authors" columnName="authors" newDataType="VARCHAR(1024)"/>
+    </changeSet>
 </databaseChangeLog>
