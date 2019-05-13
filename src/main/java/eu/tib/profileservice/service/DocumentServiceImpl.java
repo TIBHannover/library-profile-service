@@ -60,13 +60,13 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Transactional
   @Override
-  public Document assignToUser(final Document document, final User user) {
-    if (document == null || user == null || user.getId() == null) {
+  public Document assignToUser(final Document document, final Long assigneeId) {
+    if (document == null || assigneeId == null) {
       LOG.debug("document/user cannot be null");
       return null;
     }
     final Document persistedDocument = findById(document.getId());
-    final User persistedUser = userRepository.getOne(user.getId());
+    final User persistedUser = userRepository.getOne(assigneeId);
     if (persistedDocument == null || persistedUser == null) {
       LOG.debug("cannot find document/user");
       return null;

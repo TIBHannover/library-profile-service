@@ -116,29 +116,25 @@ public class DocumentServiceTest {
   @Test
   public void testAssignToUser() {
     Document document = newDocumentDummy();
-    User user = newUserDummy();
 
     when(documentRepository.findById(1L)).thenReturn(Optional.of(document));
     when(userRepository.getOne(1L)).thenReturn(null);
     when(documentRepository.save(document)).thenReturn(document);
 
-    Document result = documentService.assignToUser(null, user);
+    Document result = documentService.assignToUser(null, 1L);
     assertThat(result).isNull();
     result = documentService.assignToUser(document, null);
     assertThat(result).isNull();
     document.setId(null);
-    result = documentService.assignToUser(document, user);
+    result = documentService.assignToUser(document, 1L);
     assertThat(result).isNull();
     document.setId(1L);
-    user.setId(null);
-    result = documentService.assignToUser(document, user);
-    assertThat(result).isNull();
-    user.setId(1L);
-    result = documentService.assignToUser(document, user);
+    result = documentService.assignToUser(document, 1L);
     assertThat(result).isNull();
 
+    User user = newUserDummy();
     when(userRepository.getOne(1L)).thenReturn(user);
-    result = documentService.assignToUser(document, user);
+    result = documentService.assignToUser(document, 1L);
     assertThat(result).isNotNull();
     assertThat(result.getAssignee()).isNotNull();
   }

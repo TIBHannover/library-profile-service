@@ -3,7 +3,6 @@ package eu.tib.profileservice.service;
 import eu.tib.profileservice.domain.Document;
 import eu.tib.profileservice.domain.Document.Status;
 import eu.tib.profileservice.domain.DocumentSearch;
-import eu.tib.profileservice.domain.User;
 import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +26,13 @@ public interface DocumentService {
 
   Document findByMetadataIsbnsContains(String isbn);
 
-  Document assignToUser(Document document, User user);
+  /**
+   * Assign document to the user identified by the given userid.
+   * @param document document to assign
+   * @param assigneeId id of the user the document should be assigned to
+   * @return modified document
+   */
+  Document assignToUser(Document document, Long assigneeId);
 
   Document acceptDocument(Long id);
 

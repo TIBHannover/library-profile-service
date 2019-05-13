@@ -15,6 +15,7 @@ import eu.tib.profileservice.util.FileExportProcessor;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,11 +188,12 @@ public class DocumentController {
   public String list(final DocumentSearch search, final Model model,
       @SortDefaults({@SortDefault(sort = "creationDateUtc",
           direction = Sort.Direction.DESC)}) final Pageable pageable) {
-    LOG.debug("pageable: {}", pageable);
-    LOG.debug("search: {}", search);
-    LOG.debug("sort: {}", pageable.getSort());
+    //    LOG.debug("pageable: {}", pageable);
+    //    LOG.debug("search: {}", search);
+    //    LOG.debug("sort: {}", pageable.getSort());
     final Page<Document> documents = documentService.findAllByDocumentSearch(search, pageable);
     model.addAttribute("documents", documents.getContent());
+    model.addAttribute("updateDocuments", new DocumentListDto(documents.getContent()));
     model.addAttribute("page", documents);
     model.addAttribute("search", search);
     return BASE_URL_TEMPLATE + TEMPLATE_LIST;
@@ -245,34 +247,39 @@ public class DocumentController {
   }
 
   /**
-   * Change the assignment of the given {@link Document}.
-   * The document will be assigned to document.assignee.
-   * @param document document to assign
-   * @param model model
-   * @param redirectAttrs redirectAttrs
+   * Change the assignment of the given {@link Document}s.
+   * The documents will be assigned to the user identified by assigneeId.
+   * @param documents documents to assign
    * @param sourceUri source uri of the request
    * @param sourceQuery query of the request
+   * @param assigneeId id of the assignee user
+   * @param redirectAttrs redirectAttrs
    * @return
    */
   @RequestMapping(value = PATH_UPDATE, params = {METHOD_ASSIGN}, method = RequestMethod.POST)
-  public String assignDocument(final Document document, final Model model,
-      final RedirectAttributes redirectAttrs, final String sourceUri, final String sourceQuery) {
+  public String assignDocuments(final DocumentListDto documents, final String sourceUri,
+      final String sourceQuery, @RequestParam(name = "assigneeId") final Long assigneeId,
+      final RedirectAttributes redirectAttrs) {
     String redirectUri = getRedirectUri(sourceUri, sourceQuery);
-    LOG.debug("redirectUri: {}", redirectUri);
-    if (document == null || document.getId() == null) {
+    //    LOG.debug("redirectUri: {}", redirectUri);
+    List<Document> selectedDocuments = getSelectedDocuments(documents);
+    if (selectedDocuments.isEmpty()) {
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
       return "redirect:" + redirectUri;
     }
-    if (document.getAssignee() == null || document.getAssignee().getId() == null) {
-      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
-      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
-      return "redirect:" + redirectUri;
+    boolean errorOccurred = false;
+    String assignee = "";
+    for (Document document : selectedDocuments) {
+      LOG.debug("Assign document '{}' to user '{}'", document.getId(), assigneeId);
+      final Document result = documentService.assignToUser(document, assigneeId);
+      if (result == null) {
+        errorOccurred = true;
+      } else {
+        assignee = result.getAssignee().getName();
+      }
     }
-    LOG.debug("Assign document '{}' to user '{}'", document.getId(), document.getAssignee()
-        .getName());
-    final Document result = documentService.assignToUser(document, document.getAssignee());
-    if (result == null) {
+    if (errorOccurred) {
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
     } else {
@@ -280,14 +287,29 @@ public class DocumentController {
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENT_ASSIGNED);
       redirectAttrs.addFlashAttribute(
           eu.tib.profileservice.controller.HomeController.ATTRIBUTE_INFO_MESSAGE_PARAMETER,
-          result.getAssignee().getName());
+          assignee);
     }
     return "redirect:" + redirectUri;
   }
 
+  private List<Document> getSelectedDocuments(final DocumentListDto documents) {
+    List<Document> result = new ArrayList<>();
+    if (documents.getDocuments() != null && documents.getSelected() != null) {
+      for (int i = 0; i < documents.getDocuments().size(); i++) {
+        Document document = documents.getDocuments().get(i);
+        Boolean selected = documents.getSelected().get(i);
+        //        LOG.debug("document {} {}", document.getId(), selected);
+        if (Boolean.TRUE.equals(selected) && document.getId() != null) {
+          result.add(document);
+        }
+      }
+    }
+    return result;
+  }
+
   /**
-   * Accept the given {@link Document}. (set status to {@link Status#ACCEPTED})
-   * @param document document to accept
+   * Accept the given {@link Document}s. (set status to {@link Status#ACCEPTED})
+   * @param documents documents to accept
    * @param model model
    * @param redirectAttrs redirectAttrs
    * @param sourceUri source uri of the request
@@ -295,15 +317,23 @@ public class DocumentController {
    * @return template
    */
   @RequestMapping(value = PATH_UPDATE, params = {METHOD_ACCEPT}, method = RequestMethod.POST)
-  public String acceptDocument(final Document document, final Model model,
+  public String acceptDocuments(final DocumentListDto documents, final Model model,
       final RedirectAttributes redirectAttrs, final String sourceUri, final String sourceQuery) {
     String redirectUri = getRedirectUri(sourceUri, sourceQuery);
-    if (document == null || document.getId() == null) {
+    List<Document> selectedDocuments = getSelectedDocuments(documents);
+    if (selectedDocuments.isEmpty()) {
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
     } else {
-      final Document result = documentService.acceptDocument(document.getId());
-      if (result == null) {
+      boolean errorOccurred = false;
+      for (Document document : selectedDocuments) {
+        LOG.debug("accept doc {}", document.getId());
+        final Document result = documentService.acceptDocument(document.getId());
+        if (result == null) {
+          errorOccurred = true;
+        }
+      }
+      if (errorOccurred) {
         redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
         redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
       } else {
@@ -315,8 +345,8 @@ public class DocumentController {
   }
 
   /**
-   * Reject the given {@link Document}. (set status to {@link Status#REJECTED})
-   * @param document document to reject
+   * Reject the given {@link Document}s. (set status to {@link Status#REJECTED})
+   * @param documents documents to reject
    * @param model model
    * @param redirectAttrs redirectAttrs
    * @param sourceUri source uri of the request
@@ -324,15 +354,23 @@ public class DocumentController {
    * @return template
    */
   @RequestMapping(value = PATH_UPDATE, params = {METHOD_REJECT}, method = RequestMethod.POST)
-  public String rejectDocument(final Document document, final Model model,
+  public String rejectDocument(final DocumentListDto documents, final Model model,
       final RedirectAttributes redirectAttrs, final String sourceUri, final String sourceQuery) {
     String redirectUri = getRedirectUri(sourceUri, sourceQuery);
-    if (document == null || document.getId() == null) {
+    List<Document> selectedDocuments = getSelectedDocuments(documents);
+    if (selectedDocuments.isEmpty()) {
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
     } else {
-      final Document result = documentService.rejectDocument(document.getId());
-      if (result == null) {
+      boolean errorOccurred = false;
+      for (Document document : selectedDocuments) {
+        LOG.debug("reject doc {}", document.getId());
+        final Document result = documentService.rejectDocument(document.getId());
+        if (result == null) {
+          errorOccurred = true;
+        }
+      }
+      if (errorOccurred) {
         redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
         redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
       } else {
@@ -344,9 +382,9 @@ public class DocumentController {
   }
 
   /**
-   * Set the {@link Status} of the given {@link Document} to {@link Status#PENDING}
+   * Set the {@link Status} of the given {@link Document}s to {@link Status#PENDING}
    * and adjust the expiry date.
-   * @param documentId id of the document to update
+   * @param documents documents to update
    * @param expiryDateUtc expiryDateUtc new expiry date
    * @param model model
    * @param redirectAttrs redirectAttrs
@@ -355,23 +393,36 @@ public class DocumentController {
    * @return template
    */
   @RequestMapping(value = PATH_UPDATE, params = {METHOD_PENDING}, method = RequestMethod.POST)
-  public String setDocumentToPending(@RequestParam(name = "id") final Long documentId,
+  public String setDocumentToPending(final DocumentListDto documents,
       @RequestParam(name = "newExpiryDate", required = false) final String expiryDateUtc,
       final Model model, final RedirectAttributes redirectAttrs, final String sourceUri,
       final String sourceQuery) {
     String redirectUri = getRedirectUri(sourceUri, sourceQuery);
-    Document origDocument = documentService.findById(documentId);
-    if (origDocument == null) {
+    List<Document> selectedDocuments = getSelectedDocuments(documents);
+    if (selectedDocuments.isEmpty()) {
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
       redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
     } else {
-      origDocument.setStatus(Status.PENDING);
-      if (expiryDateUtc != null) {
-        origDocument.setExpiryDateUtc(LocalDate.parse(expiryDateUtc).atStartOfDay());
+      boolean errorOccurred = false;
+      for (Document document : selectedDocuments) {
+        Document origDocument = documentService.findById(document.getId());
+        if (origDocument == null) {
+          errorOccurred = true;
+        } else {
+          origDocument.setStatus(Status.PENDING);
+          if (expiryDateUtc != null) {
+            origDocument.setExpiryDateUtc(LocalDate.parse(expiryDateUtc).atStartOfDay());
+          }
+          documentService.saveDocument(origDocument);
+        }
       }
-      documentService.saveDocument(origDocument);
-      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_SUCCESS);
-      redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENT_PENDING);
+      if (errorOccurred) {
+        redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_ERROR);
+        redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_ERROR_UPDATE_DOCUMENT);
+      } else {
+        redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE_TYPE, INFO_MESSAGE_TYPE_SUCCESS);
+        redirectAttrs.addFlashAttribute(ATTRIBUTE_INFO_MESSAGE, CODE_MESSAGE_DOCUMENT_PENDING);
+      }
     }
     return "redirect:" + redirectUri;
   }

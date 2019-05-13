@@ -103,7 +103,8 @@ public class DocumentControllerTest {
 
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_ACCEPT, DocumentController.METHOD_ACCEPT)
-        .param("id", "1")
+        .param("documents[0].id", "1")
+        .param("selected[0]", "true")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "")
         .with(csrf()))
@@ -116,7 +117,14 @@ public class DocumentControllerTest {
     when(documentService.acceptDocument(Mockito.anyLong())).thenReturn(newDocumentDummy());
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_ACCEPT, DocumentController.METHOD_ACCEPT)
-        .param("id", "1")
+        .param("documents[0].id", "1")
+        .param("selected[0]", "true")
+        .param("documents[1].id", "2")
+        .param("selected[1]", "false")
+        .param("documents[2].assignee.id", "1")
+        .param("selected[2]", "true")
+        .param("documents[3].assignee.id", "1")
+        .param("selected[3]", "false")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "")
         .with(csrf()))
@@ -128,6 +136,7 @@ public class DocumentControllerTest {
     reset(documentService);
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_ACCEPT, DocumentController.METHOD_ACCEPT)
+        .param("documents[0].id", "1")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "assignee=1")
         .with(csrf()))
@@ -135,6 +144,29 @@ public class DocumentControllerTest {
             HomeController.INFO_MESSAGE_TYPE_ERROR))
         .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST
             + "?assignee=1"));
+    verify(documentService, times(0)).acceptDocument(Mockito.anyLong());
+
+    reset(documentService);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_ACCEPT, DocumentController.METHOD_ACCEPT)
+        .param("selected[0]", "true")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(0)).acceptDocument(Mockito.anyLong());
+
+    reset(documentService);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_ACCEPT, DocumentController.METHOD_ACCEPT)
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
     verify(documentService, times(0)).acceptDocument(Mockito.anyLong());
   }
 
@@ -144,7 +176,8 @@ public class DocumentControllerTest {
 
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_REJECT, DocumentController.METHOD_REJECT)
-        .param("id", "1")
+        .param("documents[0].id", "1")
+        .param("selected[0]", "true")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "")
         .with(csrf()))
@@ -157,7 +190,14 @@ public class DocumentControllerTest {
     when(documentService.rejectDocument(Mockito.anyLong())).thenReturn(newDocumentDummy());
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_REJECT, DocumentController.METHOD_REJECT)
-        .param("id", "1")
+        .param("documents[0].id", "1")
+        .param("selected[0]", "true")
+        .param("documents[1].id", "2")
+        .param("selected[1]", "false")
+        .param("documents[2].assignee.id", "1")
+        .param("selected[2]", "true")
+        .param("documents[3].assignee.id", "1")
+        .param("selected[3]", "false")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "")
         .with(csrf()))
@@ -165,6 +205,31 @@ public class DocumentControllerTest {
             HomeController.INFO_MESSAGE_TYPE_SUCCESS))
         .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
     verify(documentService, times(1)).rejectDocument(1L);
+
+    reset(documentService);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_REJECT, DocumentController.METHOD_REJECT)
+        .param("documents[0].id", "1")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "assignee=1")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST
+            + "?assignee=1"));
+    verify(documentService, times(0)).acceptDocument(Mockito.anyLong());
+
+    reset(documentService);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_REJECT, DocumentController.METHOD_REJECT)
+        .param("selected[0]", "true")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
+    verify(documentService, times(0)).acceptDocument(Mockito.anyLong());
 
     reset(documentService);
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
@@ -181,63 +246,60 @@ public class DocumentControllerTest {
 
   @Test
   public void testAssignDocument() throws Exception {
-    when(documentService.assignToUser(Mockito.any(Document.class), Mockito.any(
-        User.class))).thenReturn(null);
+    when(documentService.assignToUser(Mockito.any(Document.class), Mockito.anyLong())).thenReturn(
+        null);
 
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_ASSIGN, DocumentController.METHOD_ASSIGN)
-        .param("id", "1")
-        .param("assignee.id", "1")
+        .param("documents[0].id", "1")
+        .param("selected[0]", "true")
+        .param("assigneeId", "1")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "")
         .with(csrf()))
         .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
             HomeController.INFO_MESSAGE_TYPE_ERROR))
         .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
-    verify(documentService, times(1)).assignToUser(Mockito.any(Document.class), Mockito.any(
-        User.class));
+    verify(documentService, times(1)).assignToUser(Mockito.any(Document.class), Mockito.anyLong());
 
     reset(documentService);
     Document document = newDocumentDummy();
     document.setAssignee(new User());
-    when(documentService.assignToUser(Mockito.any(Document.class), Mockito.any(
-        User.class))).thenReturn(document);
+    when(documentService.assignToUser(Mockito.any(Document.class), Mockito.anyLong())).thenReturn(
+        document);
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_ASSIGN, DocumentController.METHOD_ASSIGN)
-        .param("id", "1")
-        .param("assignee.id", "1")
+        .param("documents[0].id", "1")
+        .param("selected[0]", "true")
+        .param("assigneeId", "1")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "")
         .with(csrf()))
         .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
             HomeController.INFO_MESSAGE_TYPE_SUCCESS))
         .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
-    verify(documentService, times(1)).assignToUser(Mockito.any(Document.class), Mockito.any(
-        User.class));
+    verify(documentService, times(1)).assignToUser(Mockito.any(Document.class), Mockito.anyLong());
 
     reset(documentService);
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_ASSIGN, DocumentController.METHOD_ASSIGN)
-        .param("assignee.id", "1")
+        .param("assigneeId", "1")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .with(csrf()))
         .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
             HomeController.INFO_MESSAGE_TYPE_ERROR))
         .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
-    verify(documentService, times(0)).assignToUser(Mockito.any(Document.class), Mockito.any(
-        User.class));
+    verify(documentService, times(0)).assignToUser(Mockito.any(Document.class), Mockito.anyLong());
 
     reset(documentService);
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_ASSIGN, DocumentController.METHOD_ASSIGN)
-        .param("id", "1")
+        .param("documents[0].id", "1")
+        .param("selected[0]", "true")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .with(csrf()))
-        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
-            HomeController.INFO_MESSAGE_TYPE_ERROR))
-        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST));
-    verify(documentService, times(0)).assignToUser(Mockito.any(Document.class), Mockito.any(
-        User.class));
+        .andExpect(status().isBadRequest());
+    verify(documentService, times(0)).assignToUser(Mockito.any(Document.class), Mockito.anyLong());
   }
 
   @Test
@@ -247,7 +309,8 @@ public class DocumentControllerTest {
 
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_PENDING, DocumentController.METHOD_PENDING)
-        .param("id", "1")
+        .param("documents[0].id", "1")
+        .param("selected[0]", "true")
         .param("newExpiryDate", "2019-04-17")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "")
@@ -262,7 +325,8 @@ public class DocumentControllerTest {
     when(documentService.saveDocument(Mockito.any(Document.class))).thenReturn(newDocumentDummy());
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_PENDING, DocumentController.METHOD_PENDING)
-        .param("id", "1")
+        .param("documents[0].id", "1")
+        .param("selected[0]", "true")
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "")
         .with(csrf()))
@@ -275,7 +339,20 @@ public class DocumentControllerTest {
     when(documentService.findById(Mockito.anyLong())).thenReturn(null);
     mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
         .param(DocumentController.METHOD_PENDING, DocumentController.METHOD_PENDING)
-        .param("id", "1")
+        .param("documents[0].id", "1")
+        .param("selected[0]", "true")
+        .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
+        .param("sourceQuery", "assignee=1")
+        .with(csrf()))
+        .andExpect(flash().attribute(HomeController.ATTRIBUTE_INFO_MESSAGE_TYPE,
+            HomeController.INFO_MESSAGE_TYPE_ERROR))
+        .andExpect(redirectedUrl(DocumentController.BASE_PATH + DocumentController.PATH_LIST
+            + "?assignee=1"));
+    verify(documentService, times(0)).saveDocument(Mockito.any(Document.class));
+
+    reset(documentService);
+    mvc.perform(post(DocumentController.BASE_PATH + DocumentController.PATH_UPDATE)
+        .param(DocumentController.METHOD_PENDING, DocumentController.METHOD_PENDING)
         .param("sourceUri", DocumentController.BASE_PATH + DocumentController.PATH_LIST)
         .param("sourceQuery", "assignee=1")
         .with(csrf()))

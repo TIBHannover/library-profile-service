@@ -3,11 +3,67 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layout}">
 <head>
-<script type="text/javascript">
+	<script type="text/javascript">
+	function setDocumentRowActive(documentId, active) {
+		var documentRow = document.getElementById("documentRow_" + documentId);
+		var selectedEntriesElement = document.getElementById("selectedEntriesNumber");
+		var selectedEntries = parseInt(selectedEntriesElement.textContent);
+		if (active) {
+			documentRow.className = "active";
+			selectedEntries++;
+		} else {
+			documentRow.className = "";
+			selectedEntries--;
+		}
+		selectedEntriesElement.textContent = selectedEntries;
+		var buttons = ["acceptSelectedButton", "rejectSelectedButton", "setSelectedToPendingButton", "assignSelectedButton"];
+		for (var i = 0; i < buttons.length; i++) {
+			if (selectedEntries == 0) {
+				document.getElementById(buttons[i]).setAttribute("disabled", "disabled");
+			} else {
+				document.getElementById(buttons[i]).removeAttribute("disabled");
+			}
+		}
+	}
+	function resetRowTransmission() {
+ 		var form = document.getElementById("updateDocumentForm");
+		var elements = form.getElementsByTagName("tr");
+		for (var i = 0; i < elements.length; i++) {
+			var rowSelected = document.getElementById("rowSelected_" + elements[i].getAttribute('id'));
+			rowSelected.setAttribute("value", "false");
+		}		
+	}
+	function activateSingleRowTransmission(rowId) {
+		resetRowTransmission();
+		var rowSelectedInput = document.getElementById("rowSelected_" + rowId);
+		rowSelectedInput.setAttribute("value", "true");
+		return true;
+	}
+	function activateSelectedRowsTransmission() {
+		resetRowTransmission();
+ 		var form = document.getElementById("updateDocumentForm");
+		var elements = form.getElementsByTagName("tr");
+		for (var i = 0; i < elements.length; i++) {
+			var e = elements[i];
+			if (e.className == "active") {
+				var rowSelected = document.getElementById("rowSelected_" + e.getAttribute('id'));
+				rowSelected.setAttribute("value", "true");
+			}
+		}		
+		return true;
+	}
+	</script>
 
-    
-</script>   
 	<link media="print" th:href="@{/css/print.css}" rel="stylesheet" type="text/css" />
+	<style>
+	body { padding-bottom: 70px; }
+	#selectDocumentCheckbox:checked + .glyphicon + .glyphicon-unchecked {
+		display: none;
+	}
+	#selectDocumentCheckbox:not(:checked) + .glyphicon-check {
+		display: none;
+	}
+	</style>
 </head>
 <body>
 	<div layout:fragment="page_content">
@@ -58,214 +114,240 @@
 				<a href="javascript:window.print()" th:title="#{documents.printpage(${page.numberOfElements})}"><span class="glyphicon glyphicon-print"></span></a>
 			</div>
 		</div>
-		<table class="table">
-			<tbody>
-				<tr th:each="document,docStat : ${documents}">
-					<td>
-						<div class="card">
-							<div class="card-header">
-								<h3 class="card-title">
-									<span class="card-title" th:text="${document.metadata.title}"></span>									
-									<br/><small th:if="${document.metadata.remainderOfTitle} != null" class="card-subtitle mb-2" th:text="${document.metadata.remainderOfTitle}">remainder of title</small>
-								</h3>
-								<h5 class="card-subtitle mb-2">
-									<span th:text="${#strings.listJoin(document.metadata.authors, '; ')}"></span>
-									<span th:with="publicationDate=${document.metadata.dateOfPublication == null ? '' : (', ' + document.metadata.dateOfPublication)},
-										publicationPlace=${document.metadata.placeOfPublication == null ? '' : (', ' + document.metadata.placeOfPublication)},
-										publicationInfo='('+ ${document.metadata.publisher} + ${publicationPlace} + ${publicationDate} + ')'
-									" th:text="${publicationInfo}"></span>
-								</h5>
-								<div th:unless="${#strings.isEmpty(document.metadata.edition)}">
-									<span class="text-muted" th:text="#{edition} + ':'" ></span>
-									<span th:text="${document.metadata.edition}" ></span>
-								</div>
-								<div th:unless="${#strings.isEmpty(document.metadata.series)}">
-									<span class="text-muted" th:text="#{series} + ':'" ></span>
-									<span th:text="${document.metadata.series}" ></span>
-								</div>
-								<div th:unless="${#strings.isEmpty(document.metadata.physicalDescription)}">
-									<span class="text-muted" th:text="#{physical.description} + ':'" ></span>
-									<span th:text="${document.metadata.physicalDescription}" ></span>
-								</div>
-								<div>
-									<span class="text-muted" th:text="#{isbn} + ':'" ></span>
-									<span th:text="${#strings.listJoin(document.metadata.isbns, ', ')}" ></span>
-								</div>
-								<div th:unless="${#strings.isEmpty(document.metadata.termsOfAvailability)}">
-									<span class="text-muted" th:text="#{termsofavailability} + ':'" ></span>
-									<span th:text="${document.metadata.termsOfAvailability}" ></span>
-								</div>
-								<div>
-									<span class="text-muted" th:text="#{inventory.comparison} + ':'" ></span>
-									<span th:if="${document.metadata.containedInInventory} == null" th:text="#{inventory.comparison.unknown}" ></span>
-									<span th:if="${document.metadata.containedInInventory}" >
-										<span th:if="${#strings.isEmpty(document.metadata.inventoryUri)}" class="text-danger" th:text="#{inventory.comparison.contained}"></span>
-										<a th:unless="${#strings.isEmpty(document.metadata.inventoryUri)}" th:href="${document.metadata.inventoryUri}" class="text-danger" th:text="#{inventory.comparison.contained}"></a>
-										<span th:unless="${#strings.isEmpty(document.metadata.inventoryAccessionNumber)}" th:text="' (' + ${document.metadata.inventoryAccessionNumber} + ')'"></span>
-									</span>
-									<span th:if="${document.metadata.containedInInventory} == false" th:text="#{inventory.comparison.notcontained}" ></span>
-								</div>
-							</div>
-							<div class="row card-body">
-								<div class="col-md-1">
-									<p>
-										<a class="btn btn-secondary" data-toggle="collapse" th:href="${'#collapseDocumentInfo' + docStat.index}" role="button" aria-expanded="false" aria-controls="collapseDocumentInfo">
-											<span class="glyphicon glyphicon-collapse-down"></span>
-										</a>
-									</p>
-								</div>
-								<div class="col-md-11">
-	  								<!-- <div class="collapse in" th:id="${'collapseDocumentInfo' + docStat.index}"> -->
-	  								<div class="collapse" th:id="${'collapseDocumentInfo' + docStat.index}">
-										<p>
-											<span class="text-muted" th:text="#{product.form} + ':'" ></span>
-											<span th:text="${document.metadata.formOfProduct}" ></span>
-										</p>
-										<p>
-											<span class="text-muted" th:text="#{categories} + ':'" ></span>
-											<span th:text="${#strings.listJoin(document.metadata.deweyDecimalClassifications, ', ')}" ></span>
-										</p>
-										<p>
-											<span class="text-muted" th:text="#{keywords.form} + ':'" ></span>
-											<span th:text="${#strings.listJoin(document.metadata.formKeywords, ', ')}" ></span>
-										</p>
-										<p>
-											<span class="text-muted" th:text="#{status} + ':'" ></span>
-											<span th:text="#{document.status.+${document.status}}" ></span>
-										</p>
-										<p>
-											<span class="text-muted" th:text="#{assignee} + ':'" ></span>
-											<span th:text="${document.assignee?.name} ?: #{noassignee}" ></span>
-										</p>
-										<p>
-											<span class="text-muted" th:text="#{document.creation.date} + ':'" ></span>
-											<span th:text="${#temporals.format(document.creationDateUtc, 'yyyy-MM-dd HH:mm:ss')}" ></span>
-										</p>
-										<p>
-											<span class="text-muted" th:text="#{document.expiry.date} + ':'" ></span>
-											<span th:text="${#temporals.format(document.expiryDateUtc, 'yyyy-MM-dd HH:mm:ss')}" ></span>
-										</p>
-<!-- 										<p>
-											<span class="text-muted" th:text="'source:'" ></span>
-											<span th:text="${document.metadata.source}" ></span>
-										</p>-->
-<!-- 										<p>
-											<span class="text-muted">bibliographyNumbers</span>
-											<span th:text="${#strings.listJoin(document.metadata.bibliographyNumbers, ', ')}" ></span>
-										</p>-->
-									</div>
-								</div>
-							</div>
-							<div class="card-footer">
-								<div class="col-lg-12">
-									<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocument}" method="post">
-										<input class="form-control" type="hidden" th:name="sourceUri" th:value="${#request.servletPath}" />
-										<input class="form-control" type="hidden" th:name="sourceQuery" th:value="${#request.queryString}" />
-										<input class="form-control" type="hidden" name="id" th:value="${document.id}" />
-
-										<div class="modal fade" th:id="${'assignToUserModal' + document.id}" tabindex="-1" role="dialog" aria-labelledby="assignToUserModalTitle">
-											<div class="modal-dialog" role="document">
-												<div class="modal-content">
-													<div class="modal-header">
-														<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-														<h4 class="modal-title" id="assignToUserModalTitle" th:text="${document.metadata.title}">title</h4>
-													</div>
-													<div class="modal-body">
-														<p><span th:text="#{assignto}"></span></p>
-														<select class="form-control" required="required" name="assignee" th:errorclass="fieldError">
-															<option th:each="u : ${users}" th:value="${u.id}" th:text="${u.name}" th:selected="${document.assignee == u}" />
-														</select>
-													</div>
-													<div class="modal-footer">
-														<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}">Close</button>
-														<button class="btn btn-primary" th:text="#{assign}" type="submit" th:name="${methodAssign}">Save changes</button>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="modal fade" th:id="${'setToPendingModal' + document.id}" tabindex="-1" role="dialog" aria-labelledby="setToPendingModalTitle">
-											<div class="modal-dialog" role="document">
-												<div class="modal-content">
-													<div class="modal-header">
-														<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-														<h4 class="modal-title" id="setToPendingModalTitle" th:text="${document.metadata.title}">title</h4>
-													</div>
-													<div class="modal-body">
-														<div class="form-row">
-														<div class="col-md-5 mb-3">
-															<label th:text="#{document.expiry.date.current}">date</label>
-															<input type="date" th:value="${#temporals.format(document.expiryDateUtc, 'yyyy-MM-dd')}" required="required" disabled="disabled" />
-														</div>
-														</div>
-														<div class="row">
-														<div class="col-md-5 mb-3">
-															<label th:text="#{document.expiry.date.new}">date</label>
-															<input type="date" name="newExpiryDate" th:value="${#temporals.format(document.expiryDateUtc.plusMonths(2), 'yyyy-MM-dd')}" required="required" />
-															</div>
-														</div>
-													</div>
-													<div class="modal-footer">
-														<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}">Close</button>
-														<button class="btn btn-primary" th:text="#{pending}" type="submit" th:name="${methodPending}">Save changes</button>
-													</div>
-												</div>
-											</div>
-										</div>
-
-										<button class="btn btn-sm btn-success" type="submit" th:name="${methodAccept}">
-												<span class="glyphicon glyphicon-ok"></span>
-												<span th:text="#{accept}">accept</span>
-										</button>
-										<button class="btn btn-sm btn-danger" type="submit" th:name="${methodReject}">
-												<span class="glyphicon glyphicon-remove"></span>
-												<span th:text="#{reject}">reject</span>
-										</button>
-										<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" th:data-target="${'#setToPendingModal' + document.id}">
-												<span class="glyphicon glyphicon-time"></span>
-												<span th:text="#{pending}">set to pending</span>
-										</button>
-										<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" th:data-target="${'#assignToUserModal' + document.id}">
-											<span class="glyphicon glyphicon-user"></span>
-											<span th:text="#{assign}">assign</span>
-										</button>
-									</form>
+		<form action="#" th:action="@{${actionUpdate}}" th:object="${updateDocuments}" method="post" id="updateDocumentForm">
+			<input class="form-control" type="hidden" th:name="sourceUri" th:value="${#request.servletPath}" />
+			<input class="form-control" type="hidden" th:name="sourceQuery" th:value="${#request.queryString}" />
+			<div class="modal fade" id="assignToUserModal" tabindex="-1" role="dialog" aria-labelledby="assignToUserModalTitle">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="assignToUserModalTitle" th:text="#{assignto}">title</h4>
+						</div>
+						<div class="modal-body">
+							<select class="form-control" required="required" name="assigneeId" >
+								<option th:each="u : ${users}" th:value="${u.id}" th:text="${u.name}" />
+							</select>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}">Close</button>
+							<button class="btn btn-primary" th:text="#{assign}" type="submit" th:name="${methodAssign}" >Save changes</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="setToPendingModal" tabindex="-1" role="dialog" aria-labelledby="setToPendingModalTitle">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="setToPendingModalTitle" th:text="#{pending}">title</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+							<div class="col-md-5 mb-3">
+								<label th:text="#{document.expiry.date.new}">date</label>
+								<input type="date" name="newExpiryDate" th:value="${#temporals.format(#temporals.createToday().plusMonths(6), 'yyyy-MM-dd')}" required="required" />
 								</div>
 							</div>
 						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		
-		<div class="text-center" id="pagination" th:with="url=${#request.servletPath},
-			searchQuery=${T(eu.tib.profileservice.controller.DocumentController).buildSearchQuery(search,page.pageable)},
-			searchQuery=${(searchQuery==null || searchQuery.length()==0)?'':'&' + searchQuery},
-			maxpages=7,
-			minpagenr=${T(Math).max(0, T(Math).min(page.number - T(Math).floor(maxpages / 2).intValue(), (page.totalPages - maxpages).intValue()) )},
-			maxpagenr=${T(Math).max(0, T(Math).min((minpagenr + maxpages - 1).intValue(),page.totalPages-1))}">
-			<ul class="pagination pagination-centered justify-content-center">
-				<li th:class="${page.isFirst()}? 'disabled' : ''">
-					<span th:if="${page.isFirst()}">&laquo;</span>
-					<a th:unless="${page.isFirst()}" th:href="@{__${url}__?page=0__${searchQuery}__}">&laquo;</a>
-				</li>
-				<li th:class="${page.hasPrevious()}? '' : 'disabled'">
-					<span th:unless="${page.hasPrevious()}">&lsaquo;</span>
-					<a th:if="${page.hasPrevious()}" th:href="@{__${url}__?page=__${page.number-1}____${searchQuery}__}">&lsaquo;</a>
-				</li>
-				<li th:each="pagenr : ${#numbers.sequence(minpagenr, maxpagenr)}" th:with="isCurrent=${pagenr == page.number}" th:class="${isCurrent}? 'active' : ''">
-					<span th:if="${isCurrent}" th:text="${pagenr+1}"></span>
-					<a th:unless="${isCurrent}" th:href="@{__${url}__?page=__${pagenr}____${searchQuery}__}" th:text="${pagenr+1}"></a>
-				</li>
-				<li th:class="${page.hasNext()}? '' : 'disabled'">
-					<span th:unless="${page.hasNext()}">&rsaquo;</span>
-					<a th:if="${page.hasNext()}" th:href="@{__${url}__?page=__${page.number+1}____${searchQuery}__}">&rsaquo;</a>
-				</li>
-				<li th:class="${page.isLast()}? 'disabled' : ''">
-					<span th:if="${page.isLast()}">&raquo;</span>
-					<a th:unless="${page.isLast()}" th:href="@{__${url}__?page=__${page.totalPages-1}____${searchQuery}__}">&raquo;</a>
-				</li>
-			</ul>
-		</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}">Close</button>
+							<button class="btn btn-primary" th:text="#{pending}" type="submit" th:name="${methodPending}">Save changes</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<table class="table">
+				<tbody>
+					<tr th:each="document,docStat : ${documents}" th:with="rowId=${'documentRow_' + document.id}" th:id="${rowId}">
+						<td class="col-md-1 text-center">
+							<div class="btn-group" data-toggle="buttons">
+								<label class="btn btn-lg">
+									<input type="checkbox" id="selectDocumentCheckbox" th:onchange="'setDocumentRowActive(' + ${document.id} + ', this.checked);'">
+									<span class="glyphicon glyphicon-check"></span>
+									<span class="glyphicon glyphicon-unchecked"></span>
+								</label>
+							</div>
+						</td>
+						<td>
+							<div class="card">
+								<div class="card-header">
+									<h3 class="card-title">
+										<span class="card-title" th:text="${document.metadata.title}"></span>									
+										<br/><small th:if="${document.metadata.remainderOfTitle} != null" class="card-subtitle mb-2" th:text="${document.metadata.remainderOfTitle}">remainder of title</small>
+									</h3>
+									<h5 class="card-subtitle mb-2">
+										<span th:text="${#strings.listJoin(document.metadata.authors, '; ')}"></span>
+										<span th:with="publicationDate=${document.metadata.dateOfPublication == null ? '' : (', ' + document.metadata.dateOfPublication)},
+											publicationPlace=${document.metadata.placeOfPublication == null ? '' : (', ' + document.metadata.placeOfPublication)},
+											publicationInfo='('+ ${document.metadata.publisher} + ${publicationPlace} + ${publicationDate} + ')'
+										" th:text="${publicationInfo}"></span>
+									</h5>
+									<div th:unless="${#strings.isEmpty(document.metadata.edition)}">
+										<span class="text-muted" th:text="#{edition} + ':'" ></span>
+										<span th:text="${document.metadata.edition}" ></span>
+									</div>
+									<div th:unless="${#strings.isEmpty(document.metadata.series)}">
+										<span class="text-muted" th:text="#{series} + ':'" ></span>
+										<span th:text="${document.metadata.series}" ></span>
+									</div>
+									<div th:unless="${#strings.isEmpty(document.metadata.physicalDescription)}">
+										<span class="text-muted" th:text="#{physical.description} + ':'" ></span>
+										<span th:text="${document.metadata.physicalDescription}" ></span>
+									</div>
+									<div>
+										<span class="text-muted" th:text="#{isbn} + ':'" ></span>
+										<span th:text="${#strings.listJoin(document.metadata.isbns, ', ')}" ></span>
+									</div>
+									<div th:unless="${#strings.isEmpty(document.metadata.termsOfAvailability)}">
+										<span class="text-muted" th:text="#{termsofavailability} + ':'" ></span>
+										<span th:text="${document.metadata.termsOfAvailability}" ></span>
+									</div>
+									<div>
+										<span class="text-muted" th:text="#{inventory.comparison} + ':'" ></span>
+										<span th:if="${document.metadata.containedInInventory} == null" th:text="#{inventory.comparison.unknown}" ></span>
+										<span th:if="${document.metadata.containedInInventory}" >
+											<span th:if="${#strings.isEmpty(document.metadata.inventoryUri)}" class="text-danger" th:text="#{inventory.comparison.contained}"></span>
+											<a th:unless="${#strings.isEmpty(document.metadata.inventoryUri)}" th:href="${document.metadata.inventoryUri}" class="text-danger" th:text="#{inventory.comparison.contained}"></a>
+											<span th:unless="${#strings.isEmpty(document.metadata.inventoryAccessionNumber)}" th:text="' (' + ${document.metadata.inventoryAccessionNumber} + ')'"></span>
+										</span>
+										<span th:if="${document.metadata.containedInInventory} == false" th:text="#{inventory.comparison.notcontained}" ></span>
+									</div>
+								</div>
+								<div class="row card-body">
+									<div class="col-md-1">
+										<p>
+											<a class="btn btn-secondary" data-toggle="collapse" th:href="${'#collapseDocumentInfo' + docStat.index}" role="button" aria-expanded="false" aria-controls="collapseDocumentInfo">
+												<span class="glyphicon glyphicon-collapse-down"></span>
+											</a>
+										</p>
+									</div>
+									<div class="col-md-11">
+		  								<!-- <div class="collapse in" th:id="${'collapseDocumentInfo' + docStat.index}"> -->
+		  								<div class="collapse" th:id="${'collapseDocumentInfo' + docStat.index}">
+											<p>
+												<span class="text-muted" th:text="#{product.form} + ':'" ></span>
+												<span th:text="${document.metadata.formOfProduct}" ></span>
+											</p>
+											<p>
+												<span class="text-muted" th:text="#{categories} + ':'" ></span>
+												<span th:text="${#strings.listJoin(document.metadata.deweyDecimalClassifications, ', ')}" ></span>
+											</p>
+											<p>
+												<span class="text-muted" th:text="#{keywords.form} + ':'" ></span>
+												<span th:text="${#strings.listJoin(document.metadata.formKeywords, ', ')}" ></span>
+											</p>
+											<p>
+												<span class="text-muted" th:text="#{status} + ':'" ></span>
+												<span th:text="#{document.status.+${document.status}}" ></span>
+											</p>
+											<p>
+												<span class="text-muted" th:text="#{assignee} + ':'" ></span>
+												<span th:text="${document.assignee?.name} ?: #{noassignee}" ></span>
+											</p>
+											<p>
+												<span class="text-muted" th:text="#{document.creation.date} + ':'" ></span>
+												<span th:text="${#temporals.format(document.creationDateUtc, 'yyyy-MM-dd HH:mm:ss')}" ></span>
+											</p>
+											<p>
+												<span class="text-muted" th:text="#{document.expiry.date} + ':'" ></span>
+												<span th:text="${#temporals.format(document.expiryDateUtc, 'yyyy-MM-dd HH:mm:ss')}" ></span>
+											</p>
+	<!-- 										<p>
+												<span class="text-muted" th:text="'source:'" ></span>
+												<span th:text="${document.metadata.source}" ></span>
+											</p>-->
+	<!-- 										<p>
+												<span class="text-muted">bibliographyNumbers</span>
+												<span th:text="${#strings.listJoin(document.metadata.bibliographyNumbers, ', ')}" ></span>
+											</p>-->
+										</div>
+									</div>
+								</div>
+								<div class="card-footer">
+									<div class="col-lg-12">
+											<input class="form-control" type="hidden" th:name="|selected[${docStat.index}]|" th:id="${'rowSelected_' + rowId}" />
+											<input class="form-control" type="hidden" th:field="*{documents[__${docStat.index}__].id}" />
+	
+											<button class="btn btn-sm btn-success" type="submit" th:name="${methodAccept}" th:data-rowId="${rowId}" th:onclick="activateSingleRowTransmission(this.getAttribute('data-rowId'));" >
+													<span class="glyphicon glyphicon-ok"></span>
+													<span th:text="#{accept}">accept</span>
+											</button>
+											<button class="btn btn-sm btn-danger" type="submit" th:name="${methodReject}" th:data-rowId="${rowId}" th:onclick="activateSingleRowTransmission(this.getAttribute('data-rowId'));" >
+													<span class="glyphicon glyphicon-remove"></span>
+													<span th:text="#{reject}">reject</span>
+											</button>
+											<button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#setToPendingModal" th:data-rowId="${rowId}" th:onclick="activateSingleRowTransmission(this.getAttribute('data-rowId'));" >
+													<span class="glyphicon glyphicon-time"></span>
+													<span th:text="#{pending}">set to pending</span>
+											</button>
+	 										<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#assignToUserModal" th:data-rowId="${rowId}" th:onclick="activateSingleRowTransmission(this.getAttribute('data-rowId'));" >
+												<span class="glyphicon glyphicon-user"></span>
+												<span th:text="#{assign}">assign</span>
+											</button>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<div class="text-center" id="pagination" th:with="url=${#request.servletPath},
+				searchQuery=${T(eu.tib.profileservice.controller.DocumentController).buildSearchQuery(search,page.pageable)},
+				searchQuery=${(searchQuery==null || searchQuery.length()==0)?'':'&' + searchQuery},
+				maxpages=7,
+				minpagenr=${T(Math).max(0, T(Math).min(page.number - T(Math).floor(maxpages / 2).intValue(), (page.totalPages - maxpages).intValue()) )},
+				maxpagenr=${T(Math).max(0, T(Math).min((minpagenr + maxpages - 1).intValue(),page.totalPages-1))}">
+				<ul class="pagination pagination-centered justify-content-center">
+					<li th:class="${page.isFirst()}? 'disabled' : ''">
+						<span th:if="${page.isFirst()}">&laquo;</span>
+						<a th:unless="${page.isFirst()}" th:href="@{__${url}__?page=0__${searchQuery}__}">&laquo;</a>
+					</li>
+					<li th:class="${page.hasPrevious()}? '' : 'disabled'">
+						<span th:unless="${page.hasPrevious()}">&lsaquo;</span>
+						<a th:if="${page.hasPrevious()}" th:href="@{__${url}__?page=__${page.number-1}____${searchQuery}__}">&lsaquo;</a>
+					</li>
+					<li th:each="pagenr : ${#numbers.sequence(minpagenr, maxpagenr)}" th:with="isCurrent=${pagenr == page.number}" th:class="${isCurrent}? 'active' : ''">
+						<span th:if="${isCurrent}" th:text="${pagenr+1}"></span>
+						<a th:unless="${isCurrent}" th:href="@{__${url}__?page=__${pagenr}____${searchQuery}__}" th:text="${pagenr+1}"></a>
+					</li>
+					<li th:class="${page.hasNext()}? '' : 'disabled'">
+						<span th:unless="${page.hasNext()}">&rsaquo;</span>
+						<a th:if="${page.hasNext()}" th:href="@{__${url}__?page=__${page.number+1}____${searchQuery}__}">&rsaquo;</a>
+					</li>
+					<li th:class="${page.isLast()}? 'disabled' : ''">
+						<span th:if="${page.isLast()}">&raquo;</span>
+						<a th:unless="${page.isLast()}" th:href="@{__${url}__?page=__${page.totalPages-1}____${searchQuery}__}">&raquo;</a>
+					</li>
+				</ul>
+			</div>
+	
+	 		<nav class="navbar navbar-default navbar-fixed-bottom">
+				<div class="container">
+					<span class="navbar-text"><span id="selectedEntriesNumber">0</span> <span th:text="#{documents.nrselected(${page?.pageable?.isPaged()? page?.pageable?.pageSize : page.totalElements})}"> of 20 entries selected</span></span>
+					<p class="navbar-text" th:text="#{documents.selected.entries}">Ausgewählte Titel...</p>
+					<button id="acceptSelectedButton" class="btn btn-success navbar-btn" type="submit" th:name="${methodAccept}" th:onclick="activateSelectedRowsTransmission();" disabled="disabled">
+						<span class="glyphicon glyphicon-ok"></span>
+						<span th:text="#{accept}">accept</span>
+					</button>
+					<button id="rejectSelectedButton" class="btn btn-danger navbar-btn" type="submit" th:name="${methodReject}" th:onclick="activateSelectedRowsTransmission();" disabled="disabled" >
+						<span class="glyphicon glyphicon-remove"></span>
+						<span th:text="#{reject}">reject</span>
+					</button>
+					<button id="setSelectedToPendingButton" type="button" class="btn btn-warning navbar-btn" data-toggle="modal" data-target="#setToPendingModal" th:onclick="activateSelectedRowsTransmission();" disabled="disabled" >
+						<span class="glyphicon glyphicon-time"></span>
+						<span th:text="#{pending}">set to pending</span>
+					</button>
+						<button id="assignSelectedButton" type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#assignToUserModal" th:onclick="activateSelectedRowsTransmission();" disabled="disabled" >
+						<span class="glyphicon glyphicon-user"></span>
+						<span th:text="#{assign}">assign</span>
+					</button>
+				</div>
+			</nav>
+		</form>
 	</div>
 </body>
 </html>
