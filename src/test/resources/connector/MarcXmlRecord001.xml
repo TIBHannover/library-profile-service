@@ -54,7 +54,7 @@
 		<subfield code="2">23sdnb</subfield>
 	</datafield>
 	<datafield tag="100" ind1="1" ind2=" ">
-		<subfield code="a">Test1, Author</subfield>
+		<subfield code="a">Test1, Author; Testtest, Author</subfield>
 		<subfield code="4">aut</subfield>
 	</datafield>
 	<datafield tag="245" ind1="0" ind2="0">

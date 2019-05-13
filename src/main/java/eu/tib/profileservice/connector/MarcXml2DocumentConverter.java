@@ -222,12 +222,22 @@ public class MarcXml2DocumentConverter extends Converter {
     Set<String> authors = new HashSet<String>();
     String fieldMainEntryPersonalName = getDataIfExists(record, "100", 'a');
     if (fieldMainEntryPersonalName != null) {
-      authors.add(fieldMainEntryPersonalName);
+      addAuthors(authors, fieldMainEntryPersonalName);
     }
 
-    authors.addAll(getAllData(record, "700", 'a', "aut"));
-
+    getAllData(record, "700", 'a', "aut").forEach(a -> addAuthors(authors, a));
     return new ArrayList<String>(authors);
+  }
+
+  /**
+   * Add all authors from the given string. Authors may be separated by semicolon here.
+   * @param authors add authors here
+   * @param authorsString parse authors from here
+   */
+  private void addAuthors(final Set<String> authors, final String authorsString) {
+    for (String author : authorsString.split(";")) {
+      authors.add(author.trim());
+    }
   }
 
   private String getSeries(final Record record) {

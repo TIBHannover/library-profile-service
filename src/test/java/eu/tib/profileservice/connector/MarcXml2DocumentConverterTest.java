@@ -44,8 +44,9 @@ public class MarcXml2DocumentConverterTest {
       assertEquals("1. Auflage 2019", metadata.getEdition());
       assertEquals("EUR 34.99 (DE), EUR 35.83 (AT)", metadata.getTermsOfAvailability());
       assertThat(metadata.getAuthors()).isNotNull();
-      assertThat(metadata.getAuthors().size()).isEqualTo(2);
-      assertThat(metadata.getAuthors()).contains("Test2, Author", "Test1, Author");
+      assertThat(metadata.getAuthors().size()).isEqualTo(3);
+      assertThat(metadata.getAuthors()).contains("Test2, Author", "Test1, Author",
+          "Testtest, Author");
       assertEquals("160 Seiten in 1 Teil, 23.5 cm x 15.5 cm, Enthält: 1 Online-Ressource", metadata
           .getPhysicalDescription());
       assertEquals("Testseries, 3", metadata.getSeries());
