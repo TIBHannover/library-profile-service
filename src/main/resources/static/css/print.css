@@ -23,22 +23,14 @@
 	a {
 		page-break-inside: avoid
 	}
+	a[href]:after {
+		content: none !important;
+	}
 	h1, h2, h3, h4, h5, h6 {
 		page-break-after: avoid;
 		page-break-inside: avoid
 	}
 	table, pre {
-		page-break-inside: avoid
-	}
-
-	a:link, a:visited, a {
-		background: transparent;
-		color: #520;
-		font-weight: bold;
-		text-decoration: underline;
-		text-align: left;
-	}
-	a {
 		page-break-inside: avoid
 	}
 
