@@ -175,7 +175,6 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     documentService.saveDocument(existingDocument);
   }
 
-
   private void processInventoryCheck(final DocumentMetadata documentMetadata)
       throws ConnectorException {
     if (inventoryConnector != null) {
