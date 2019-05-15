@@ -71,7 +71,7 @@
         </createTable>
     </changeSet>
     <changeSet author="hoffmann (generated)" id="1557907987253-2">
-        <addPrimaryKey columnNames="document_metadata_id, uri" tableName="document_metadata_inventory_uris"/>
+        <addUniqueConstraint columnNames="document_metadata_id, uri" constraintName="UKjymq1fxo0dkx1ogsklt1uu6xx" tableName="document_metadata_inventory_uris" />
     </changeSet>
     <changeSet author="hoffmann (generated)" id="1557907987253-3">
         <addForeignKeyConstraint baseColumnNames="document_metadata_id" baseTableName="document_metadata_inventory_uris" constraintName="FKlei9fctgdbekll0kx09bnx8kw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="document_metadata"/>
