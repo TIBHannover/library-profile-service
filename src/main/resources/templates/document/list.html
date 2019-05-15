@@ -16,13 +16,10 @@
 			selectedEntries--;
 		}
 		selectedEntriesElement.textContent = selectedEntries;
-		var buttons = ["acceptSelectedButton", "rejectSelectedButton", "setSelectedToPendingButton", "assignSelectedButton"];
-		for (var i = 0; i < buttons.length; i++) {
-			if (selectedEntries == 0) {
-				document.getElementById(buttons[i]).setAttribute("disabled", "disabled");
-			} else {
-				document.getElementById(buttons[i]).removeAttribute("disabled");
-			}
+		if (selectedEntries == 0) {
+			document.getElementById("multiSelectionActions").setAttribute("hidden", "true");
+		} else {
+			document.getElementById("multiSelectionActions").removeAttribute("hidden");
 		}
 	}
 	function resetRowTransmission() {
@@ -210,7 +207,7 @@
 										<span th:if="${document.metadata.containedInInventory} == null" th:text="#{inventory.comparison.unknown}" ></span>
 										<span th:if="${document.metadata.containedInInventory}" >
 											<span th:if="${#strings.isEmpty(document.metadata.inventoryUri)}" class="text-danger" th:text="#{inventory.comparison.contained}"></span>
-											<a th:unless="${#strings.isEmpty(document.metadata.inventoryUri)}" th:href="${document.metadata.inventoryUri}" class="text-danger" th:text="#{inventory.comparison.contained}"></a>
+											<a th:unless="${#strings.isEmpty(document.metadata.inventoryUri)}" th:href="${document.metadata.inventoryUri}" th:text="#{inventory.comparison.contained}"></a>
 											<span th:unless="${#strings.isEmpty(document.metadata.inventoryAccessionNumber)}" th:text="' (' + ${document.metadata.inventoryAccessionNumber} + ')'"></span>
 										</span>
 										<span th:if="${document.metadata.containedInInventory} == false" th:text="#{inventory.comparison.notcontained}" ></span>
@@ -325,23 +322,23 @@
 				</ul>
 			</div>
 	
-	 		<nav class="navbar navbar-default navbar-fixed-bottom">
+	 		<nav class="navbar navbar-default navbar-fixed-bottom" id="multiSelectionActions" hidden="true">
 				<div class="container">
 					<span class="navbar-text"><span id="selectedEntriesNumber">0</span> <span th:text="#{documents.nrselected(${page?.pageable?.isPaged()? page?.pageable?.pageSize : page.totalElements})}"> of 20 entries selected</span></span>
 					<p class="navbar-text" th:text="#{documents.selected.entries}">Ausgewählte Titel...</p>
-					<button id="acceptSelectedButton" class="btn btn-success navbar-btn" type="submit" th:name="${methodAccept}" th:onclick="activateSelectedRowsTransmission();" disabled="disabled">
+					<button id="acceptSelectedButton" class="btn btn-success navbar-btn" type="submit" th:name="${methodAccept}" th:onclick="activateSelectedRowsTransmission();">
 						<span class="glyphicon glyphicon-ok"></span>
 						<span th:text="#{accept}">accept</span>
 					</button>
-					<button id="rejectSelectedButton" class="btn btn-danger navbar-btn" type="submit" th:name="${methodReject}" th:onclick="activateSelectedRowsTransmission();" disabled="disabled" >
+					<button id="rejectSelectedButton" class="btn btn-danger navbar-btn" type="submit" th:name="${methodReject}" th:onclick="activateSelectedRowsTransmission();" >
 						<span class="glyphicon glyphicon-remove"></span>
 						<span th:text="#{reject}">reject</span>
 					</button>
-					<button id="setSelectedToPendingButton" type="button" class="btn btn-warning navbar-btn" data-toggle="modal" data-target="#setToPendingModal" th:onclick="activateSelectedRowsTransmission();" disabled="disabled" >
+					<button id="setSelectedToPendingButton" type="button" class="btn btn-warning navbar-btn" data-toggle="modal" data-target="#setToPendingModal" th:onclick="activateSelectedRowsTransmission();" >
 						<span class="glyphicon glyphicon-time"></span>
 						<span th:text="#{pending}">set to pending</span>
 					</button>
-						<button id="assignSelectedButton" type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#assignToUserModal" th:onclick="activateSelectedRowsTransmission();" disabled="disabled" >
+						<button id="assignSelectedButton" type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#assignToUserModal" th:onclick="activateSelectedRowsTransmission();" >
 						<span class="glyphicon glyphicon-user"></span>
 						<span th:text="#{assign}">assign</span>
 					</button>
