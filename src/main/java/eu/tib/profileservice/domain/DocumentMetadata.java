@@ -87,11 +87,10 @@ public class DocumentMetadata {
 
   /** uris (+title) of the inventory. */
   @ElementCollection
-  @MapKeyColumn(name = JOIN_TABLE_COLUMN_NAME_URI, nullable = false)
+  @MapKeyColumn(name = JOIN_TABLE_COLUMN_NAME_URI, nullable = false, length = 180)
   @Column(name = JOIN_TABLE_COLUMN_NAME_TITLE)
   @CollectionTable(name = TABLE_NAME_INVENTORY_URIS, joinColumns = @JoinColumn(
-      name = JOIN_TABLE_COLUMN_NAME_DOCUMENTID), uniqueConstraints = @UniqueConstraint(
-          columnNames = {JOIN_TABLE_COLUMN_NAME_URI, JOIN_TABLE_COLUMN_NAME_DOCUMENTID}))
+      name = JOIN_TABLE_COLUMN_NAME_DOCUMENTID))
   private Map<String, String> inventoryUris;
 
   /**
