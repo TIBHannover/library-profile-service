@@ -2,6 +2,7 @@ package eu.tib.profileservice.connector;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -86,7 +87,8 @@ public class TibConnectorTest {
     DocumentMetadata metadata = newDocumentMetadataDummy("123456789", "987654321");
     boolean contains = connector.processInventoryCheck(metadata);
     assertTrue(contains);
-    assertThat(metadata.getInventoryUri()).isEqualTo(
+    assertNotNull(metadata.getInventoryUris());
+    assertThat(metadata.getInventoryUris().keySet()).contains(
         "https://www.tib.eu/de/suchen/id/TIBKAT%3A772916411");
 
     expectResourceAsRestTemplateRespone("connector/TIBResponse002.xml");

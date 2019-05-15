@@ -171,8 +171,7 @@ public class DocumentImportServiceImpl implements DocumentImportService {
     existingData.setSource(newData.getSource());
     existingData.setTermsOfAvailability(newData.getTermsOfAvailability());
     existingData.setTitle(newData.getTitle());
-    existingData.setInventoryAccessionNumber(newData.getInventoryAccessionNumber());
-    existingData.setInventoryUri(newData.getInventoryUri());
+    existingData.setInventoryUris(newData.getInventoryUris());
     documentService.saveDocument(existingDocument);
   }
 

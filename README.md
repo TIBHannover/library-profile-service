@@ -108,12 +108,10 @@ Implementierte Connectoren:
 * Aktivieren: _profileservice.properties_: _inventory.system=tib_
 * Konfiguration _profileservice.properties_
      * _inventory.tib.baseurl_ (URL der SRU-Schnittstelle)
-     * _inventory.tib.recordnrpath_ (XPath Pfad zur Anzahl der Ergebnisse im Reply)
      * Beispiel  
 
              inventory.system=tib
              inventory.tib.baseurl=https://getinfo.tib.eu/sru
-             inventory.tib.recordnrpath=/searchRetrieveResponse/numberOfRecords
 
 
 ### Filterregeln

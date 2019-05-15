@@ -87,8 +87,7 @@ public class TibConnector implements InventoryConnector {
         if (documents != null && documents.size() > 0) {
           contained = true;
           DocumentMetadata existing = documents.get(0);
-          documentMetadata.setInventoryAccessionNumber(existing.getInventoryAccessionNumber());
-          documentMetadata.setInventoryUri(existing.getInventoryUri());
+          documentMetadata.setInventoryUris(existing.getInventoryUris());
         }
       } else {
         throw new ConnectorException("Cannot retrieve document from: " + baseUrl);

@@ -18,10 +18,6 @@
       <subfield code="a">Buch</subfield>
     </datafield>
     <datafield ind1="7" ind2=" " tag="024">
-      <subfield code="a">011078464</subfield>
-      <subfield code="2">ppn</subfield>
-    </datafield>
-    <datafield ind1="7" ind2=" " tag="024">
       <subfield code="a">GBV:011078464</subfield>
       <subfield code="2">firstid</subfield>
     </datafield>

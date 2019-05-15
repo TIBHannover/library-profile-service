@@ -21,9 +21,12 @@ public class TibMarcXml2DocumentConverterTest {
       assertNotNull(result);
       assertEquals(1, result.size());
       final DocumentMetadata metadata = result.get(0);
-      assertEquals("77-2916", metadata.getInventoryAccessionNumber());
-      assertEquals("https://www.tib.eu/de/suchen/id/TIBKAT%3A011078464", metadata
-          .getInventoryUri());
+
+      assertNotNull(metadata.getInventoryUris());
+      assertThat(metadata.getInventoryUris()).containsEntry(
+          "https://www.tib.eu/de/suchen/id/TIBKAT%3A011078464", "Portal");
+      assertThat(metadata.getInventoryUris()).containsEntry(
+          "https://opac.tib.eu/DB=1/LNG=DU/XMLPRS=N/PPN?PPN=011078464", "77-2916");
     }
   }
 
@@ -36,8 +39,7 @@ public class TibMarcXml2DocumentConverterTest {
       assertNotNull(result);
       assertEquals(1, result.size());
       final DocumentMetadata metadata = result.get(0);
-      assertThat(metadata.getInventoryAccessionNumber()).isNullOrEmpty();
-      assertThat(metadata.getInventoryUri()).isNullOrEmpty();
+      assertThat(metadata.getInventoryUris()).isNullOrEmpty();
     }
   }
 }

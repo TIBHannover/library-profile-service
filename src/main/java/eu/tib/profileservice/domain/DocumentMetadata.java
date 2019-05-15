@@ -1,6 +1,7 @@
 package eu.tib.profileservice.domain;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -9,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.UniqueConstraint;
 
 @Entity(name = DocumentMetadata.ENTITY_NAME)
@@ -21,6 +24,10 @@ public class DocumentMetadata {
   private static final String TABLE_NAME_FORM_KEYWORDS = "document_metadata_form_keywords";
   private static final String TABLE_NAME_BIBLIOGRAPHY_NUMBER =
       "document_metadata_bibliography_number";
+  public static final String TABLE_NAME_INVENTORY_URIS = "document_metadata_inventory_uris";
+  public static final String JOIN_TABLE_COLUMN_NAME_DOCUMENTID = "document_metadata_id";
+  public static final String JOIN_TABLE_COLUMN_NAME_URI = "uri";
+  public static final String JOIN_TABLE_COLUMN_NAME_TITLE = "title";
   /** column name isbns. */
   public static final String COLUMN_NAME_ISBNS = "isbns";
 
@@ -78,9 +85,13 @@ public class DocumentMetadata {
 
   private String source;
 
-  private String inventoryUri;
-
-  private String inventoryAccessionNumber;
+  /** uris (+title) of the inventory. */
+  @ElementCollection
+  @MapKeyColumn(name = JOIN_TABLE_COLUMN_NAME_URI, nullable = false)
+  @Column(name = JOIN_TABLE_COLUMN_NAME_TITLE)
+  @CollectionTable(name = TABLE_NAME_INVENTORY_URIS, joinColumns = @JoinColumn(
+      name = JOIN_TABLE_COLUMN_NAME_DOCUMENTID))
+  private Map<String, String> inventoryUris;
 
   /**
    * getter: id.
@@ -396,32 +407,18 @@ public class DocumentMetadata {
     this.source = source;
   }
 
-  /** getter: inventoryUri.
-   * @return the inventoryUri
+  /** getter: inventoryUris.
+   * @return the inventoryUris
    */
-  public String getInventoryUri() {
-    return inventoryUri;
+  public Map<String, String> getInventoryUris() {
+    return inventoryUris;
   }
 
-  /** setter: inventoryUri.
-   * @param inventoryUri the inventoryUri to set
+  /** setter: inventoryUris.
+   * @param inventoryUris the inventoryUris to set
    */
-  public void setInventoryUri(final String inventoryUri) {
-    this.inventoryUri = inventoryUri;
-  }
-
-  /** getter: inventoryAccessionNumber.
-   * @return the inventoryAccessionNumber
-   */
-  public String getInventoryAccessionNumber() {
-    return inventoryAccessionNumber;
-  }
-
-  /** setter: inventoryAccessionNumber.
-   * @param inventoryAccessionNumber the inventoryAccessionNumber to set
-   */
-  public void setInventoryAccessionNumber(final String inventoryAccessionNumber) {
-    this.inventoryAccessionNumber = inventoryAccessionNumber;
+  public void setInventoryUris(final Map<String, String> inventoryUris) {
+    this.inventoryUris = inventoryUris;
   }
 
 }

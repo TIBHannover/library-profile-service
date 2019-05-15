@@ -58,4 +58,29 @@
     <changeSet author="hoffmann" id="201905130800-1">
         <modifyDataType tableName="document_metadata_authors" columnName="authors" newDataType="VARCHAR(1024)"/>
     </changeSet>
+
+    <changeSet author="hoffmann (generated)" id="1557907987253-1">
+        <createTable tableName="document_metadata_inventory_uris">
+            <column name="document_metadata_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="uri" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1557907987253-2">
+        <addPrimaryKey columnNames="document_metadata_id, uri" tableName="document_metadata_inventory_uris"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1557907987253-3">
+        <addForeignKeyConstraint baseColumnNames="document_metadata_id" baseTableName="document_metadata_inventory_uris" constraintName="FKlei9fctgdbekll0kx09bnx8kw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="document_metadata"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1557907987253-4">
+        <dropColumn columnName="inventory_accession_number" tableName="document_metadata"/>
+    </changeSet>
+    <changeSet author="hoffmann (generated)" id="1557907987253-5">
+        <dropColumn columnName="inventory_uri" tableName="document_metadata"/>
+    </changeSet>
+    
 </databaseChangeLog>
