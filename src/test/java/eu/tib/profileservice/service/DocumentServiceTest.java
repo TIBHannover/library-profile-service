@@ -25,7 +25,6 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,7 +107,8 @@ public class DocumentServiceTest {
     result = documentService.findById(1L);
     assertThat(result).isNotNull();
 
-    when(documentRepository.findById(1L)).thenThrow(NoSuchElementException.class);
+    reset(documentRepository);
+    when(documentRepository.findById(1L)).thenReturn(Optional.ofNullable(null));
     result = documentService.findById(1L);
     assertThat(result).isNull();
   }

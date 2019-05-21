@@ -3,7 +3,7 @@ package eu.tib.profileservice.service;
 import eu.tib.profileservice.domain.ImportFilter;
 import eu.tib.profileservice.repository.ImportFilterRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,11 +41,11 @@ public class ImportFilterServiceImpl implements ImportFilterService {
     if (id == null) {
       return null;
     }
-    try {
-      return importFilterRepository.findById(id).get();
-    } catch (NoSuchElementException e) {
-      return null;
+    Optional<ImportFilter> optional = importFilterRepository.findById(id);
+    if (optional.isPresent()) {
+      return optional.get();
     }
+    return null;
   }
 
 }

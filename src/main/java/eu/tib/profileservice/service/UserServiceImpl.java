@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,6 @@ public class UserServiceImpl implements UserService {
     return userRepository.save(user);
   }
 
-  @Transactional
   private void updateCategoriesOfOtherUsers(final User user) {
     if (user.getCategories() == null) {
       return;
@@ -104,11 +103,11 @@ public class UserServiceImpl implements UserService {
     if (id == null) {
       return null;
     }
-    try {
-      return userRepository.findById(id).get();
-    } catch (NoSuchElementException e) {
-      return null;
+    Optional<User> optional = userRepository.findById(id);
+    if (optional.isPresent()) {
+      return optional.get();
     }
+    return null;
   }
 
   @Transactional(readOnly = true)

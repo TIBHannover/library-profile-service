@@ -10,7 +10,7 @@ import eu.tib.profileservice.util.FileExportProcessor;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,11 +51,11 @@ public class DocumentServiceImpl implements DocumentService {
     if (id == null) {
       return null;
     }
-    try {
-      return documentRepository.findById(id).get();
-    } catch (NoSuchElementException e) {
-      return null;
+    Optional<Document> optional = documentRepository.findById(id);
+    if (optional.isPresent()) {
+      return optional.get();
     }
+    return null;
   }
 
   @Transactional
