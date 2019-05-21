@@ -1,1 +1,11 @@
 language: java
+
+addons:
+  sonarcloud:
+    organization: "tibhannover"
+    token:
+      secure: "FXcFth7BeRMMwY0qs24ZviUxztJCxsYOXxFcmIqAj38aCouR6KT8Mbfc632JXRi5sxOEEQwpvaXgPsSbX2BvYt995uPMZFksHzBdyruxNzrtNkbWfDzQm3pn/oMV/2qMKSYr1Cgw4OcWjwH+CADdhuwCVCMpM3uz3K0JwhHQ9U6I58hto8lWMIfUJnT8ebIzzY8+q44EpDcAAOPwym8XQo9d70nb1mU19eMqiWBt3/8N4KCj5eEDwkodGE7EeB9zjwt/4+DHZUXN+E8DVm7uG/oCYpETNgPhGyaexr4xMsA6q9rM+7oK+6WnBJx5ufHQG42BlpT0tTEy2n1PcecxG5dz0Sqp+AywCtEDkCA+e4ppQtEhi5B4/7eQwg42BMKx5kCD18YI5sYadSzN64yIvHpVYNqIpIxyhmK5PPNUsXhKkBi/Fo219LTQlBuIpLnVhC+Kiy1PqUkbP+9TFVUfokR+FTEaQJgxNQXr3iV1/V9VfOWo+CK1jqFFuFIzhz0adTxmu7df3yVEy87rG0iTfRaqzlM1yDKjfkigsGA8i132W+i9KF9LMGpBdRdfIKusQk6inYuATAofhhIFOoXNH63QDSmpvS5HZYoAwd1PLJ/AcAKpWfkmqQiz4fERbKhXuYKa2qeHMAkPvIPaIkyIIstZVXpaRmhEPx7k3wafoBg="
+
+script:
+  - sonar-scanner
+
