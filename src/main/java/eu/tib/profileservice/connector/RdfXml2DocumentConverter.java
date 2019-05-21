@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,7 +40,9 @@ public class RdfXml2DocumentConverter extends Converter {
     errorOccurred = false;
     final List<DocumentMetadata> documents = new ArrayList<>();
     try {
-      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      final DocumentBuilder builder = factory.newDocumentBuilder();
       Document xml = builder.parse(xmlInputStream);
       xml.getDocumentElement().normalize();
       NodeList elements = xml.getFirstChild().getChildNodes();

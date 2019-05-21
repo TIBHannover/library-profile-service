@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -181,7 +182,9 @@ public class DnbConnector implements InstitutionConnector {
 
   private String getResumptionToken(final String oaiResponse) {
     try {
-      final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      final DocumentBuilder builder = factory.newDocumentBuilder();
       final Document xml = builder.parse(new InputSource(new StringReader(oaiResponse)));
       final XPath xpath = XPathFactory.newInstance().newXPath();
       return (String) xpath.compile(RESUMPTION_TOKEN_PATH).evaluate(xml, XPathConstants.STRING);

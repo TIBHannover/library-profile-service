@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -93,7 +94,9 @@ public class MarcXml2DocumentConverter extends Converter {
       final InputStream xmlInputStream) {
     final NodeList nodes;
     try {
-      final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      final DocumentBuilder builder = factory.newDocumentBuilder();
       final Document xml = builder.parse(xmlInputStream);
       final XPath xpath = XPathFactory.newInstance().newXPath();
       nodes = (NodeList) xpath.compile(xpathExpression).evaluate(xml, XPathConstants.NODESET);
@@ -108,8 +111,11 @@ public class MarcXml2DocumentConverter extends Converter {
     for (int i = 0; i < nodes.getLength(); i++) {
       final Node node = nodes.item(i);
       try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-        final Transformer xform = TransformerFactory.newInstance().newTransformer();
+        TransformerFactory factory = TransformerFactory.newInstance();
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        final Transformer xform = factory.newTransformer();
         xform.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        xform.setOutputProperty(OutputKeys.INDENT, "yes");
         xform.transform(new DOMSource(node), new StreamResult(outputStream));
         try (InputStream recordInputStream = new ByteArrayInputStream(outputStream
             .toByteArray())) {
