@@ -194,7 +194,7 @@ public class UserController {
    * @param model model
    * @return template
    */
-  @RequestMapping(value = PATH_SAVE, params = {METHOD_REFRESH_EDIT})
+  @RequestMapping(value = PATH_SAVE, params = {METHOD_REFRESH_EDIT}, method = RequestMethod.POST)
   public String refreshEditUser(final User user, final Model model) {
     model.addAttribute("edit", true);
     model.addAttribute("user", user);
@@ -207,7 +207,7 @@ public class UserController {
    * @param model model
    * @return template
    */
-  @RequestMapping(value = PATH_SAVE, params = {METHOD_REFRESH_CREATE})
+  @RequestMapping(value = PATH_SAVE, params = {METHOD_REFRESH_CREATE}, method = RequestMethod.POST)
   public String refreshAddUser(final User user, final Model model) {
     model.addAttribute("user", user);
     return BASE_URL_TEMPLATE + TEMPLATE_CREATE_OR_EDIT;
@@ -222,7 +222,7 @@ public class UserController {
   }
 
   @GetMapping(PATH_EDIT)
-  @RequestMapping({PATH_EDIT + "/{userId}"})
+  @RequestMapping(value = {PATH_EDIT + "/{userId}"}, method = RequestMethod.GET)
   public String edit(@PathVariable("userId") final Long userId, final Model model,
       final RedirectAttributes redirectAttrs) {
     User user = userService.findById(userId);
@@ -236,7 +236,7 @@ public class UserController {
     return BASE_URL_TEMPLATE + TEMPLATE_CREATE_OR_EDIT;
   }
 
-  @RequestMapping({PATH_SHOW + "/{userId}"})
+  @RequestMapping(value = {PATH_SHOW + "/{userId}"}, method = RequestMethod.GET)
   public String show(@PathVariable("userId") final Long userId, final Model model,
       final RedirectAttributes redirectAttrs) {
     User user = userService.findById(userId);
