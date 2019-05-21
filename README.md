@@ -1,7 +1,7 @@
 # Profildienst
 
 [![Build Status](https://travis-ci.org/TIBHannover/library-profile-service.svg?branch=travis-test)](https://travis-ci.org/TIBHannover/library-profile-service)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=tib.eu%3Alibrary-profile-service&metric=alert_status)](https://sonarcloud.io/dashboard?id=tib.eu%3Alibrary-profile-service)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=eu.tib%3Alibrary-profile-service&metric=alert_status)](https://sonarcloud.io/dashboard?id=eu.tib%3Alibrary-profile-service)
 
 * Webanwendung, die Neuerscheinungen aus diversen Quellen einliest und Nutzern zur Bearbeitung zuweist.
 * Jedem Nutzer sind Sachgruppen zugeordnet über die die Zuordnung stattfindet.
