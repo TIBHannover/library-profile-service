@@ -7,6 +7,23 @@
 * Jedem Nutzer sind Sachgruppen zugeordnet über die die Zuordnung stattfindet.
 * Die Nutzer können die Titel dann zum Kauf vormerken, ablehnen oder einem anderen Nutzer zuweisen.
 
+### Message Flow
+
+* Titel werden aus verschiedenen Quellen (DNB, BL,...) importiert und den Nutzern zugewiesen
+* Nutzer bearbeitet die ihr/ihm zugewiesenen Titel: akzeptieren, ablehnen oder einem anderen Nutzer zuweisen.
+    * Abgelehnte Titel werden nach einiger Zeit gelöscht (siehe [Cleanup](#cleanup) )
+* Die akzeptierten Titel aller Nutzer können dann exportiert werden. Damit gehen alle akzeptierten Titel an den Erwerb.
+
+#### Status
+
+* **ACCEPTED** - Titel wurde akzeptiert und kann im nächsten Schritt exportiert werden
+* **EXPORTING** - Titel wird gerade exportiert
+* **EXPORTED** - Titel wurde exportiert
+* **REJECTED** - Titel wurde abgelehnt und soll nicht exportiert werden
+* **IGNORED** - Titel soll gar nicht erst bearbeitet werden (zB weil er durch eine Filterregel abgelehnt wurde)
+* **IN_PROGRESS** - Titel ist bereit zur Bearbeitung durch einen Nutzer
+* **PENDING** - Titel wurde zurückgestellt und soll später bearbeitet werden
+
 ### Konfiguration
 
 * Konfigurationsverzeichnis einrichten mit
@@ -146,6 +163,7 @@ Kann nicht sofort entschieden werden was mit einem Titel geschehen soll, dann ka
 ### Export
 
 * Die akzeptierten Dokumente können exportiert werden um sie an den Erwerb weiterzuleiten.
+* Es werden alle akzeptierten Dokumente exportiert, unabhängig davon wem sie zugeordnet sind.
 * Die exportierten Dokumente werden zunächst in eine temporäre Datei geschrieben und zum Download angeboten.
     * Der nächtliche Cleanup-Job löscht die Dateien wieder.
 * Exportierte Dokumente erhalten einen neuen Status, damit sie nur einmalig exportiert werden.
