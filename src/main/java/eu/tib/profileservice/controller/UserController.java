@@ -116,16 +116,16 @@ public class UserController {
     List<Category> main = all.stream().filter(c -> all.stream().allMatch(a -> !includes(a, c)))
         .collect(Collectors
         .toList());
-    Map<Category, List<Category>> result = new TreeMap<Category, List<Category>>(
-        new Comparator<Category>() {
-          @Override
-          public int compare(final Category arg0, final Category arg1) {
-            return arg0.getCategory().compareTo(arg1.getCategory());
-          }
-        });
+    Comparator<Category> comparator = new Comparator<Category>() {
+      @Override
+      public int compare(final Category arg0, final Category arg1) {
+        return arg0.getCategory().compareTo(arg1.getCategory());
+      }
+    };
+    Map<Category, List<Category>> result = new TreeMap<Category, List<Category>>(comparator);
     for (Category category : main) {
-      List<Category> children = all.stream().filter(c -> includes(category, c)).collect(Collectors
-          .toList());
+      List<Category> children = all.stream().filter(c -> includes(category, c)).sorted(comparator)
+          .collect(Collectors.toList());
       result.put(category, children);
     }
     return result;
