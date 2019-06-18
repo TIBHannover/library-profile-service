@@ -6,6 +6,16 @@
    <include file="db/changelog/db.changelog-init-schema.xml"/>
    <include file="db/changelog/db.changelog-insert-default-data.xml"/>
 
+	<changeSet author="mhoffmann" id="201906181500">
+		<comment>insert default categories</comment>
+		<insert tableName="category">
+			<column name="type" value="DDC" />
+			<column name="category" value="610.28" />
+			<column name="description" value="Medizintechnik" />
+		</insert>
+		<rollback/>
+	</changeSet>
+	
     <changeSet author="mhoffmann" id="201904171032-1">
         <addColumn tableName="document">
             <column name="expiry_date" type="DATETIME" />
