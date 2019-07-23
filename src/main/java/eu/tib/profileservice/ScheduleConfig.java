@@ -3,18 +3,14 @@ package eu.tib.profileservice;
 import eu.tib.profileservice.connector.InstitutionConnectorFactory.ConnectorType;
 import eu.tib.profileservice.scheduling.DocumentCleanupJob;
 import eu.tib.profileservice.scheduling.DocumentImportJob;
-import javax.annotation.PostConstruct;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,49 +23,51 @@ public class ScheduleConfig {
 
   private static final Logger LOG = LoggerFactory.getLogger(ScheduleConfig.class);
 
-  @Autowired
-  private Scheduler scheduler;
-
-  @Value("${externalsystem.dnb.schedule.cron}")
-  private String dnbSchedule;
-
-  @Value("${externalsystem.bl.schedule.cron}")
-  private String blSchedule;
-
-  /**
-   * Initializing document-import-jobs.
-   *
-   * @throws SchedulerException if the Job cannot be added to the Scheduler
-   */
-  @PostConstruct
-  public void initDocumentImportJobs() throws SchedulerException {
-    LOG.debug("init document import jobs");
-    scheduleDocumentImportJob(ConnectorType.BL.toString(), blSchedule);
-    scheduleDocumentImportJob(ConnectorType.DNB.toString(), dnbSchedule);
+  @Bean(name = "jobDetailDnbImport")
+  public JobDetail jobDetailDnbImport() {
+    return documentImportJobDetail(ConnectorType.DNB.toString());
   }
 
-  private void scheduleDocumentImportJob(final String connectorType, final String cronExpression)
-      throws SchedulerException {
-    final String identityPrefix = connectorType;
-    if (cronExpression == null || cronExpression.length() == 0) {
-      LOG.info("{} schedule not configured", identityPrefix);
-      return;
-    }
-    LOG.info("init {} job with schedule {}", identityPrefix, cronExpression);
+  @Bean
+  public Trigger triggerDnbImport(@Qualifier("jobDetailDnbImport") final JobDetail job,
+      @Value("${externalsystem.dnb.schedule.cron}") final String schedule) {
+    return documentImportTrigger(job, ConnectorType.DNB.toString(), schedule);
+  }
+
+  @Bean(name = "jobDetailBlImport")
+  public JobDetail jobDetailBlImport() {
+    return documentImportJobDetail(ConnectorType.BL.toString());
+  }
+
+  @Bean
+  public Trigger triggerBlImport(@Qualifier("jobDetailBlImport") final JobDetail job,
+      @Value("${externalsystem.bl.schedule.cron}") final String schedule) {
+    return documentImportTrigger(job, ConnectorType.BL.toString(), schedule);
+  }
+
+  private JobDetail documentImportJobDetail(final String connectorType) {
     JobDataMap jobDataMap = new JobDataMap();
     jobDataMap.put(DocumentImportJob.JOB_DATA_CONNECTOR_TYPE, connectorType);
-    JobDetail jobDetail = JobBuilder.newJob().ofType(DocumentImportJob.class)
+    return JobBuilder.newJob().ofType(DocumentImportJob.class)
         .storeDurably()
-        .withIdentity(identityPrefix + "_Standard_Document_Import_Job_Detail",
+        .withIdentity(connectorType + "_Standard_Document_Import_Job_Detail",
             "document-import-jobs")
         .usingJobData(jobDataMap)
         .build();
-    Trigger trigger = TriggerBuilder.newTrigger().forJob(jobDetail)
-        .withIdentity(identityPrefix + "_Standard_Document_Import_Trigger",
+  }
+
+  private Trigger documentImportTrigger(final JobDetail jobDetail, final String connectorType,
+      final String cronExpression) {
+    if (cronExpression == null || cronExpression.length() == 0) {
+      LOG.info("{} schedule not configured", connectorType);
+      return null;
+    }
+    LOG.info("init {} job with schedule {}", connectorType, cronExpression);
+    return TriggerBuilder.newTrigger().forJob(jobDetail)
+        .withIdentity(connectorType + "_Standard_Document_Import_Trigger",
             "document-import-triggers")
         .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
         .build();
-    scheduler.scheduleJob(jobDetail, trigger);
   }
 
   /**
