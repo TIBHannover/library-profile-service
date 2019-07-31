@@ -1,7 +1,7 @@
 FROM maven:3-jdk-11-slim as build
 WORKDIR /tmp/profileservice
 COPY pom.xml .
-COPY src .
+COPY src ./src
 RUN mvn --batch-mode --update-snapshots -DskipTests clean dependency:list package
 RUN mv target/library-profile-service-*.war target/library-profile-service.war
 
