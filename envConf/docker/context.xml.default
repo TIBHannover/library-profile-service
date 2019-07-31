@@ -1,0 +1,4 @@
+<Context>
+	<!-- path to the config-directory that contains all config-files of the application -->
+	<Environment type="java.lang.String" name="envConfigDir" value="/etc/profileservice/" override="false"/>
+</Context>
