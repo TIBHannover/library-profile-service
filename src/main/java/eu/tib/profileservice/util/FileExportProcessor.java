@@ -66,7 +66,7 @@ public class FileExportProcessor {
         }
       }
     }
-    LOG.warn("cannot get the content of file {}", exportFileName);
+    LOG.warn("cannot get the content of file {}", exportFileName.replaceAll("[\n|\r|\t]", "_"));
     return null;
   }
 
