@@ -35,7 +35,9 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -86,7 +88,8 @@ public class DocumentServiceTest {
     when(documentRepository.findAll(ArgumentMatchers.<Example<Document>>any(), Mockito.any(
         Pageable.class)))
             .thenReturn(new PageImpl<Document>(Arrays.asList(new Document[] {newDocumentDummy()})));
-    documentService.findAllByExample(new Document(), null);
+    Page<Document> result = documentService.findAllByExample(new Document(), PageRequest.of(0, 10));
+    assertFalse(result.isEmpty());
   }
 
   @Test
@@ -94,7 +97,9 @@ public class DocumentServiceTest {
     when(documentRepository.findAllByDocumentSearch(Mockito.any(DocumentSearch.class), Mockito.any(
         Pageable.class)))
             .thenReturn(new PageImpl<Document>(Arrays.asList(new Document[] {newDocumentDummy()})));
-    documentService.findAllByDocumentSearch(new DocumentSearch(), null);
+    Page<Document> result = documentService.findAllByDocumentSearch(new DocumentSearch(),
+        PageRequest.of(0, 10));
+    assertFalse(result.isEmpty());
   }
 
   @Test
