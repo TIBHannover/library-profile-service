@@ -55,6 +55,7 @@ public class FileExportProcessor {
    */
   public byte[] getBytesOfExportFile(final String exportFileName) {
     File exportDir = getExportDir();
+    String filename = exportFileName.replaceAll("[\n|\r|\t]", "_");
     if (exportDir != null) {
       File[] files = exportDir.listFiles((dir, name) -> name.equals(exportFileName));
       if (files != null && files.length > 0) {
@@ -66,7 +67,7 @@ public class FileExportProcessor {
         }
       }
     }
-    LOG.warn("cannot get the content of file {}", exportFileName.replaceAll("[\n|\r|\t]", "_"));
+    LOG.warn("cannot get the content of file {}", filename);
     return null;
   }
 
